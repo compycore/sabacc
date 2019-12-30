@@ -25,6 +25,5 @@ func main() {
 	// TODO Change to PUT
 	e.GET("/sabacc", controllers.Play)
 
-	// TODO Fail if $SABACC_PORT is not set
 	e.Logger.Fatal(e.Start(":" + os.Getenv("SABACC_PORT")))
 }

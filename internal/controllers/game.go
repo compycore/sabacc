@@ -1,9 +1,12 @@
 package controllers
 
 import (
+	"encoding/json"
 	"log"
+	"net/url"
 
 	"github.com/jessemillar/sabacc/internal/deck"
+	"github.com/jessemillar/sabacc/internal/models"
 	"github.com/labstack/echo"
 )
 
@@ -40,6 +43,16 @@ func Play(c echo.Context) error {
 		}
 	*/
 
+	log.Println(c.QueryString())
+
+	stringifiedJson, err := url.QueryUnescape(c.QueryString())
+	if err != nil {
+		return err
+	}
+
+	var query models.Query
+	json.Unmarshal([]byte(stringifiedJson), &query)
+
 	// TODO Do I need/want to send a response back?
-	return c.JSON(200, round)
+	return c.JSON(200, query)
 }
