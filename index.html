@@ -30,14 +30,15 @@
 
 	<! -- Scripts
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-	<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+	<script src="scripts/main.js"></script>
+	<script src="//cdn.jsdelivr.net/npm/sweetalert"></script>
 
   <!-- Favicon
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <link rel="icon" type="image/png" href="images/favicon.png">
 
 </head>
-<body>
+<body onload="init()">
 
   <!-- Primary Page Layout
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
@@ -45,10 +46,10 @@
     <div class="row" style="margin-top: 10%">
       <div class="u-full-width">
         <h4>Actions</h4>
-				<button class="button-primary">Gain</button>
-				<button class="button-primary">Swap</button>
-				<button class="button-primary">Stand</button>
-				<button class="button-primary">Trash</button>
+				<button class="button-primary" onclick="gain()">Gain</button>
+				<button class="button-primary" onclick="swap()">Swap</button>
+				<button class="button-primary" onclick="stand()">Stand</button>
+				<button class="button-primary" onclick="trash()">Trash</button>
       </div>
     </div>
 
@@ -81,25 +82,6 @@
       </div>
     </div>
   </div>
-
-	<script>
-swal({
-  title: "Is it your turn?",
-  text: "It's hellojessemillar@gmail.com's turn. Are you hellojessemillar@gmail.com?",
-  icon: "warning",
-  buttons: true,
-	buttons: ["Nope!", "I'm the droid you're looking for."],
-})
-.then((willDelete) => {
-  if (willDelete) {
-    swal("Pick your action!", {
-      icon: "success",
-    });
-  } else {
-    swal("Please wait for your turn. You'll receive another email when it's time.");
-  }
-});
-	</script>
 
 <!-- End Document
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
