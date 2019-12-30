@@ -3,10 +3,14 @@ package main
 import (
 	"log"
 	"math/rand"
+	"net/http"
 	"time"
 
+	"github.com/jessemillar/health"
 	"github.com/jessemillar/sabacc/internal/deck"
 	"github.com/jessemillar/sabacc/internal/email"
+	"github.com/labstack/echo"
+	"github.com/labstack/echo/middleware"
 )
 
 func init() {
@@ -31,4 +35,16 @@ func main() {
 	if err != nil {
 		log.Println(err)
 	}
+
+	log.Println("Configuring server")
+
+	e := echo.New()
+	e.Pre(middleware.RemoveTrailingSlash())
+	e.Use(middleware.CORS())
+
+	e.GET("/health", echo.WrapHandler(http.HandlerFunc(health.Check)))
+	// e.PUT("/v1/archive", controllers.ArchiveCard)
+
+	// TODO Fail if $SABACC_PORT is not set
+	// e.Logger.Fatal(e.Start(":" + os.Getenv("SABACC_PORT")))
 }
