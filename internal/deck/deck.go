@@ -17,7 +17,7 @@ type Deck []Card
 // New creates a deck of cards to be used
 func New() (deck Deck) {
 	allValues := []int{-10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
-	allStaves := []string{"Circle", "Square", "Triangle"}
+	allStaves := []string{"circle", "square", "triangle"}
 
 	// Loop over each type and suit appending to the deck
 	for i := 0; i < len(allValues); i++ {
@@ -31,16 +31,27 @@ func New() (deck Deck) {
 	}
 
 	// Add the zero cards to the deck
+	// TODO Make the zero card display properly in the UI
 	for n := 0; n < 2; n++ {
 		card := Card{
 			Value: 0,
-			Stave: "Zero",
+			Stave: "zero",
 		}
 
 		deck = append(deck, card)
 	}
 
 	return
+}
+
+// Remove a specific card from the deck
+func (d *Deck) Remove(card Card) {
+	for i, curCard := range *d {
+		if curCard.Stave == card.Stave && curCard.Value == card.Value {
+			*d = append((*d)[:i], (*d)[i+1:]...)
+			return
+		}
+	}
 }
 
 // Shuffle the deck

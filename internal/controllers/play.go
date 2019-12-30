@@ -11,30 +11,9 @@ import (
 )
 
 func Play(c echo.Context) error {
-	// Get all variable values from the URI params
-	round := c.QueryParam("round")
-	log.Println(round)
-	turn := c.QueryParam("turn")
-	log.Println(turn)
-	allPlayers := c.QueryParam("player")
-	log.Println(allPlayers)
-
 	// TODO If there are players but no `turn` then start a new game
-
+	// TODO If the `Draw` card has been taken (is empty now), populate it with a new card
 	// TODO If we're on round 3, finish the game after the last player's turn
-
-	log.Println("Making deck")
-	deck := deck.New()
-	// deck.Debug()
-	log.Println("Shuffling deck")
-	deck.Shuffle()
-	// deck.Debug()
-	log.Println("Dealing hand")
-	hand := deck.Deal(2)
-	hand.Debug()
-	// TODO Write unit tests
-	log.Println("Checking deck length")
-	// deck.Debug()
 
 	/*
 		err := email.Send()
@@ -43,16 +22,49 @@ func Play(c echo.Context) error {
 		}
 	*/
 
-	log.Println(c.QueryString())
-
-	stringifiedJson, err := url.QueryUnescape(c.QueryString())
+	query, err := parseQuery(c.QueryString())
 	if err != nil {
 		return err
+	}
+
+	deck := prepDeck(query)
+	deck.Debug()
+
+	return c.JSON(200, query)
+}
+
+func parseQuery(queryString string) (models.Query, error) {
+	log.Println(queryString)
+
+	stringifiedJson, err := url.QueryUnescape(queryString)
+	if err != nil {
+		return models.Query{}, err
 	}
 
 	var query models.Query
 	json.Unmarshal([]byte(stringifiedJson), &query)
 
-	// TODO Do I need/want to send a response back?
-	return c.JSON(200, query)
+	return query, nil
+}
+
+func prepDeck(query models.Query) deck.Deck {
+	log.Println("Making deck")
+	deck := deck.New()
+	// hand := deck.Deal(2)
+
+	// Remove cards in the discard pile from the deck
+	for _, card := range query.AllDiscards {
+		deck.Remove(card)
+	}
+
+	// Remove cards in player hands from the deck
+	for _, player := range query.AllPlayers {
+		for _, card := range player.Hand {
+			deck.Remove(card)
+		}
+	}
+
+	deck.Shuffle()
+
+	return deck
 }

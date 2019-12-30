@@ -66,6 +66,7 @@ type Query struct {
 	Round       int       `json:"round"`
 	Turn        int       `json:"turn"`
 	AllPlayers  []Player  `json:"players"`
+	Draw        deck.Card `json:"draw"`
 	AllDiscards deck.Deck `json:"discards"`
 }
 
