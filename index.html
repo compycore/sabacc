@@ -1,74 +1,107 @@
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <title>Sabacc</title>
-		<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<head>
 
-<style>
-.img-responsive {
-max-width: 500px;
-max-height: 300px;
-}
-</style>
-  </head>
-  <body>
-		<i>v0.0.4</i>
-		<div class="container" style="padding:50px 250px;">
-			<form role="form">
-        <div class="form-group">
-          <input type="input" class="form-control input-lg" id="txt-search" placeholder="Search">
-        </div>
-			</form>
-			<div id="filter-records"></div>
+  <!-- Basic Page Needs
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta charset="utf-8">
+  <title>Sabacc</title>
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <!-- Mobile Specific Metas
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- FONT
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+
+  <!-- CSS
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="stylesheet" href="css/normalize.css">
+  <link rel="stylesheet" href="css/skeleton.css">
+
+	<style>
+		.row {
+			margin-bottom: 1%;
+		}
+	</style>
+
+	<! -- Scripts
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+	<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+  <!-- Favicon
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="icon" type="image/png" href="images/favicon.png">
+
+</head>
+<body>
+
+  <!-- Primary Page Layout
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <div class="container">
+    <div class="row" style="margin-top: 10%">
+      <div class="u-full-width">
+        <h4>Actions</h4>
+				<button class="button-primary">Gain</button>
+				<button class="button-primary">Swap</button>
+				<button class="button-primary">Stand</button>
+				<button class="button-primary">Trash</button>
+      </div>
+    </div>
+
+		<div class="row">
+			<div class="u-full-width">
+        <h4>Your Hand (Score: 0)</h4>
+			</div>
 		</div>
-  </body>
+		<div class="row">
+			<div class="two columns"><img src="images/cards/back.jpg" class="u-max-full-width" /></div>
+			<div class="two columns"><img src="images/cards/back.jpg" class="u-max-full-width" /></div>
+			<div class="two columns"><img src="images/cards/back.jpg" class="u-max-full-width" /></div>
+			<div class="two columns"><img src="images/cards/back.jpg" class="u-max-full-width" /></div>
+			<div class="two columns"><img src="images/cards/back.jpg" class="u-max-full-width" /></div>
+		</div>
+
+		<div class="row">
+			<div class="u-full-width">
+        <h4>Discard Pile</h4>
+			</div>
+		</div>
+		<div class="row">
+			<div class="two columns"><img src="images/cards/back.jpg" class="u-max-full-width" /></div>
+		</div>
+
+    <div class="row" style="margin-bottom: 10%">
+      <div class="u-full-width">
+        <h4>Rules</h4>
+        <p>This index.html page is a placeholder with the CSS, font and favicon. It's just waiting for you to add some content! If you need some help hit up the <a href="http://www.getskeleton.com">Skeleton documentation</a>.</p>
+      </div>
+    </div>
+  </div>
 
 	<script>
-		  var database = null;
-
-  $.ajax({
-    // 'async': false,
-    // 'global': false,
-    'url': "decks.json",
-    'dataType': "json",
-    'success': function(data) {
-      database = data;
-			console.log(database);
-    }
-  });
-
-  $('#txt-search').keyup(function() {
-    console.log("Key press");
-
-  var searchField = $(this).val();
-  if (searchField === '') {
-    $('#filter-records').html('');
-    return;
-  }
-
-  var regex = new RegExp(searchField, "i");
-  var output = '<div class="row">';
-  var count = 1;
-  if (database.length > 0) {
-    $.each(database, function(key, val) {
-      if ((val.name.search(regex) != -1) || (val.description.search(regex) != -1)) {
-        output += '<div class="col-md-6 well">';
-        output += '<div class="col-md-3"><img class="img-responsive" src="' + val.image + '" alt="' + val.name + '" /></div>';
-        output += '<div class="col-md-7">';
-        output += '<h5>' + val.name + '</h5>';
-        output += '<p>' + val.description + '</p>'
-        output += '<p>Jesse owns ' + val.owned + '</p>'
-        output += '</div>';
-        output += '</div>';
-        if (count % 2 == 0) {
-          output += '</div><div class="row">'
-        }
-        count++;
-      }
+swal({
+  title: "Is it your turn?",
+  text: "It's hellojessemillar@gmail.com's turn. Are you hellojessemillar@gmail.com?",
+  icon: "warning",
+  buttons: true,
+	buttons: ["Nope!", "I'm the droid you're looking for."],
+})
+.then((willDelete) => {
+  if (willDelete) {
+    swal("Pick your action!", {
+      icon: "success",
     });
-    output += '</div>';
-    $('#filter-records').html(output);
+  } else {
+    swal("Please wait for your turn. You'll receive another email when it's time.");
   }
-  });
-
+});
 	</script>
+
+<!-- End Document
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+</body>
 </html>
