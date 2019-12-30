@@ -6,7 +6,7 @@ var database = JSON.parse(decodeURIComponent(window.location.search.substr(1)));
 console.log(database);
 
 function init() {
-	// Play the game if there's a game going
+  // Play the game if there's a game going
   if (database.players.length > 0) {
     checkTurn();
   } else {
@@ -37,25 +37,59 @@ function checkTurn() {
 // Don't populate the page before we know we're dealing with the right person
 function populatePage() {
   populateScore();
+  populateYourHand();
+  populateEnemyHands();
 }
 
 function populateScore() {
-  var hand = database.players[database.turn].hand;
+  var player = database.players[database.turn];
+  var hand = player.hand;
   var score = 0;
 
   for (var i = 0; i < hand.length; i++) {
     score += hand[i].value;
   }
 
-  document.getElementById("your-hand-header").innerHTML = "Your Hand (Score: " + score + ")";
+  document.getElementById("your-hand-header").innerHTML = "Your Hand (Score: " + score + ") [" + player.email + "]";
 }
 
-function populateHand() {
+// Populate card image divs
+function populateYourHand() {
   var hand = database.players[database.turn].hand;
 
   for (var i = 0; i < hand.length; i++) {
-		// TODO Populate card image divs
-	}
+    var card = hand[i];
+    var cardColor;
+
+    if (card.value > 0) {
+      cardColor = "green";
+    } else {
+      cardColor = "red";
+    }
+
+    document.getElementById("your-hand-cards").innerHTML += "<div class='two columns'><img src='images/cards/" + card.stave + "-" + cardColor + "-" + Math.abs(card.value) + ".jpg' class='u-max-full-width' onclick='discard()' /></div>";
+  }
+}
+
+function populateEnemyHands() {
+  for (var i = 0; i < database.players.length; i++) {
+    if (database.players[i].email != database.players[database.turn].email) {
+      document.getElementById("container").innerHTML += '<div class="row">'
+      document.getElementById("container").innerHTML += '<div class="u-full-width">'
+      document.getElementById("container").innerHTML += '<h4>' + database.players[i].email + '\'s Hand</h4>'
+      document.getElementById("container").innerHTML += '</div>'
+      document.getElementById("container").innerHTML += '</div>'
+      document.getElementById("container").innerHTML += '<div class="row">'
+
+      var hand = database.players[database.turn].hand;
+
+      for (var j = 0; j < hand.length; j++) {
+        document.getElementById("container").innerHTML += '<div class="two columns"><img src="images/cards/back.jpg" class="u-max-full-width" /></div>'
+      }
+
+      document.getElementById("container").innerHTML += '</div>'
+    }
+  }
 }
 
 function gain() {
