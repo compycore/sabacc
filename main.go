@@ -5,7 +5,7 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/jessemillar/sabacc/internal/cards"
+	"github.com/jessemillar/sabacc/internal/deck"
 	"github.com/jessemillar/sabacc/internal/email"
 )
 
@@ -15,7 +15,7 @@ func init() {
 
 func main() {
 	log.Println("Making deck")
-	deck := cards.New()
+	deck := deck.New()
 	deck.Debug()
 	log.Println("Shuffling deck")
 	deck.Shuffle()
@@ -23,6 +23,9 @@ func main() {
 	log.Println("Dealing hand")
 	hand := deck.Deal(2)
 	hand.Debug()
+	// TODO Write unit tests
+	log.Println("Checking deck length")
+	deck.Debug()
 
 	err := email.Send()
 	if err != nil {

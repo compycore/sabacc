@@ -1,30 +1,30 @@
-package cards
+package deck
 
 import (
 	"log"
 	"math/rand"
 )
 
-// Card holds the card suits and types in the deck
+// Card holds the card staves and values in the deck
 type Card struct {
-	Type int
-	Suit string
+	Value int
+	Stave string
 }
 
-// Deck holds the cards in the deck to be shuffled
+// Deck holds the cards in the deck
 type Deck []Card
 
 // New creates a deck of cards to be used
 func New() (deck Deck) {
-	types := []int{-10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
-	suits := []string{"Circle", "Square", "Triangle"}
+	allValues := []int{-10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+	allStaves := []string{"Circle", "Square", "Triangle"}
 
 	// Loop over each type and suit appending to the deck
-	for i := 0; i < len(types); i++ {
-		for n := 0; n < len(suits); n++ {
+	for i := 0; i < len(allValues); i++ {
+		for n := 0; n < len(allStaves); n++ {
 			card := Card{
-				Type: types[i],
-				Suit: suits[n],
+				Value: allValues[i],
+				Stave: allStaves[n],
 			}
 			deck = append(deck, card)
 		}
@@ -33,8 +33,8 @@ func New() (deck Deck) {
 	// Add the zero cards to the deck
 	for n := 0; n < 2; n++ {
 		card := Card{
-			Type: 0,
-			Suit: "Zero",
+			Value: 0,
+			Stave: "Zero",
 		}
 
 		deck = append(deck, card)
@@ -74,6 +74,6 @@ func (d *Deck) Deal(n int) Deck {
 // Debug helps debugging the deck of cards
 func (d *Deck) Debug() {
 	for i := 0; i < len(*d); i++ {
-		log.Println(i+1, (*d)[i].Type, (*d)[i].Suit)
+		log.Println(i+1, (*d)[i].Value, (*d)[i].Stave)
 	}
 }
