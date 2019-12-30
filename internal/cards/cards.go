@@ -1,7 +1,6 @@
 package cards
 
 import (
-	"fmt"
 	"log"
 	"math/rand"
 )
@@ -59,10 +58,17 @@ func (d *Deck) Shuffle() {
 }
 
 // Deal a specified amount of cards
-func Deal(d Deck, n int) {
+func (d *Deck) Deal(n int) Deck {
+	hand := Deck{}
+
 	for i := 0; i < n; i++ {
-		fmt.Println(d[i])
+		hand = append(hand, (*d)[i])
 	}
+
+	// Remove cards from the deck
+	*d = (*d)[n:len(*d)]
+
+	return hand
 }
 
 // Debug helps debugging the deck of cards

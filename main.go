@@ -20,6 +20,9 @@ func main() {
 	log.Println("Shuffling deck")
 	deck.Shuffle()
 	deck.Debug()
+	log.Println("Dealing hand")
+	hand := deck.Deal(2)
+	hand.Debug()
 
 	err := email.Send()
 	if err != nil {
