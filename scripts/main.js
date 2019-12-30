@@ -1,18 +1,17 @@
 // TODO Calculate your hand's value
-// TODO Read URI params
-// TODO Show game start/setup page if no query param info
 
 var database;
 var pickAction = "Pick your action!";
+var database = JSON.parse(decodeURIComponent(window.location.search.substr(1)));
+console.log(database);
 
 function init() {
-	decodeParams();
-  checkTurn();
-}
-
-function decodeParams() {
-  database = decodeURIComponent(window.location.search.substr(1));
-	console.log(database);
+	// Play the game if there's a game going
+  if (database.players.length > 0) {
+    checkTurn();
+  } else {
+    // TODO Start page
+  }
 }
 
 function checkTurn() {
@@ -24,8 +23,8 @@ function checkTurn() {
     })
     .then((willDelete) => {
       if (willDelete) {
-        swal(pickAction, {
-          icon: "success",
+        swal(pickAction).then(() => {
+          populatePage();
         });
       } else {
         swal("Please wait for your turn. You'll receive another email when it's time.").then(() => {
@@ -33,6 +32,30 @@ function checkTurn() {
         });
       }
     });
+}
+
+// Don't populate the page before we know we're dealing with the right person
+function populatePage() {
+  populateScore();
+}
+
+function populateScore() {
+  var hand = database.players[database.turn].hand;
+  var score = 0;
+
+  for (var i = 0; i < hand.length; i++) {
+    score += hand[i].value;
+  }
+
+  document.getElementById("your-hand-header").innerHTML = "Your Hand (Score: " + score + ")";
+}
+
+function populateHand() {
+  var hand = database.players[database.turn].hand;
+
+  for (var i = 0; i < hand.length; i++) {
+		// TODO Populate card image divs
+	}
 }
 
 function gain() {
