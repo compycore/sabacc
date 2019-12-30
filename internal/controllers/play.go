@@ -15,13 +15,6 @@ func Play(c echo.Context) error {
 	// TODO If the `Draw` card has been taken (is empty now), populate it with a new card
 	// TODO If we're on round 3, finish the game after the last player's turn
 
-	/*
-		err := email.Send()
-		if err != nil {
-			log.Println(err)
-		}
-	*/
-
 	query, err := parseQuery(c.QueryString())
 	if err != nil {
 		return err
@@ -29,6 +22,14 @@ func Play(c echo.Context) error {
 
 	deck := prepDeck(query)
 	deck.Debug()
+
+	// TODO Send email to everyone when the game is over
+	/*
+		err := email.Send()
+		if err != nil {
+			log.Println(err)
+		}
+	*/
 
 	return c.JSON(200, query)
 }
