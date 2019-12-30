@@ -17,21 +17,24 @@ The `gh-pages` branch has a simple, static-file UI hosted on GitHub Pages that a
 
 ## Design
 
-Everything happens via URL links that are emailed to participants. There's nothing other than honesty stopping players from taking multiple turns.
+Everything happens via URL links that are emailed to participants. There's nothing other than honesty stopping players from taking multiple turns or hijacking someone else's turn.
 
 Things to keep track of in the URL params:
 
-- Round count
-- Which player is taking their turn
-- Player email addresses
-- Player hands (try to "encrypt" so it's not easily readable; at least show a button instead of a link in the email)
-- Discard pile
+- Round count (`round`)
+- Which player is taking their turn (`turn`)
+- Player email addresses (`player`)
+- Player hands (try to "encrypt" so it's not easily readable; at least show a button instead of a link in the email) (`hand`)
+- Discard pile contents (`discard`)
+- Top of discard pile (`top`)
 
 ### Sample URL
 
 ```
-https://jessemillar.github.io/sabacc?round=1&
+https://jessemillar.github.io/sabacc?round=1&turn=hellojessemillar@gmail.com&player=hellojessemillar@gmail.com&player=test@test.com...
 ```
+
+`1CR8` means that player 1 (according to the players array) has a red 8 in their hand from the circles stave (`c` for Circle, `t` for Triangle, and `s` for Square).
 
 ### Notes
 
