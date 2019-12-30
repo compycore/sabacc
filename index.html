@@ -1,0 +1,74 @@
+<html lang="en">
+  <head>
+    <title>Sabacc</title>
+		<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+
+<style>
+.img-responsive {
+max-width: 500px;
+max-height: 300px;
+}
+</style>
+  </head>
+  <body>
+		<i>v0.0.4</i>
+		<div class="container" style="padding:50px 250px;">
+			<form role="form">
+        <div class="form-group">
+          <input type="input" class="form-control input-lg" id="txt-search" placeholder="Search">
+        </div>
+			</form>
+			<div id="filter-records"></div>
+		</div>
+  </body>
+
+	<script>
+		  var database = null;
+
+  $.ajax({
+    // 'async': false,
+    // 'global': false,
+    'url': "decks.json",
+    'dataType': "json",
+    'success': function(data) {
+      database = data;
+			console.log(database);
+    }
+  });
+
+  $('#txt-search').keyup(function() {
+    console.log("Key press");
+
+  var searchField = $(this).val();
+  if (searchField === '') {
+    $('#filter-records').html('');
+    return;
+  }
+
+  var regex = new RegExp(searchField, "i");
+  var output = '<div class="row">';
+  var count = 1;
+  if (database.length > 0) {
+    $.each(database, function(key, val) {
+      if ((val.name.search(regex) != -1) || (val.description.search(regex) != -1)) {
+        output += '<div class="col-md-6 well">';
+        output += '<div class="col-md-3"><img class="img-responsive" src="' + val.image + '" alt="' + val.name + '" /></div>';
+        output += '<div class="col-md-7">';
+        output += '<h5>' + val.name + '</h5>';
+        output += '<p>' + val.description + '</p>'
+        output += '<p>Jesse owns ' + val.owned + '</p>'
+        output += '</div>';
+        output += '</div>';
+        if (count % 2 == 0) {
+          output += '</div><div class="row">'
+        }
+        count++;
+      }
+    });
+    output += '</div>';
+    $('#filter-records').html(output);
+  }
+  });
+
+	</script>
+</html>
