@@ -4,9 +4,11 @@ import (
 	"log"
 	"math/rand"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/jessemillar/health"
+	"github.com/jessemillar/sabacc/internal/controllers"
 	"github.com/jessemillar/sabacc/internal/deck"
 	"github.com/jessemillar/sabacc/internal/email"
 	"github.com/labstack/echo"
@@ -43,8 +45,8 @@ func main() {
 	e.Use(middleware.CORS())
 
 	e.GET("/health", echo.WrapHandler(http.HandlerFunc(health.Check)))
-	// e.PUT("/v1/archive", controllers.ArchiveCard)
+	e.PUT("/play", controllers.Play)
 
 	// TODO Fail if $SABACC_PORT is not set
-	// e.Logger.Fatal(e.Start(":" + os.Getenv("SABACC_PORT")))
+	e.Logger.Fatal(e.Start(":" + os.Getenv("SABACC_PORT")))
 }
