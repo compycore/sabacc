@@ -20,17 +20,16 @@ func Play(c echo.Context) error {
 		return err
 	}
 
-	deck := prepDeck(database)
-	deck.Debug()
+	gameDeck := prepDeck(database)
 
-	if database.Draw.Stave == "" {
-		database.Draw = deck.Deal(1)[0]
+	if database.Draw == (deck.Card{}) {
+		database.Draw = gameDeck.Deal(1)[0]
 	}
 
 	// Start a new game if needed
 	if len(database.AllPlayers[0].Hand) == 0 {
-		for _, player := range database.AllPlayers {
-			player.Hand = deck.Deal(2)
+		for i, _ := range database.AllPlayers {
+			database.AllPlayers[i].Hand = gameDeck.Deal(2)
 		}
 	}
 
