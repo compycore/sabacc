@@ -62,7 +62,7 @@ JSON sample:
 }
 */
 
-type Query struct {
+type Database struct {
 	Round       int       `json:"round"`
 	Turn        int       `json:"turn"`
 	AllPlayers  []Player  `json:"players"`

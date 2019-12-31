@@ -9,18 +9,15 @@ import (
 	"github.com/sendgrid/sendgrid-go/helpers/mail"
 )
 
-func Send() error {
+func Send(emailAddress string, linkString string) error {
 	log.Println("Composing email")
 
 	from := mail.NewEmail("Sabaac Dealer", "sabaac@jessemillar.com")
 	subject := "Your Sabacc Game"
-	to := mail.NewEmail("Sabacc Player", "hellojessemillar@gmail.com")
+	to := mail.NewEmail("Sabacc Player", emailAddress)
 
-	plainTextContent := "Click here to take your turn."
-	htmlContent := `It's hellojessemillar@gmail.com's turn!
-<br>
-<br>
-<a href="https://jessemillar.github.io/sabacc?player=test@test.com">Click here if that's you!</a>`
+	plainTextContent := "Click here to take your turn!" + linkString
+	htmlContent := `<a href="` + linkString + `">Click here to take your turn!</a>`
 
 	message := mail.NewSingleEmail(from, subject, to, plainTextContent, htmlContent)
 
@@ -36,7 +33,7 @@ func Send() error {
 		return errors.New(response.Body)
 	}
 
-	log.Println("Email sent")
+	log.Println("Email sent to " + emailAddress)
 
 	return nil
 }

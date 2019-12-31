@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/url"
+	"os"
 
 	"github.com/jessemillar/sabacc/internal/deck"
 	"github.com/jessemillar/sabacc/internal/email"
@@ -12,64 +13,78 @@ import (
 )
 
 func Play(c echo.Context) error {
-	// TODO If there are players but no `turn` then start a new game
-	// TODO If the `Draw` card has been taken (is empty now), populate it with a new card
-	// TODO If we're on round 3, finish the game after the last player's turn
+	// TODO Limit the game to 8 players
 
-	query, err := parseQuery(c.QueryString())
+	database, err := parseDatabase(c.QueryString())
 	if err != nil {
 		return err
 	}
 
-	deck := prepDeck(query)
+	deck := prepDeck(database)
 	deck.Debug()
 
-	// TODO Increase round cound and turn indicator
-	query.Round = query.Round + 1
-
-	query.Turn = query.Turn + 1
-	if query.Turn > len(query.AllPlayers) {
-		query.Turn = 0
+	if database.Draw.Stave == "" {
+		database.Draw = deck.Deal(1)[0]
 	}
 
-	if query.Round < 3 {
-		err = email.Send()
+	// Start a new game if needed
+	if len(database.AllPlayers[0].Hand) == 0 {
+		for _, player := range database.AllPlayers {
+			player.Hand = deck.Deal(2)
+		}
+	}
+
+	database.Turn = database.Turn + 1
+	if database.Turn > len(database.AllPlayers) {
+		database.Turn = 0
+	}
+
+	database.Round = database.Round + 1
+
+	if database.Round < 3 {
+		// Encode database
+		encodedDatabase, err := json.Marshal(database)
+		if err != nil {
+			return err
+		}
+
+		err = email.Send(database.AllPlayers[database.Turn].Email, os.Getenv("SABACC_ENDPOINT")+string(encodedDatabase))
 		if err != nil {
 			log.Println(err)
 		}
 	} else {
 		// TODO Send email to everyone when the game is over
+		// TODO Determine who won
 	}
 
-	return c.JSON(200, query)
+	return c.JSON(200, database)
 }
 
-func parseQuery(queryString string) (models.Query, error) {
-	log.Println(queryString)
+func parseDatabase(databaseString string) (models.Database, error) {
+	log.Println(databaseString)
 
-	stringifiedJson, err := url.QueryUnescape(queryString)
+	stringifiedJson, err := url.QueryUnescape(databaseString)
 	if err != nil {
-		return models.Query{}, err
+		return models.Database{}, err
 	}
 
-	var query models.Query
-	json.Unmarshal([]byte(stringifiedJson), &query)
+	var database models.Database
+	json.Unmarshal([]byte(stringifiedJson), &database)
 
-	return query, nil
+	return database, nil
 }
 
-func prepDeck(query models.Query) deck.Deck {
+func prepDeck(database models.Database) deck.Deck {
 	log.Println("Making deck")
 	deck := deck.New()
-	// hand := deck.Deal(2)
 
 	// Remove cards in the discard pile from the deck
-	for _, card := range query.AllDiscards {
+	for _, card := range database.AllDiscards {
 		deck.Remove(card)
 	}
 
 	// Remove cards in player hands from the deck
-	for _, player := range query.AllPlayers {
+	for _, player := range database.AllPlayers {
 		for _, card := range player.Hand {
 			deck.Remove(card)
 		}
