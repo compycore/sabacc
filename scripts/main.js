@@ -1,5 +1,4 @@
-// TODO Show current round
-
+// TODO Implement dice rolling when the current player is the dealer and just ended their turn
 // Configuration
 var backendEndpoint = "https://jessemillar-sabacc.herokuapp.com/sabacc"
 
@@ -66,10 +65,15 @@ function checkTurn() {
 
 // Don't populate the page before we know we're dealing with the right person
 function populatePage() {
+  populateRound();
   populateScore();
   populateYourHand();
   populateDiscardPile();
   populateEnemyHands();
+}
+
+function populateRound() {
+  document.getElementById("actions-header").innerHTML = "Actions (Round: " + database.round + ")";
 }
 
 function populateScore() {
@@ -141,7 +145,7 @@ function gain() {
         text: "the " + getCardString(database.draw) + "!",
         icon: getCardFilename(database.draw),
       }).then(() => {
-        database.players[database.turn].hand += database.draw;
+        database.players[database.turn].hand.push(database.draw);
         delete database.draw;
         endTurn();
       });
@@ -178,10 +182,6 @@ function stand() {
   }).then((willStand) => {
     if (willStand) {
       endTurn()
-
-      swal("You chose to stand.", {
-        icon: "success",
-      });
     } else {
       swal(pickAction);
     }
@@ -198,7 +198,7 @@ function trash() {
   }).then((willDelete) => {
     if (willDelete) {
       database.players.splice(database.turn, 1);
-      endTurn();
+      endTurn(false);
 
       swal("You've withdrawn from the game.", {
         icon: "success",
