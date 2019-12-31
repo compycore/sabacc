@@ -33,7 +33,7 @@ func Send(emailAddress string, linkString string) error {
 		return errors.New(response.Body)
 	}
 
-	log.Println("Email sent to " + emailAddress)
+	log.Println("Email sent to " + emailAddress + " with link " + linkString)
 
 	return nil
 }
