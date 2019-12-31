@@ -7,8 +7,8 @@ import (
 
 // Card holds the card staves and values in the deck
 type Card struct {
-	Value int
-	Stave string
+	Value int    `json:"value"`
+	Stave string `json:"stave"`
 }
 
 // Deck holds the cards in the deck
