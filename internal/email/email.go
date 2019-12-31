@@ -16,8 +16,8 @@ func Send(emailAddress string, linkString string) error {
 	subject := "Your Sabacc Game"
 	to := mail.NewEmail("Sabacc Player", emailAddress)
 
-	plainTextContent := "Click here to take your turn!" + linkString
-	htmlContent := `<a href="` + linkString + `">Click here to take your turn!</a>`
+	plainTextContent := "Click here to take your turn, " + emailAddress + "!" + linkString
+	htmlContent := `<a href="` + linkString + `">Click here to take your turn, ` + emailAddress + `!</a>`
 
 	message := mail.NewSingleEmail(from, subject, to, plainTextContent, htmlContent)
 
