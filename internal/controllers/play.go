@@ -48,7 +48,7 @@ func Play(c echo.Context) error {
 			return err
 		}
 
-		err = email.Send(database.AllPlayers[database.Turn].Email, os.Getenv("SABACC_ENDPOINT")+string(encodedDatabase))
+		err = email.Send(database.AllPlayers[database.Turn].Email, os.Getenv("SABACC_UI_HREF")+url.QueryEscape(string(encodedDatabase)))
 		if err != nil {
 			log.Println(err)
 		}
