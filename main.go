@@ -18,7 +18,6 @@ func init() {
 
 func main() {
 	e := echo.New()
-	e.Pre(middleware.RemoveTrailingSlash())
 	e.Use(middleware.CORS())
 
 	e.GET("/health", echo.WrapHandler(http.HandlerFunc(health.Check)))
