@@ -77,22 +77,21 @@ func prepDeck(database models.Database) deck.Deck {
 	log.Println("Making deck")
 	deck := deck.New()
 
+	log.Println("Removing discarded cards from deck")
 	// Remove cards in the discard pile from the deck
-	if len(database.AllDiscards) > 0 {
-		for _, card := range database.AllDiscards {
+	for _, card := range database.AllDiscards {
+		deck.Remove(card)
+	}
+
+	log.Println("Removing player hand cards from deck")
+	// Remove cards in player hands from the deck
+	for _, player := range database.AllPlayers {
+		for _, card := range player.Hand {
 			deck.Remove(card)
 		}
 	}
 
-	// Remove cards in player hands from the deck
-	for _, player := range database.AllPlayers {
-		if len(player.Hand) > 0 {
-			for _, card := range player.Hand {
-				deck.Remove(card)
-			}
-		}
-	}
-
+	log.Println("Shuffling")
 	deck.Shuffle()
 
 	return deck
