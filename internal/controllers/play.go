@@ -6,6 +6,7 @@ import (
 	"net/url"
 
 	"github.com/jessemillar/sabacc/internal/deck"
+	"github.com/jessemillar/sabacc/internal/email"
 	"github.com/jessemillar/sabacc/internal/models"
 	"github.com/labstack/echo"
 )
@@ -23,13 +24,22 @@ func Play(c echo.Context) error {
 	deck := prepDeck(query)
 	deck.Debug()
 
-	// TODO Send email to everyone when the game is over
-	/*
-		err := email.Send()
+	// TODO Increase round cound and turn indicator
+	query.Round = query.Round + 1
+
+	query.Turn = query.Turn + 1
+	if query.Turn > len(query.AllPlayers) {
+		query.Turn = 0
+	}
+
+	if query.Round < 3 {
+		err = email.Send()
 		if err != nil {
 			log.Println(err)
 		}
-	*/
+	} else {
+		// TODO Send email to everyone when the game is over
+	}
 
 	return c.JSON(200, query)
 }
