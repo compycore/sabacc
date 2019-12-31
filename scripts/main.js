@@ -11,11 +11,38 @@ console.log(database);
 
 function init() {
   // Play the game if there's a game going
-  if (database.players.length > 0) {
+  if (database && database.players.length > 0) {
     checkTurn();
   } else {
-    // TODO Start page
+    startNewGame();
   }
+}
+
+function startNewGame() {
+  swal("Enter email addresses (separated by a comma) of the people you want to play with:", {
+      content: "input",
+    })
+    .then((value) => {
+      if (value.split(",").length > 1) {
+        var emailAddresses = value.split(",");
+        database = {
+          players: []
+        };
+
+        for (var i = 0; i < emailAddresses.length; i++) {
+          database.players.push({
+            "email": emailAddresses[i]
+          });
+        }
+
+        swal("A new game has started with " + value.split(",").join(", ") + ". The first player listed will now receive an email! You can now close this window.");
+        endTurn(false);
+      } else {
+        swal("Please enter more than one email address.").then(() => {
+          location.reload(false);
+        });
+      }
+    });
 }
 
 function checkTurn() {
@@ -25,11 +52,10 @@ function checkTurn() {
       icon: "warning",
       buttons: ["Nope!", "I'm the droid you're looking for."],
     })
-    .then((willDelete) => {
-      if (willDelete) {
-        swal(pickAction).then(() => {
-          populatePage();
-        });
+    .then((isTurn) => {
+      if (isTurn) {
+        populatePage();
+        swal(pickAction);
       } else {
         swal("Please wait for your turn. You'll receive another email when it's time.").then(() => {
           wipePage();
@@ -65,12 +91,16 @@ function populateYourHand() {
   for (var i = 0; i < hand.length; i++) {
     var card = hand[i];
 
-    document.getElementById("your-hand-cards").innerHTML += "<div class='two columns'><img src='" + getCardFilename(card) + "' class='u-max-full-width' onclick='discard()' /></div>";
+    document.getElementById("your-hand-cards").innerHTML += "<div class='two columns'><img src='" + getCardFilename(card) + "' class='u-max-full-width' onclick='swap(" + JSON.stringify(card) + ")' style='cursor: pointer;' /></div>";
   }
 }
 
 function populateDiscardPile() {
-  document.getElementById("discard-pile").innerHTML += "<div class='two columns'><img src='" + getCardFilename(database.draw) + "' class='u-max-full-width' onclick='discard()' /></div>";
+  document.getElementById("discard-pile").innerHTML += "<div class='two columns'><img src='" + getCardFilename(database.draw) + "' class='u-max-full-width' onclick='promptSwap()' style='cursor: pointer;' /></div>";
+}
+
+function promptSwap() {
+  swal("Tap a card in your hand to swap it with the one in the discard pile.");
 }
 
 function populateEnemyHands() {
@@ -106,10 +136,9 @@ function gain() {
         icon: "info",
       });
     } else {
-      // TODO Draw the card chosen by the backend
       swal({
         title: "You drew...",
-        text: "the " + database.draw.stave + " " + getCardColor(database.draw.value) + " " + Math.abs(database.draw.value) + "!",
+        text: "the " + getCardString(database.draw) + "!",
         icon: getCardFilename(database.draw),
       }).then(() => {
         database.players[database.turn].hand += database.draw;
@@ -120,18 +149,20 @@ function gain() {
   });
 }
 
-function discard(card) {
+function swap(card) {
   swal({
     title: "Discard this card?",
-    text: "You want to discard " + card.name + "?",
+    text: "You want to swap your " + getCardString(card) + " with the " + getCardString(database.draw) + " that's on top of the discard pile?",
     icon: "warning",
     buttons: ["Nah.", "Yeah!"],
   }).then((willDiscard) => {
     if (willDiscard) {
-      swal("Card discarded!").then(() => {
-        // TODO Discard the card and make an API call
-        endTurn();
-      });
+      // Find the object for the card in question in the player's hand
+      var cardIndexInHand = database.players[database.turn].hand.findIndex(element => element.value == card.value && element.stave == card.stave)
+      database.players[database.turn].hand.splice(cardIndexInHand, 1);
+      // Put the card in the discard pile
+      database.discards.push(card);
+      endTurn();
     } else {
       swal(pickAction);
     }
@@ -179,31 +210,30 @@ function trash() {
   });
 }
 
-function endTurn() {
-  // TODO Make the backend increase the round and player turn
+function endTurn(showTurnOver = true) {
   // Make an API call to the backend with the updated database info
   $.ajax({
       url: backendEndpoint + "?" + encodeURIComponent(JSON.stringify(database)),
       crossDomain: true
     })
     .done(function(data) {
-      if (console && console.log) {
-        console.log("Sample of data:", data.slice(0, 100));
+      if (showTurnOver) {
+        swal({
+          title: "Turn over.",
+          text: "Your turn is now over! Please wait for the next email.",
+          icon: "success",
+          button: "Patience, young padawan.",
+        }).then(
+          wipePage()
+        );
+      } else {
+        wipePage();
       }
     });
-
-  swal({
-    title: "Turn over.",
-    text: "Your turn is now over! Please wait for the next email.",
-    icon: "success",
-    button: "Patience, young padawan.",
-  }).then(
-    wipePage()
-  );
 }
 
 function wipePage() {
-  document.body.innerHTML = '';
+  document.getElementById("container").innerHTML = '';
   window.close();
 }
 
@@ -216,5 +246,9 @@ function getCardColor(cardValue) {
 }
 
 function getCardFilename(card) {
-  return "images/cards/" + card.stave + "-" + getCardColor(card.value) + "-" + Math.abs(card.value) + ".jpg";
+  return "images/cards/" + getCardString(card, "-") + ".jpg";
+}
+
+function getCardString(card, separator = " ") {
+  return card.stave + separator + getCardColor(card.value) + separator + Math.abs(card.value);
 }
