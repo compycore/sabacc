@@ -78,14 +78,18 @@ func prepDeck(database models.Database) deck.Deck {
 	deck := deck.New()
 
 	// Remove cards in the discard pile from the deck
-	for _, card := range database.AllDiscards {
-		deck.Remove(card)
+	if len(database.AllDiscards) > 0 {
+		for _, card := range database.AllDiscards {
+			deck.Remove(card)
+		}
 	}
 
 	// Remove cards in player hands from the deck
 	for _, player := range database.AllPlayers {
-		for _, card := range player.Hand {
-			deck.Remove(card)
+		if len(player.Hand) > 0 {
+			for _, card := range player.Hand {
+				deck.Remove(card)
+			}
 		}
 	}
 
