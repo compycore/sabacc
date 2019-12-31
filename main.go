@@ -25,5 +25,5 @@ func main() {
 	// TODO Change to PUT
 	e.GET("/sabacc", controllers.Play)
 
-	e.Logger.Fatal(e.Start(":" + os.Getenv("SABACC_PORT")))
+	e.Logger.Fatal(e.Start(":" + os.Getenv("PORT")))
 }
