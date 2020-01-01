@@ -56,7 +56,7 @@ func (d *Deck) Remove(card Card) {
 
 // Shuffle the deck
 func (d *Deck) Shuffle() {
-	log.Println("Deck size:" + len(*d))
+	log.Println("Deck size:" + string(len(*d)))
 
 	for i := 1; i < len(*d); i++ {
 		// Create a random int up to the number of cards
