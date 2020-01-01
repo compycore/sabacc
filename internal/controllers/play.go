@@ -15,7 +15,7 @@ import (
 func Play(c echo.Context) error {
 	// TODO Limit the game to 8 players
 
-	database, err := parseDatabase(c.QueryString())
+	database, err := ParseDatabase(c.QueryString())
 	if err != nil {
 		return err
 	}
@@ -41,13 +41,12 @@ func Play(c echo.Context) error {
 	database.Round = database.Round + 1
 
 	if database.Round < 3 {
-		// Encode database
-		encodedDatabase, err := json.Marshal(database)
+		encodedDatabase, err := EncodeDatabase(database)
 		if err != nil {
 			return err
 		}
 
-		err = email.Send(database.AllPlayers[database.Turn].Email, os.Getenv("SABACC_UI_HREF")+"?"+url.QueryEscape(string(encodedDatabase)))
+		err = email.Send(database.AllPlayers[database.Turn].Email, os.Getenv("SABACC_UI_HREF")+"?"+encodedDatabase)
 		if err != nil {
 			log.Println(err)
 		}
@@ -59,7 +58,7 @@ func Play(c echo.Context) error {
 	return c.JSON(200, database)
 }
 
-func parseDatabase(databaseString string) (models.Database, error) {
+func ParseDatabase(databaseString string) (models.Database, error) {
 	log.Println(databaseString)
 
 	stringifiedJson, err := url.QueryUnescape(databaseString)
@@ -71,6 +70,15 @@ func parseDatabase(databaseString string) (models.Database, error) {
 	json.Unmarshal([]byte(stringifiedJson), &database)
 
 	return database, nil
+}
+
+func EncodeDatabase(database models.Database) (string, error) {
+	encodedDatabase, err := json.Marshal(database)
+	if err != nil {
+		return "", err
+	}
+
+	return url.QueryEscape(string(encodedDatabase)), nil
 }
 
 func prepDeck(database models.Database) deck.Deck {
