@@ -3,7 +3,6 @@ package deck
 import (
 	"log"
 	"math/rand"
-	"strconv"
 )
 
 // Card holds the card staves and values in the deck
@@ -57,13 +56,9 @@ func (d *Deck) Remove(card Card) {
 
 // Shuffle the deck
 func (d *Deck) Shuffle() {
-	log.Println("Deck size:" + strconv.Itoa(len(*d)))
-
 	for i := 1; i < len(*d); i++ {
 		// Create a random int up to the number of cards
 		r := rand.Intn(i + 1)
-
-		log.Println("i:" + strconv.Itoa(i) + " r: " + strconv.Itoa(r))
 
 		// If the the current card doesn't match the random int we generated then we'll switch them out
 		if i != r {

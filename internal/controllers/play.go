@@ -75,24 +75,24 @@ func parseDatabase(databaseString string) (models.Database, error) {
 
 func prepDeck(database models.Database) deck.Deck {
 	log.Println("Making deck")
-	deck := deck.New()
+	preppedDeck := deck.New()
 
 	log.Println("Removing discarded cards from deck")
 	// Remove cards in the discard pile from the deck
 	for _, card := range database.AllDiscards {
-		deck.Remove(card)
+		preppedDeck.Remove(card)
 	}
 
 	log.Println("Removing player hand cards from deck")
 	// Remove cards in player hands from the deck
 	for _, player := range database.AllPlayers {
 		for _, card := range player.Hand {
-			deck.Remove(card)
+			preppedDeck.Remove(card)
 		}
 	}
 
 	log.Println("Shuffling")
-	deck.Shuffle()
+	preppedDeck.Shuffle()
 
-	return deck
+	return preppedDeck
 }
