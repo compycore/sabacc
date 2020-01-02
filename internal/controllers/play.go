@@ -48,7 +48,9 @@ func gameLoop(queryString string) (models.Database, error) {
 		database.Turn = 0
 	}
 
-	database.Round = database.Round + 1
+	if database.Turn == len(database.AllPlayers) {
+		database.Round = database.Round + 1
+	}
 
 	if database.Round <= 3 && database.Turn < len(database.AllPlayers) {
 		encodedDatabase, err := encodeDatabase(database)
@@ -61,7 +63,6 @@ func gameLoop(queryString string) (models.Database, error) {
 			log.Println(err)
 		}
 	} else {
-		// TODO Send email to everyone when the game is over
 		// TODO Determine who won
 		for _, player := range database.AllPlayers {
 			// TODO Make the function smart enough to not need both HTML and plain if only plain is passed
