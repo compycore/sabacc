@@ -11,7 +11,8 @@ console.log(database);
 function init() {
   // Play the game if there's a game going
   if (database && database.players.length > 0) {
-    checkTurn();
+    populatePage();
+    swal(pickAction);
   } else {
     startNewGame();
   }
@@ -39,25 +40,6 @@ function startNewGame() {
       } else {
         swal("Please enter more than one email address.").then(() => {
           location.reload(false);
-        });
-      }
-    });
-}
-
-function checkTurn() {
-  swal({
-      title: "Is it your turn?",
-      text: "It's " + database.players[database.turn].email + "'s turn. Are you " + database.players[database.turn].email + "?",
-      icon: "warning",
-      buttons: ["Nope!", "I'm the droid you're looking for."],
-    })
-    .then((isTurn) => {
-      if (isTurn) {
-        populatePage();
-        swal(pickAction);
-      } else {
-        swal("Please wait for your turn. You'll receive another email when it's time.").then(() => {
-          wipePage();
         });
       }
     });
