@@ -13,11 +13,21 @@ import (
 )
 
 func Play(c echo.Context) error {
+	result, err := gameLoop(c.QueryString())
+	if err != nil {
+		return c.JSON(500, err)
+	}
+
+	return c.JSON(200, result)
+}
+
+// Broken into a function for easier unit testing (don't have to mock an Echo context this way)
+func gameLoop(queryString string) (models.Database, error) {
 	// TODO Limit the game to 8 players
 
-	database, err := parseDatabase(c.QueryString())
+	database, err := parseDatabase(queryString)
 	if err != nil {
-		return err
+		return models.Database{}, err
 	}
 
 	gameDeck := prepDeck(database)
@@ -34,7 +44,7 @@ func Play(c echo.Context) error {
 	}
 
 	database.Turn = database.Turn + 1
-	if database.Turn > len(database.AllPlayers) {
+	if database.Turn >= len(database.AllPlayers) {
 		database.Turn = 0
 	}
 
@@ -43,7 +53,7 @@ func Play(c echo.Context) error {
 	if database.Round < 3 {
 		encodedDatabase, err := encodeDatabase(database)
 		if err != nil {
-			return err
+			return models.Database{}, err
 		}
 
 		err = email.Send(database.AllPlayers[database.Turn].Email, os.Getenv("SABACC_UI_HREF")+"?"+encodedDatabase)
@@ -55,7 +65,7 @@ func Play(c echo.Context) error {
 		// TODO Determine who won
 	}
 
-	return c.JSON(200, database)
+	return database, nil
 }
 
 func parseDatabase(databaseString string) (models.Database, error) {
