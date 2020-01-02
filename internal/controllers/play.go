@@ -56,7 +56,7 @@ func gameLoop(queryString string) (models.Database, error) {
 			return models.Database{}, err
 		}
 
-		err = email.SendLink(database.AllPlayers[database.Turn].Email, os.Getenv("SABACC_UI_HREF")+"?"+encodedDatabase)
+		err = email.SendLink(database.AllPlayers[database.Turn].Email, os.Getenv("SABACC_UI_HREF")+"?"+encodedDatabase, database.Round)
 		if err != nil {
 			log.Println(err)
 		}
