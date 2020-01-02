@@ -15,7 +15,7 @@ import (
 func Play(c echo.Context) error {
 	// TODO Limit the game to 8 players
 
-	database, err := ParseDatabase(c.QueryString())
+	database, err := parseDatabase(c.QueryString())
 	if err != nil {
 		return err
 	}
@@ -41,7 +41,7 @@ func Play(c echo.Context) error {
 	database.Round = database.Round + 1
 
 	if database.Round < 3 {
-		encodedDatabase, err := EncodeDatabase(database)
+		encodedDatabase, err := encodeDatabase(database)
 		if err != nil {
 			return err
 		}
@@ -58,7 +58,7 @@ func Play(c echo.Context) error {
 	return c.JSON(200, database)
 }
 
-func ParseDatabase(databaseString string) (models.Database, error) {
+func parseDatabase(databaseString string) (models.Database, error) {
 	log.Println(databaseString)
 
 	stringifiedJson, err := url.QueryUnescape(databaseString)
@@ -72,7 +72,7 @@ func ParseDatabase(databaseString string) (models.Database, error) {
 	return database, nil
 }
 
-func EncodeDatabase(database models.Database) (string, error) {
+func encodeDatabase(database models.Database) (string, error) {
 	encodedDatabase, err := json.Marshal(database)
 	if err != nil {
 		return "", err
