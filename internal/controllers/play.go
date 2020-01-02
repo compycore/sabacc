@@ -50,19 +50,26 @@ func gameLoop(queryString string) (models.Database, error) {
 
 	database.Round = database.Round + 1
 
-	if database.Round < 3 {
+	if database.Round <= 3 && database.Turn < len(database.AllPlayers) {
 		encodedDatabase, err := encodeDatabase(database)
 		if err != nil {
 			return models.Database{}, err
 		}
 
-		err = email.Send(database.AllPlayers[database.Turn].Email, os.Getenv("SABACC_UI_HREF")+"?"+encodedDatabase)
+		err = email.SendLink(database.AllPlayers[database.Turn].Email, os.Getenv("SABACC_UI_HREF")+"?"+encodedDatabase)
 		if err != nil {
 			log.Println(err)
 		}
 	} else {
 		// TODO Send email to everyone when the game is over
 		// TODO Determine who won
+		for _, player := range database.AllPlayers {
+			// TODO Make the function smart enough to not need both HTML and plain if only plain is passed
+			err = email.SendMessage(player.Email, "Game over", "Game over")
+			if err != nil {
+				log.Println(err)
+			}
+		}
 	}
 
 	return database, nil
