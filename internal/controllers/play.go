@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"encoding/json"
-	"log"
 	"net/url"
 	"os"
 
@@ -35,7 +34,6 @@ func gameLoop(queryString string) (models.Database, error) {
 	}
 
 	if len(database.AllDiscards) == 0 {
-		log.Println("Adding a card to the discard pile")
 		database.AllDiscards = append(database.AllDiscards, gameDeck.Deal(1)[0])
 	}
 
@@ -74,7 +72,7 @@ func gameLoop(queryString string) (models.Database, error) {
 
 		err = email.SendLink(database.AllPlayers[database.Turn].Email, os.Getenv("SABACC_UI_HREF")+"?"+encodedDatabase, database.Round)
 		if err != nil {
-			log.Println(err)
+			return models.Database{}, err
 		}
 	} else {
 		// TODO Determine who won
@@ -82,7 +80,7 @@ func gameLoop(queryString string) (models.Database, error) {
 			// TODO Make the function smart enough to not need both HTML and plain if only plain is passed
 			err = email.SendMessage(player.Email, "Game over", "Game over")
 			if err != nil {
-				log.Println(err)
+				return models.Database{}, err
 			}
 		}
 	}

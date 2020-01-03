@@ -146,7 +146,7 @@ func TestGameFlow(t *testing.T) {
 	// Make sure there's something in the discard pile
 	if len(resultDatabase.AllDiscards) != 1 {
 		t.Errorf("Discard pile size incorrect; want: %d, got: %d", 1, len(resultDatabase.AllDiscards))
-		spew.Dump(resultDatabase.AllDiscards)
+		spew.Dump(resultDatabase)
 	}
 
 	// Make sure there's a card available to be drawn

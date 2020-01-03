@@ -1,8 +1,9 @@
 package deck
 
 import (
-	"log"
 	"math/rand"
+
+	"github.com/davecgh/go-spew/spew"
 )
 
 // Card holds the card staves and values in the deck
@@ -83,7 +84,5 @@ func (d *Deck) Deal(n int) Deck {
 
 // Debug helps debugging the deck of cards
 func (d *Deck) Debug() {
-	for i := 0; i < len(*d); i++ {
-		log.Println(i+1, (*d)[i].Value, (*d)[i].Stave)
-	}
+	spew.Dump(*d)
 }

@@ -2,7 +2,6 @@ package email
 
 import (
 	"errors"
-	"log"
 	"os"
 	"strconv"
 
@@ -18,8 +17,6 @@ func SendLink(emailAddress string, linkString string, round int) error {
 
 func SendMessage(emailAddress string, messagePlain string, messageHTML string) error {
 	if len(os.Getenv("SABACC_DEBUG")) == 0 {
-		log.Println("Composing email")
-
 		from := mail.NewEmail("Sabaac Dealer", "sabaac@jessemillar.com")
 		subject := "Your Sabacc Game"
 		to := mail.NewEmail("Sabacc Player", emailAddress)
@@ -37,8 +34,6 @@ func SendMessage(emailAddress string, messagePlain string, messageHTML string) e
 		if response.StatusCode != 202 {
 			return errors.New(response.Body)
 		}
-
-		log.Println("Email sent to " + emailAddress + " with message " + messagePlain)
 	}
 
 	return nil
