@@ -53,7 +53,7 @@ func gameLoop(queryString string) (models.Database, error) {
 		}
 	}
 
-	if database.Turn == len(database.AllPlayers) {
+	if database.Turn == len(database.AllPlayers)-1 {
 		database.Round = database.Round + 1
 	}
 
