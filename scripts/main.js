@@ -138,12 +138,34 @@ function swap(card) {
     title: "What do you want to do with this card?",
     text: "Do you want to swap your " + getCardString(card) + " with the " + getCardString(database.discards[database.discards.length - 1]) + " that's on top of the discard pile? Or discard your " + getCardString(card) + " and blindly draw a new card from the deck?",
     icon: "warning",
-    buttons: ["Discard and draw", "Swap with discard", "Cancel"],
+    buttons: {
+      cancel: {
+        text: "Cancel",
+        value: "cancel",
+        visible: true,
+        className: "",
+        closeModal: true,
+      },
+      gain: {
+        text: "Discard and draw",
+        value: "gain",
+        visible: true,
+        className: "",
+        closeModal: true
+      },
+			swap: {
+				text: "Swap with discard pile",
+				value: "swa",
+				visible: true,
+				className: "",
+				closeModal: true
+			},
+    }
   }).then((value) => {
     // Find the object for the card in question in the player's hand
     var cardIndexInHand = database.players[database.turn].hand.findIndex(element => element.value == card.value && element.stave == card.stave)
 
-    if (value == "Swap with discard") {
+    if (value = "swap") {
       // Remove the card in question from the player's hand
       database.players[database.turn].hand.splice(cardIndexInHand, 1);
       // Put the top of the discard pile in the player's hand
@@ -153,7 +175,7 @@ function swap(card) {
       // Put the card in the discard pile
       database.discards.push(card);
       endTurn();
-    } else if (value == "Discard and draw") {
+    } else if (value = "gain") {
       // Remove the card in question from the player's hand
       database.players[database.turn].hand.splice(cardIndexInHand, 1);
 			// Put the draw card in the player's hand
