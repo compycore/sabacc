@@ -39,15 +39,17 @@ func gameLoop(queryString string) (models.Database, error) {
 		for i, _ := range database.AllPlayers {
 			database.AllPlayers[i].Hand = gameDeck.Deal(2)
 		}
-	} else {
-		database.Turn = database.Turn + 1
-		if database.Turn >= len(database.AllPlayers) {
-			database.Turn = 0
-		}
 
-		if database.Turn == len(database.AllPlayers) {
-			database.Round = database.Round + 1
-		}
+		database.Round = 1
+	}
+
+	database.Turn = database.Turn + 1
+	if database.Turn >= len(database.AllPlayers) {
+		database.Turn = 0
+	}
+
+	if database.Turn == len(database.AllPlayers) {
+		database.Round = database.Round + 1
 	}
 
 	// If the game is still going
