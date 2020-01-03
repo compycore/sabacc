@@ -3,6 +3,7 @@ module github.com/jessemillar/sabacc
 go 1.13
 
 require (
+	github.com/davecgh/go-spew v1.1.1
 	github.com/jessemillar/butler-lewis v0.0.0-20191125233144-a28a7242e31b
 	github.com/jessemillar/health v1.1.0
 	github.com/labstack/echo v3.3.10+incompatible

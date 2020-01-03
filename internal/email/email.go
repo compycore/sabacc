@@ -17,7 +17,7 @@ func SendLink(emailAddress string, linkString string, round int) error {
 }
 
 func SendMessage(emailAddress string, messagePlain string, messageHTML string) error {
-	if len(os.Getenv("SABACC_DEBUG")) > 0 {
+	if len(os.Getenv("SABACC_DEBUG")) == 0 {
 		log.Println("Composing email")
 
 		from := mail.NewEmail("Sabaac Dealer", "sabaac@jessemillar.com")

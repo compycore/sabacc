@@ -5,6 +5,7 @@ import (
 	"log"
 	"testing"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/jessemillar/sabacc/internal/deck"
 	"github.com/jessemillar/sabacc/internal/models"
 )
@@ -100,6 +101,10 @@ func databaseToURI(database models.Database) string {
 }
 
 func TestGameFlow(t *testing.T) {
+	// ----------
+	// Game init
+	// ----------
+
 	// An empty struct with only emails starts the game
 	startingDatabase := models.Database{
 		AllPlayers: []models.Player{
@@ -141,12 +146,29 @@ func TestGameFlow(t *testing.T) {
 	// Make sure there's something in the discard pile
 	if len(resultDatabase.AllDiscards) != 1 {
 		t.Errorf("Discard pile size incorrect; want: %d, got: %d", 1, len(resultDatabase.AllDiscards))
+		spew.Dump(resultDatabase.AllDiscards)
 	}
 
 	// Make sure there's a card available to be drawn
 	if resultDatabase.Draw == (deck.Card{}) {
 		t.Error("There is no card available to be drawn")
 	}
+
+	// ----------
+	// Round 1
+	// ----------
+
+	// ----------
+	// Round 2
+	// ----------
+
+	// ----------
+	// Round 3
+	// ----------
+
+	// ----------
+	// Game finish
+	// ----------
 
 	// TODO Finish a full testing scenario
 }
