@@ -16,7 +16,7 @@ func SendLink(emailAddress string, allEmailAddreses string, linkString string, r
 }
 
 func SendConfirmation(emailAddress string, hand string, score string) error {
-	message := "Your turn has been recorded. Your hand is currently " + hand + " with a score of " + score + "."
+	message := "Your turn has been recorded. Your hand is currently " + hand + " with a score of " + score + ". Please wait patiently for the next email alerting you that it's your turn."
 	return SendMessage(emailAddress, message, message)
 }
 
