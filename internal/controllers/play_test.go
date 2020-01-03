@@ -235,11 +235,11 @@ func TestGameFlow(t *testing.T) {
 	if deck.Contains(resultDatabase.AllPlayers[1].Hand, handSwap) {
 		t.Error("Player hand still contains swapped card")
 	}
-	if !deck.Contains(resultDatabase.AllPlayers[1].Hand, discardSwap) {
-		t.Error("Player hand does not contain newly swapped card")
-	}
 	if !deck.Contains(resultDatabase.AllDiscards, handSwap) {
 		t.Error("Discard pile does not contain newly swapped card")
+	}
+	if !deck.Contains(resultDatabase.AllPlayers[1].Hand, discardSwap) {
+		t.Error("Player hand does not contain newly swapped card")
 	}
 
 	// Verify that player 2 has the correct hand size
