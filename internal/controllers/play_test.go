@@ -113,7 +113,7 @@ func TestPrepDeckNewGame(t *testing.T) {
 }
 
 func databaseToURI(database models.Database) string {
-	encodedDatabase, err := encodeDatabase(databaseStruct)
+	encodedDatabase, err := encodeDatabase(database)
 	if err != nil {
 		log.Fatal(err)
 	}
