@@ -40,7 +40,10 @@ func gameLoop(queryString string) (models.Database, error) {
 			database.AllPlayers[i].Hand = gameDeck.Deal(2)
 		}
 
-		database.Round = 1
+		// Only set the round to 1 if it's a new game (as opposed to deleting hands because the dice were doubles)
+		if database.Round == 0 {
+			database.Round = 1
+		}
 	}
 
 	database.Turn = database.Turn + 1
