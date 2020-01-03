@@ -39,17 +39,18 @@ func gameLoop(queryString string) (models.Database, error) {
 		for i, _ := range database.AllPlayers {
 			database.AllPlayers[i].Hand = gameDeck.Deal(2)
 		}
+	} else {
+		database.Turn = database.Turn + 1
+		if database.Turn >= len(database.AllPlayers) {
+			database.Turn = 0
+		}
+
+		if database.Turn == len(database.AllPlayers) {
+			database.Round = database.Round + 1
+		}
 	}
 
-	database.Turn = database.Turn + 1
-	if database.Turn >= len(database.AllPlayers) {
-		database.Turn = 0
-	}
-
-	if database.Turn == len(database.AllPlayers) {
-		database.Round = database.Round + 1
-	}
-
+	// If the game is still going
 	if database.Round <= 3 && database.Turn < len(database.AllPlayers) {
 		encodedDatabase, err := encodeDatabase(database)
 		if err != nil {
@@ -101,14 +102,14 @@ func prepDeck(database models.Database) deck.Deck {
 	log.Println("Making deck")
 	preppedDeck := deck.New()
 
-	log.Println("Removing discarded cards from deck")
 	// Remove cards in the discard pile from the deck
+	log.Println("Removing discarded cards from deck")
 	for _, card := range database.AllDiscards {
 		preppedDeck.Remove(card)
 	}
 
-	log.Println("Removing player hand cards from deck")
 	// Remove cards in player hands from the deck
+	log.Println("Removing player hand cards from deck")
 	for _, player := range database.AllPlayers {
 		for _, card := range player.Hand {
 			preppedDeck.Remove(card)
