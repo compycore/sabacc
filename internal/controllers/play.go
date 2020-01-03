@@ -34,6 +34,13 @@ func gameLoop(queryString string) (models.Database, error) {
 		database.Draw = gameDeck.Deal(1)[0]
 	}
 
+	if database.Round > 0 {
+		database.Turn = database.Turn + 1
+		if database.Turn >= len(database.AllPlayers) {
+			database.Turn = 0
+		}
+	}
+
 	// Start a new game if needed
 	if len(database.AllPlayers[0].Hand) == 0 {
 		for i, _ := range database.AllPlayers {
@@ -44,11 +51,6 @@ func gameLoop(queryString string) (models.Database, error) {
 		if database.Round == 0 {
 			database.Round = 1
 		}
-	}
-
-	database.Turn = database.Turn + 1
-	if database.Turn >= len(database.AllPlayers) {
-		database.Turn = 0
 	}
 
 	if database.Turn == len(database.AllPlayers) {
