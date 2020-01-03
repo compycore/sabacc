@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/url"
 	"os"
+	"strconv"
 
 	"github.com/jessemillar/sabacc/internal/deck"
 	"github.com/jessemillar/sabacc/internal/email"
@@ -76,9 +77,20 @@ func gameLoop(queryString string) (models.Database, error) {
 		}
 	} else {
 		// TODO Determine who won
+		finalResultsMessage := ""
+		for _, player := range database.AllPlayers {
+			handString := ""
+			for _, card := range player.Hand {
+				handString = handString + card.Stave + " " + strconv.Itoa(card.Value) + "\n"
+			}
+
+			finalResultsMessage = finalResultsMessage + player.Email + " got " + strconv.Itoa(player.Score) + " with a hand of " + handString + "\n"
+		}
+
+		// Send an email to every player
 		for _, player := range database.AllPlayers {
 			// TODO Make the function smart enough to not need both HTML and plain if only plain is passed
-			err = email.SendMessage(player.Email, "Game over", "Game over")
+			err = email.SendMessage(player.Email, finalResultsMessage, finalResultsMessage)
 			if err != nil {
 				return models.Database{}, err
 			}
