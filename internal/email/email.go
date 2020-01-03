@@ -9,8 +9,8 @@ import (
 	"github.com/sendgrid/sendgrid-go/helpers/mail"
 )
 
-func SendLink(emailAddress string, linkString string, round int) error {
-	plainTextContent := "It's round " + strconv.Itoa(round) + "! Click here to take your turn, " + emailAddress + "!" + linkString
+func SendLink(emailAddress string, allEmailAddreses string, linkString string, round int) error {
+	plainTextContent := "It's round " + strconv.Itoa(round) + " in your Sabacc game against " + allEmailAddreses + "! Click here to take your turn, " + emailAddress + "!" + linkString
 	htmlContent := `It's round ` + strconv.Itoa(round) + `! <a href="` + linkString + `">Click here to take your turn, ` + emailAddress + `!</a>`
 	return SendMessage(emailAddress, plainTextContent, htmlContent)
 }

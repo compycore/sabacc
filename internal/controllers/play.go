@@ -71,7 +71,12 @@ func gameLoop(queryString string) (models.Database, error) {
 			return models.Database{}, err
 		}
 
-		err = email.SendLink(database.AllPlayers[database.Turn].Email, os.Getenv("SABACC_UI_HREF")+"?"+encodedDatabase, database.Round)
+		allEmailAddresses := ""
+		for _, player := range database.AllPlayers {
+			allEmailAddresses = allEmailAddresses + player.Email + ", "
+		}
+
+		err = email.SendLink(database.AllPlayers[database.Turn].Email, allEmailAddresses, os.Getenv("SABACC_UI_HREF")+"?"+encodedDatabase, database.Round)
 		if err != nil {
 			return models.Database{}, err
 		}
@@ -85,7 +90,7 @@ func gameLoop(queryString string) (models.Database, error) {
 				handString = handString + "\n" + card.Stave + " " + strconv.Itoa(card.Value)
 			}
 
-			finalResultsMessage = finalResultsMessage + player.Email + " got a final score of " + strconv.Itoa(player.Score) + " with a hand of " + handString + "\n"
+			finalResultsMessage = finalResultsMessage + player.Email + " got a final score of " + strconv.Itoa(player.Score) + " with a hand of " + handString + "\n\n"
 		}
 
 		// Send an email to every player
