@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"log"
 	"testing"
 
 	"github.com/jessemillar/sabacc/internal/deck"
@@ -9,7 +10,7 @@ import (
 )
 
 var databaseStruct = models.Database{
-	Round: 1,
+	Round: 0,
 	Turn:  0,
 	AllPlayers: []models.Player{
 		{
@@ -87,4 +88,37 @@ func TestPrepDeckNewGame(t *testing.T) {
 			},
 		},
 	})
+}
+
+func databaseToURI(database models.Database) string {
+	encodedDatabase, err := encodeDatabase(databaseStruct)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return encodedDatabase
+}
+
+func TestGameFlow(t *testing.T) {
+	startingDatabase := models.Database{
+		AllPlayers: []models.Player{
+			{
+				Email: "hellojessemillar@gmail.com",
+			},
+			{
+				Email: "penguinshatestuff@gmail.com",
+			},
+		},
+	}
+
+	resultDatabase, err := gameLoop(databaseToURI(startingDatabase))
+	if err != nil {
+		t.Error(err)
+	}
+
+	if resultDatabase.Round != 1 {
+		t.Errorf("Round number incorrect; want: %d, got: %d", 1, resultDatabase.Round)
+	}
+
+	// TODO Finish a full testing scenario
 }
