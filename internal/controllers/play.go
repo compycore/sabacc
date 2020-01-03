@@ -65,11 +65,13 @@ func gameLoop(queryString string) (models.Database, error) {
 	database = calculatePlayerScores(database)
 
 	// Send an email confirmation to the player that just took their turn
-	previousTurn := database.Turn - 1
-	if previousTurn < 0 {
-		previousTurn = len(database.AllPlayers) - 1
+	if database.Round > 0 {
+		previousTurn := database.Turn - 1
+		if previousTurn < 0 {
+			previousTurn = len(database.AllPlayers) - 1
+		}
+		email.SendConfirmation(database.AllPlayers[previousTurn].Email, getHandString(database.AllPlayers[previousTurn].Hand), strconv.Itoa(database.AllPlayers[previousTurn].Score))
 	}
-	email.SendConfirmation(database.AllPlayers[previousTurn].Email, getHandString(database.AllPlayers[previousTurn].Hand), strconv.Itoa(database.AllPlayers[previousTurn].Score))
 
 	// If the game is still going
 	if database.Round <= 3 && database.Turn < len(database.AllPlayers) && len(database.AllPlayers) > 1 {
