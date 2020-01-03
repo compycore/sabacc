@@ -65,7 +65,7 @@ func gameLoop(queryString string) (models.Database, error) {
 	database = calculatePlayerScores(database)
 
 	// If the game is still going
-	if database.Round <= 3 && database.Turn < len(database.AllPlayers) {
+	if database.Round <= 3 && database.Turn < len(database.AllPlayers) && len(database.AllPlayers) > 1 {
 		encodedDatabase, err := encodeDatabase(database)
 		if err != nil {
 			return models.Database{}, err
@@ -95,6 +95,8 @@ func gameLoop(queryString string) (models.Database, error) {
 				return models.Database{}, err
 			}
 		}
+
+		database.Result = finalResultsMessage
 	}
 
 	return database, nil

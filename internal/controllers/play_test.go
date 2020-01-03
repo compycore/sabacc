@@ -5,6 +5,7 @@ import (
 	"log"
 	"testing"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/jessemillar/sabacc/internal/deck"
 	"github.com/jessemillar/sabacc/internal/models"
 )
@@ -297,4 +298,39 @@ func TestGameFlow(t *testing.T) {
 	// ----------
 
 	// TODO Finish a full testing scenario
+}
+
+func TestTrashing(t *testing.T) {
+	// An empty struct with only emails starts the game
+	startingDatabase := models.Database{
+		AllPlayers: []models.Player{
+			{
+				Email: "hellojessemillar@gmail.com",
+			},
+			{
+				Email: "penguinshatestuff@gmail.com",
+			},
+		},
+	}
+
+	// Pass the bare database to the game loop to start the game
+	resultDatabase, err := gameLoop(databaseToURI(startingDatabase))
+	if err != nil {
+		t.Error(err)
+	}
+
+	// Trash a player
+	resultDatabase.AllPlayers = resultDatabase.AllPlayers[:len(resultDatabase.AllPlayers)-1]
+
+	spew.Dump(resultDatabase)
+
+	// Send the updated database to parse final results
+	resultDatabase, err = gameLoop(databaseToURI(resultDatabase))
+	if err != nil {
+		t.Error(err)
+	}
+
+	if len(resultDatabase.Result) == 0 {
+		t.Error("There were no game results after trashing")
+	}
 }

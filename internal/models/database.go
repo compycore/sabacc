@@ -8,6 +8,7 @@ type Database struct {
 	AllPlayers  []Player  `json:"players"`
 	Draw        deck.Card `json:"draw"`
 	AllDiscards deck.Deck `json:"discards"`
+	Result      string    `json:"result"`
 }
 
 type Player struct {
