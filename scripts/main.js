@@ -97,7 +97,7 @@ function populateEnemyHands() {
       document.getElementById("container").innerHTML += '</div>'
       document.getElementById("container").innerHTML += '<div class="row">'
 
-      var hand = database.players[database.turn].hand;
+      var hand = database.players[i].hand;
 
       for (var j = 0; j < hand.length; j++) {
         document.getElementById("container").innerHTML += '<div class="two columns"><img src="images/cards/back.jpg" class="u-max-full-width" /></div>'
