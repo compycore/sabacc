@@ -231,7 +231,11 @@ function getCardColor(cardValue) {
 }
 
 function getCardFilename(card) {
-  return "images/cards/" + getCardString(card, "-") + ".jpg";
+	if (card.value == 0) {
+		return "images/cards/zero.jpg";
+	} else {
+		return "images/cards/" + getCardString(card, "-") + ".jpg";
+	}
 }
 
 function getCardString(card, separator = " ") {
