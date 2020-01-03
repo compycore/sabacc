@@ -100,6 +100,7 @@ func databaseToURI(database models.Database) string {
 }
 
 func TestGameFlow(t *testing.T) {
+	// An empty struct with only emails starts the game
 	startingDatabase := models.Database{
 		AllPlayers: []models.Player{
 			{
@@ -111,13 +112,40 @@ func TestGameFlow(t *testing.T) {
 		},
 	}
 
+	// Pass the bare database to the game loop to start the game
 	resultDatabase, err := gameLoop(databaseToURI(startingDatabase))
 	if err != nil {
 		t.Error(err)
 	}
 
+	// Check that the round increased
 	if resultDatabase.Round != 1 {
 		t.Errorf("Round number incorrect; want: %d, got: %d", 1, resultDatabase.Round)
+	}
+
+	// Check that it's player 1's turn
+	if resultDatabase.Turn != 0 {
+		t.Errorf("Turn number incorrect; want: %d, got: %d", 0, resultDatabase.Turn)
+	}
+
+	// Verify that player 1 got a hand dealt to them
+	if len(resultDatabase.AllPlayers[0].Hand) != 2 {
+		t.Errorf("Player 1 hand size incorrect; want: %d, got: %d", 2, len(resultDatabase.AllPlayers[0].Hand))
+	}
+
+	// Verify that player 2 got a hand dealt to them
+	if len(resultDatabase.AllPlayers[1].Hand) != 2 {
+		t.Errorf("Player 2 hand size incorrect; want: %d, got: %d", 2, len(resultDatabase.AllPlayers[1].Hand))
+	}
+
+	// Make sure there's something in the discard pile
+	if len(resultDatabase.AllDiscards) != 1 {
+		t.Errorf("Discard pile size incorrect; want: %d, got: %d", 1, len(resultDatabase.AllDiscards))
+	}
+
+	// Make sure there's a card available to be drawn
+	if resultDatabase.Draw == (deck.Card{}) {
+		t.Error("There is no card available to be drawn")
 	}
 
 	// TODO Finish a full testing scenario
