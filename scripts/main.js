@@ -86,7 +86,7 @@ function populateYourHand() {
 }
 
 function populateDiscardPile() {
-  document.getElementById("discard-pile").innerHTML += "<div class='two columns'><img src='" + getCardFilename(database.draw) + "' class='u-max-full-width' onclick='promptSwap()' style='cursor: pointer;' /></div>";
+  document.getElementById("discard-pile").innerHTML += "<div class='two columns'><img src='" + getCardFilename(database.discards[database.discards.length - 1]) + "' class='u-max-full-width' onclick='promptSwap()' style='cursor: pointer;' /></div>";
 }
 
 function promptSwap() {
@@ -142,14 +142,19 @@ function gain() {
 function swap(card) {
   swal({
     title: "Discard this card?",
-    text: "You want to swap your " + getCardString(card) + " with the " + getCardString(database.draw) + " that's on top of the discard pile?",
+    text: "You want to swap your " + getCardString(card) + " with the " + getCardString(database.discards[database.discards.length - 1]) + " that's on top of the discard pile?",
     icon: "warning",
     buttons: ["Nah.", "Yeah!"],
   }).then((willDiscard) => {
     if (willDiscard) {
       // Find the object for the card in question in the player's hand
       var cardIndexInHand = database.players[database.turn].hand.findIndex(element => element.value == card.value && element.stave == card.stave)
+			// Remove the card in question from the player's hand
       database.players[database.turn].hand.splice(cardIndexInHand, 1);
+      // Put the top of the discard pile in the player's hand
+      database.players[database.turn].hand.push(database.discards[database.discards.length - 1]);
+			// Remove the card that was just added to the player's hand from the discard pile
+      database.discards.splice(database.discards.length - 1, 1);
       // Put the card in the discard pile
       database.discards.push(card);
       endTurn();
