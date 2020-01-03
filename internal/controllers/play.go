@@ -77,14 +77,15 @@ func gameLoop(queryString string) (models.Database, error) {
 		}
 	} else {
 		// TODO Determine who won
+		// TODO Break this into a function
 		finalResultsMessage := ""
 		for _, player := range database.AllPlayers {
 			handString := ""
 			for _, card := range player.Hand {
-				handString = handString + card.Stave + " " + strconv.Itoa(card.Value) + "\n"
+				handString = handString + "\n" + card.Stave + " " + strconv.Itoa(card.Value)
 			}
 
-			finalResultsMessage = finalResultsMessage + player.Email + " got " + strconv.Itoa(player.Score) + " with a hand of " + handString + "\n"
+			finalResultsMessage = finalResultsMessage + player.Email + " got a final score of " + strconv.Itoa(player.Score) + " with a hand of " + handString + "\n"
 		}
 
 		// Send an email to every player

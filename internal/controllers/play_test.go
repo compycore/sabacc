@@ -5,7 +5,6 @@ import (
 	"log"
 	"testing"
 
-	"github.com/davecgh/go-spew/spew"
 	"github.com/jessemillar/sabacc/internal/deck"
 	"github.com/jessemillar/sabacc/internal/models"
 )
@@ -289,15 +288,70 @@ func TestGameFlow(t *testing.T) {
 		t.Errorf("Turn number incorrect; want: %d, got: %d", 1, resultDatabase.Turn)
 	}
 
+	// Player 2 discards and draws a card
+	cardToDiscard := resultDatabase.AllPlayers[1].Hand[len(resultDatabase.AllPlayers[1].Hand)-1]
+	resultDatabase.AllDiscards = append(resultDatabase.AllDiscards, cardToDiscard)
+	resultDatabase.AllPlayers[1].Hand = deck.Remove(resultDatabase.AllPlayers[1].Hand, cardToDiscard)
+	resultDatabase.AllPlayers[1].Hand = append(resultDatabase.AllPlayers[1].Hand, resultDatabase.Draw)
+	resultDatabase.Draw = deck.Card{}
+
+	// Send the updated database to the game loop
+	resultDatabase, err = gameLoop(databaseToURI(resultDatabase))
+	if err != nil {
+		t.Error(err)
+	}
+
+	// Check that the round increased
+	if resultDatabase.Round != 3 {
+		t.Errorf("Round number incorrect; want: %d, got: %d", 3, resultDatabase.Round)
+	}
+
 	// ----------
-	// Round 3
+	// Round 3 - Player 1
 	// ----------
+
+	// Check that it's player 1's turn
+	if resultDatabase.Turn != 0 {
+		t.Errorf("Turn number incorrect; want: %d, got: %d", 1, resultDatabase.Turn)
+	}
+
+	// Player 1 stands (does nothing)
+
+	// Send the untouched database to the game loop
+	resultDatabase, err = gameLoop(databaseToURI(resultDatabase))
+	if err != nil {
+		t.Error(err)
+	}
+
+	// Check that the round stayed the same
+	if resultDatabase.Round != 3 {
+		t.Errorf("Round number incorrect; want: %d, got: %d", 2, resultDatabase.Round)
+	}
+
+	// ----------
+	// Round 3 - Player 2
+	// ----------
+
+	// Check that it's player 2's turn
+	if resultDatabase.Turn != 1 {
+		t.Errorf("Turn number incorrect; want: %d, got: %d", 1, resultDatabase.Turn)
+	}
+
+	// Player 2 stands (does nothing)
+
+	// Send the untouched database to the game loop
+	resultDatabase, err = gameLoop(databaseToURI(resultDatabase))
+	if err != nil {
+		t.Error(err)
+	}
 
 	// ----------
 	// Game finish
 	// ----------
 
-	// TODO Finish a full testing scenario
+	if len(resultDatabase.Result) == 0 {
+		t.Error("No game results after running a full game")
+	}
 }
 
 func TestTrashing(t *testing.T) {
@@ -321,8 +375,6 @@ func TestTrashing(t *testing.T) {
 
 	// Trash a player
 	resultDatabase.AllPlayers = resultDatabase.AllPlayers[:len(resultDatabase.AllPlayers)-1]
-
-	spew.Dump(resultDatabase)
 
 	// Send the updated database to parse final results
 	resultDatabase, err = gameLoop(databaseToURI(resultDatabase))
