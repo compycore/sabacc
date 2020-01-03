@@ -23,8 +23,6 @@ func Play(c echo.Context) error {
 
 // Broken into a function for easier unit testing (don't have to mock an Echo context this way)
 func gameLoop(queryString string) (models.Database, error) {
-	// TODO Limit the game to 8 players
-
 	database, err := parseDatabase(queryString)
 	if err != nil {
 		return models.Database{}, err
