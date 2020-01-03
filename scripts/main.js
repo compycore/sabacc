@@ -135,22 +135,31 @@ function gain() {
 
 function swap(card) {
   swal({
-    title: "Discard this card?",
-    text: "You want to swap your " + getCardString(card) + " with the " + getCardString(database.discards[database.discards.length - 1]) + " that's on top of the discard pile?",
+    title: "What do you want to do with this card?",
+    text: "Do you want to swap your " + getCardString(card) + " with the " + getCardString(database.discards[database.discards.length - 1]) + " that's on top of the discard pile? Or discard your " + getCardString(card) + " and blindly draw a new card from the deck?",
     icon: "warning",
-    buttons: ["Nah.", "Yeah!"],
-  }).then((willDiscard) => {
-    if (willDiscard) {
-      // Find the object for the card in question in the player's hand
-      var cardIndexInHand = database.players[database.turn].hand.findIndex(element => element.value == card.value && element.stave == card.stave)
-			// Remove the card in question from the player's hand
+    buttons: ["Discard and draw", "Swap with discard", "Cancel"],
+  }).then((value) => {
+    // Find the object for the card in question in the player's hand
+    var cardIndexInHand = database.players[database.turn].hand.findIndex(element => element.value == card.value && element.stave == card.stave)
+
+    if (value == "Swap with discard") {
+      // Remove the card in question from the player's hand
       database.players[database.turn].hand.splice(cardIndexInHand, 1);
       // Put the top of the discard pile in the player's hand
       database.players[database.turn].hand.push(database.discards[database.discards.length - 1]);
-			// Remove the card that was just added to the player's hand from the discard pile
+      // Remove the card that was just added to the player's hand from the discard pile
       database.discards.splice(database.discards.length - 1, 1);
       // Put the card in the discard pile
       database.discards.push(card);
+      endTurn();
+    } else if (value == "Discard and draw") {
+      // Remove the card in question from the player's hand
+      database.players[database.turn].hand.splice(cardIndexInHand, 1);
+			// Put the draw card in the player's hand
+      database.players[database.turn].hand.push(dabase.draw);
+			// Wipe the drawn card
+			database.draw = "";
       endTurn();
     } else {
       swal(pickAction);
@@ -231,11 +240,11 @@ function getCardColor(cardValue) {
 }
 
 function getCardFilename(card) {
-	if (card.value == 0) {
-		return "images/cards/zero.jpg";
-	} else {
-		return "images/cards/" + getCardString(card, "-") + ".jpg";
-	}
+  if (card.value == 0) {
+    return "images/cards/zero.jpg";
+  } else {
+    return "images/cards/" + getCardString(card, "-") + ".jpg";
+  }
 }
 
 function getCardString(card, separator = " ") {
