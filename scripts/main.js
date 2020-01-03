@@ -23,7 +23,7 @@ function startNewGame() {
       content: "input",
     })
     .then((value) => {
-      if (value.split(",").length > 1) {
+      if (value.split(",").length > 1 && value.split(",").length <= 8) {
         var emailAddresses = value.split(",");
         database = {
           players: []
@@ -37,8 +37,12 @@ function startNewGame() {
 
         swal("A new game has started with " + value.split(",").join(", ") + ". The first player listed will now receive an email! You can now close this window.");
         endTurn(false);
-      } else {
+      } else if (value.split(",").length == 1) {
         swal("Please enter more than one email address.").then(() => {
+          location.reload(false);
+        });
+      } else if (value.split(",").length > 8) {
+        swal("Please enter less than eight email addresses.").then(() => {
           location.reload(false);
         });
       }
