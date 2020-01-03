@@ -30,11 +30,13 @@ func gameLoop(queryString string) (models.Database, error) {
 	gameDeck := prepDeck(database)
 
 	if database.Draw == (deck.Card{}) {
-		database.Draw = gameDeck.Deal(1)[0]
+		gameDeck, database.Draw = deck.DealSingle(gameDeck)
 	}
 
 	if len(database.AllDiscards) == 0 {
-		database.AllDiscards = append(database.AllDiscards, gameDeck.Deal(1)[0])
+		discard := deck.Card{}
+		gameDeck, discard = deck.DealSingle(gameDeck)
+		database.AllDiscards = append(database.AllDiscards, discard)
 	}
 
 	if database.Round > 0 {
@@ -47,7 +49,7 @@ func gameLoop(queryString string) (models.Database, error) {
 	// Start a new game if needed
 	if len(database.AllPlayers[0].Hand) == 0 {
 		for i, _ := range database.AllPlayers {
-			database.AllPlayers[i].Hand = gameDeck.Deal(2)
+			gameDeck, database.AllPlayers[i].Hand = deck.Deal(gameDeck, 2)
 		}
 
 		// Only set the round to 1 if it's a new game (as opposed to deleting hands because the dice were doubles)
@@ -126,20 +128,20 @@ func prepDeck(database models.Database) deck.Deck {
 
 	// Remove cards in the discard pile from the deck
 	for _, card := range database.AllDiscards {
-		preppedDeck.Remove(card)
+		preppedDeck = deck.Remove(preppedDeck, card)
 	}
 
 	// Remove cards in player hands from the deck
 	for _, player := range database.AllPlayers {
 		for _, card := range player.Hand {
-			preppedDeck.Remove(card)
+			preppedDeck = deck.Remove(preppedDeck, card)
 		}
 	}
 
 	// Remove the card that's available to draw from the deck
-	preppedDeck.Remove(database.Draw)
+	preppedDeck = deck.Remove(preppedDeck, database.Draw)
 
-	preppedDeck.Shuffle()
+	preppedDeck = deck.Shuffle(preppedDeck)
 
 	return preppedDeck
 }

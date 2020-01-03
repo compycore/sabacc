@@ -17,22 +17,43 @@ var databaseStruct = models.Database{
 		{
 			Email: "hellojessemillar@gmail.com",
 			Hand: deck.Deck{
-				{1, "triangle"},
-				{3, "circle"},
+				{
+					1,
+					"triangle",
+				},
+				{
+					3,
+					"circle",
+				},
 			},
 		},
 		{
 			Email: "penguinshatestuff@gmail.com",
 			Hand: deck.Deck{
-				{-3, "square"},
-				{5, "circle"},
+				{
+					-3,
+					"square",
+				},
+				{
+					5,
+					"circle",
+				},
 			},
 		},
 	},
-	Draw: deck.Card{5, "triangle"},
+	Draw: deck.Card{
+		5,
+		"triangle",
+	},
 	AllDiscards: deck.Deck{
-		{10, "triangle"},
-		{10, "circle"},
+		{
+			10,
+			"triangle",
+		},
+		{
+			10,
+			"circle",
+		},
 	},
 }
 

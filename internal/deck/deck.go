@@ -16,9 +16,11 @@ type Card struct {
 type Deck []Card
 
 // New creates a deck of cards to be used
-func New() (deck Deck) {
+func New() Deck {
 	allValues := []int{-10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
 	allStaves := []string{"circle", "square", "triangle"}
+
+	deck := Deck{}
 
 	// Loop over each type and suit appending to the deck
 	for i := 0; i < len(allValues); i++ {
@@ -42,47 +44,56 @@ func New() (deck Deck) {
 		deck = append(deck, card)
 	}
 
-	return
+	return deck
 }
 
 // Remove a specific card from the deck
-func (d *Deck) Remove(card Card) {
-	for i, curCard := range *d {
+func Remove(deck Deck, card Card) Deck {
+	for i, curCard := range deck {
 		if curCard.Stave == card.Stave && curCard.Value == card.Value {
-			*d = append((*d)[:i], (*d)[i+1:]...)
-			return
+			deck = append((deck)[:i], (deck)[i+1:]...)
+			return deck
 		}
 	}
+
+	return deck
 }
 
 // Shuffle the deck
-func (d *Deck) Shuffle() {
-	for i := 1; i < len(*d); i++ {
+func Shuffle(deck Deck) Deck {
+	for i := 1; i < len(deck); i++ {
 		// Create a random int up to the number of cards
 		r := rand.Intn(i + 1)
 
 		// If the the current card doesn't match the random int we generated then we'll switch them out
 		if i != r {
-			(*d)[r], (*d)[i] = (*d)[i], (*d)[r]
+			(deck)[r], (deck)[i] = (deck)[i], (deck)[r]
 		}
 	}
+
+	return deck
 }
 
 // Deal a specified amount of cards
-func (d *Deck) Deal(n int) Deck {
+func Deal(deck Deck, n int) (Deck, Deck) {
 	hand := Deck{}
 
 	for i := 0; i < n; i++ {
-		hand = append(hand, (*d)[i])
+		hand = append(hand, (deck)[i])
 	}
 
 	// Remove cards from the deck
-	*d = (*d)[n:len(*d)]
+	deck = (deck)[n:len(deck)]
 
-	return hand
+	return deck, hand
+}
+
+func DealSingle(deck Deck) (Deck, Card) {
+	deck, hand := Deal(deck, 1)
+	return deck, hand[0]
 }
 
 // Debug helps debugging the deck of cards
-func (d *Deck) Debug() {
-	spew.Dump(*d)
+func Debug(deck Deck) {
+	spew.Dump(deck)
 }
