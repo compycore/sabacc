@@ -64,14 +64,8 @@ function populateRound() {
 
 function populateScore() {
   var player = database.players[database.turn];
-  var hand = player.hand;
-  var score = 0;
 
-  for (var i = 0; i < hand.length; i++) {
-    score += hand[i].value;
-  }
-
-  document.getElementById("your-hand-header").innerHTML = "Your Hand (Score: " + score + ") [" + player.email + "]";
+  document.getElementById("your-hand-header").innerHTML = "Your Hand (Score: " + player.score + ") [" + player.email + "]";
 }
 
 // Populate card image divs
