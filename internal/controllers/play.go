@@ -41,9 +41,6 @@ func gameLoop(queryString string) (models.Database, error) {
 
 	if database.Round > 0 {
 		database.Turn = database.Turn + 1
-		if database.Turn >= len(database.AllPlayers) {
-			database.Turn = 0
-		}
 	}
 
 	// Start a new game if needed
@@ -58,8 +55,9 @@ func gameLoop(queryString string) (models.Database, error) {
 		}
 	}
 
-	if database.Turn == len(database.AllPlayers)-1 {
+	if database.Turn == len(database.AllPlayers) {
 		database.Round = database.Round + 1
+		database.Turn = 0
 	}
 
 	// Calculate player scores

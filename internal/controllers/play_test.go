@@ -5,7 +5,6 @@ import (
 	"log"
 	"testing"
 
-	"github.com/davecgh/go-spew/spew"
 	"github.com/jessemillar/sabacc/internal/deck"
 	"github.com/jessemillar/sabacc/internal/models"
 )
@@ -167,7 +166,6 @@ func TestGameFlow(t *testing.T) {
 	// Make sure there's something in the discard pile
 	if len(resultDatabase.AllDiscards) != 1 {
 		t.Errorf("Discard pile size incorrect; want: %d, got: %d", 1, len(resultDatabase.AllDiscards))
-		spew.Dump(resultDatabase)
 	}
 
 	// Make sure there's a card available to be drawn
@@ -176,12 +174,119 @@ func TestGameFlow(t *testing.T) {
 	}
 
 	// ----------
-	// Round 1
+	// Round 1 - Player 1
 	// ----------
 
+	// Player 1 draws a card
+	resultDatabase.AllPlayers[0].Hand = append(resultDatabase.AllPlayers[0].Hand, resultDatabase.Draw)
+	resultDatabase.Draw = deck.Card{}
+
+	// Send the new database to the game loop
+	resultDatabase, err = gameLoop(databaseToURI(resultDatabase))
+	if err != nil {
+		t.Error(err)
+	}
+
+	// Verify that player 1 has the new card
+	if len(resultDatabase.AllPlayers[0].Hand) != 3 {
+		t.Errorf("Player 1 hand size incorrect; want: %d, got: %d", 3, len(resultDatabase.AllPlayers[0].Hand))
+	}
+
+	// Check that there's a new card in the draw pile
+	if resultDatabase.Draw == (deck.Card{}) {
+		t.Error("There's no card in the draw pile")
+	}
+
+	// Check that the round is the same
+	if resultDatabase.Round != 1 {
+		t.Errorf("Round number incorrect; want: %d, got: %d", 1, resultDatabase.Round)
+	}
+
 	// ----------
-	// Round 2
+	// Round 1 - Player 2
 	// ----------
+
+	// Check that it's player 2's turn
+	if resultDatabase.Turn != 1 {
+		t.Errorf("Turn number incorrect; want: %d, got: %d", 1, resultDatabase.Turn)
+	}
+
+	// Player 2 swaps their card with the one in the discard pile
+	// Save the two cards to different variables
+	handSwap := resultDatabase.AllPlayers[1].Hand[len(resultDatabase.AllPlayers[1].Hand)-1]
+	discardSwap := resultDatabase.AllDiscards[len(resultDatabase.AllDiscards)-1]
+	// Remove the cards from the player's hand and discard pile
+	resultDatabase.AllPlayers[1].Hand = deck.Remove(resultDatabase.AllPlayers[1].Hand, handSwap)
+	resultDatabase.AllDiscards = deck.Remove(resultDatabase.AllDiscards, discardSwap)
+	// Swap the cards
+	resultDatabase.AllDiscards = append(resultDatabase.AllDiscards, handSwap)
+	resultDatabase.AllPlayers[1].Hand = append(resultDatabase.AllPlayers[1].Hand, discardSwap)
+
+	// Send the new database to the game loop
+	resultDatabase, err = gameLoop(databaseToURI(resultDatabase))
+	if err != nil {
+		t.Error(err)
+	}
+
+	// Verify that the swap happened
+	if deck.Contains(resultDatabase.AllDiscards, discardSwap) {
+		t.Error("Discard pile still contains swapped card")
+	}
+	if deck.Contains(resultDatabase.AllPlayers[1].Hand, handSwap) {
+		t.Error("Player hand still contains swapped card")
+	}
+	if !deck.Contains(resultDatabase.AllPlayers[1].Hand, discardSwap) {
+		t.Error("Player hand does not contain newly swapped card")
+	}
+	if !deck.Contains(resultDatabase.AllDiscards, handSwap) {
+		t.Error("Discard pile does not contain newly swapped card")
+	}
+
+	// Verify that player 2 has the correct hand size
+	if len(resultDatabase.AllPlayers[1].Hand) != 2 {
+		t.Errorf("Player 1 hand size incorrect; want: %d, got: %d", 2, len(resultDatabase.AllPlayers[0].Hand))
+	}
+
+	// Make sure the discard pile is the correct size
+	if len(resultDatabase.AllDiscards) != 1 {
+		t.Errorf("Discard pile size incorrect; want: %d, got: %d", 1, len(resultDatabase.AllDiscards))
+	}
+
+	// Check that the round increased
+	if resultDatabase.Round != 2 {
+		t.Errorf("Round number incorrect; want: %d, got: %d", 2, resultDatabase.Round)
+	}
+
+	// ----------
+	// Round 2 - Player 1
+	// ----------
+
+	// Check that it's player 1's turn
+	if resultDatabase.Turn != 0 {
+		t.Errorf("Turn number incorrect; want: %d, got: %d", 1, resultDatabase.Turn)
+	}
+
+	// Player 1 stands (does nothing)
+
+	// Send the untouched database to the game loop
+	resultDatabase, err = gameLoop(databaseToURI(resultDatabase))
+	if err != nil {
+		t.Error(err)
+	}
+
+	// Check that the round stayed the same
+	if resultDatabase.Round != 2 {
+		t.Errorf("Round number incorrect; want: %d, got: %d", 2, resultDatabase.Round)
+	}
+
+	// ----------
+	// Round 2 - Player 2
+	// ----------
+
+	// Check that it's player 2's turn
+	if resultDatabase.Turn != 1 {
+		t.Errorf("Turn number incorrect; want: %d, got: %d", 1, resultDatabase.Turn)
+	}
 
 	// ----------
 	// Round 3

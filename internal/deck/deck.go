@@ -59,6 +59,16 @@ func Remove(deck Deck, card Card) Deck {
 	return deck
 }
 
+func Contains(deck Deck, card Card) bool {
+	for _, curCard := range deck {
+		if curCard.Stave == card.Stave && curCard.Value == card.Value {
+			return true
+		}
+	}
+
+	return false
+}
+
 // Shuffle the deck
 func Shuffle(deck Deck) Deck {
 	for i := 1; i < len(deck); i++ {
