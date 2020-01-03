@@ -11,7 +11,7 @@ import (
 
 func SendLink(emailAddress string, allEmailAddreses string, linkString string, round int) error {
 	plainTextContent := "It's round " + strconv.Itoa(round) + " in your Sabacc game against " + allEmailAddreses + "! Click here to take your turn, " + emailAddress + "!" + linkString
-	htmlContent := `It's round ` + strconv.Itoa(round) + ` in your game against ` + allEmailAddreses + `! <a href="` + linkString + `">Click here to take your turn, ` + emailAddress + `!</a>`
+	htmlContent := `It's round ` + strconv.Itoa(round) + ` in your game against ` + allEmailAddreses + `!<br><br><a href="` + linkString + `">Click here to take your turn, ` + emailAddress + `!</a>`
 	return SendMessage(emailAddress, plainTextContent, htmlContent)
 }
 
