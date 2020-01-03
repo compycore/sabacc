@@ -15,6 +15,11 @@ func SendLink(emailAddress string, allEmailAddreses string, linkString string, r
 	return SendMessage(emailAddress, plainTextContent, htmlContent)
 }
 
+func SendConfirmation(emailAddress string, hand string, score string) error {
+	message := "Your turn has been recorded. Your hand is currently " + hand + " with a score of " + score + "."
+	return SendMessage(emailAddress, message, message)
+}
+
 func SendMessage(emailAddress string, messagePlain string, messageHTML string) error {
 	if len(os.Getenv("SABACC_DEBUG")) == 0 {
 		from := mail.NewEmail("Sabaac Dealer", "sabaac@jessemillar.com")

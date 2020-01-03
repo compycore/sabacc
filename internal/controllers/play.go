@@ -64,6 +64,13 @@ func gameLoop(queryString string) (models.Database, error) {
 	// Calculate player scores
 	database = calculatePlayerScores(database)
 
+	// Send an email confirmation to the player that just took their turn
+	previousTurn := database.Turn - 1
+	if previousTurn < 0 {
+		previousTurn = len(database.AllPlayers) - 1
+	}
+	email.SendConfirmation(database.AllPlayers[previousTurn].Email, getHandString(database.AllPlayers[previousTurn].Hand), strconv.Itoa(database.AllPlayers[previousTurn].Score))
+
 	// If the game is still going
 	if database.Round <= 3 && database.Turn < len(database.AllPlayers) && len(database.AllPlayers) > 1 {
 		encodedDatabase, err := encodeDatabase(database)
@@ -85,12 +92,7 @@ func gameLoop(queryString string) (models.Database, error) {
 		// TODO Break this into a function
 		finalResultsMessage := ""
 		for _, player := range database.AllPlayers {
-			handString := ""
-			for _, card := range player.Hand {
-				handString = handString + "\n" + card.Stave + " " + strconv.Itoa(card.Value)
-			}
-
-			finalResultsMessage = finalResultsMessage + player.Email + " got a final score of " + strconv.Itoa(player.Score) + " with a hand of " + handString + "\n\n"
+			finalResultsMessage = finalResultsMessage + player.Email + " got a final score of " + strconv.Itoa(player.Score) + " with a hand of " + getHandString(player.Hand) + "\n\n"
 		}
 
 		// Send an email to every player
@@ -162,4 +164,14 @@ func prepDeck(database models.Database) deck.Deck {
 	preppedDeck = deck.Shuffle(preppedDeck)
 
 	return preppedDeck
+}
+
+func getHandString(hand deck.Deck) string {
+	handString := ""
+
+	for _, card := range hand {
+		handString = handString + "\n" + card.Stave + " " + strconv.Itoa(card.Value)
+	}
+
+	return handString
 }
