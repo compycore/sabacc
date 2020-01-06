@@ -1,75 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-
-  <!-- Basic Page Needs
+  <head>
+    <!-- Basic Page Needs
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <meta charset="utf-8">
-  <title>Sabacc</title>
-  <meta name="description" content="">
-  <meta name="author" content="">
+    <meta charset="utf-8" />
+    <title>Sabacc</title>
+    <meta name="description" content="" />
+    <meta name="author" content="" />
 
-  <!-- Mobile Specific Metas
+    <!-- Mobile Specific Metas
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- FONT
+    <!-- FONT
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+    <link
+      href="//fonts.googleapis.com/css?family=Raleway:400,300,600"
+      rel="stylesheet"
+      type="text/css"
+    />
 
-  <!-- CSS
+    <!-- CSS
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <link rel="stylesheet" href="css/normalize.css">
-  <link rel="stylesheet" href="css/skeleton.css">
+    <link rel="stylesheet" href="css/normalize.css" />
+    <link rel="stylesheet" href="css/skeleton.css" />
 
-	<style>
-		.row {
-			margin-bottom: 1%;
-		}
-	</style>
+    <style>
+      .row {
+        margin-bottom: 1%;
+      }
+    </style>
 
-	<! -- Scripts
+    <! -- Scripts
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-	<script src="scripts/main.js"></script>
-	<script src="//cdn.jsdelivr.net/npm/sweetalert"></script>
-	<script src="//code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="scripts/main.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert"></script>
+    <script src="//code.jquery.com/jquery-3.4.1.min.js"></script>
 
-  <!-- Favicon
+    <!-- Favicon
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <link rel="icon" type="image/png" href="images/favicon.png">
+    <link rel="icon" type="image/png" href="images/favicon.png" />
 
-</head>
-<body onload="init()">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=UA-56479946-1"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
 
-  <!-- Primary Page Layout
+      gtag("config", "UA-56479946-1");
+    </script>
+  </head>
+  <body onload="init()">
+    <!-- Primary Page Layout
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <div id="container" class="container">
-    <div id="action-buttons" class="row" style="margin-top: 10%">
-      <div class="u-full-width">
-        <h4 id="actions-header">Actions</h4>
-				<button class="button-primary" onclick="gain()">Gain</button>
-				<button class="button-primary" onclick="swap()">Swap</button>
-				<button class="button-primary" onclick="stand()">Stand</button>
-				<button class="button-primary" onclick="trash()">Trash</button>
+    <div id="container" class="container">
+      <div id="action-buttons" class="row" style="margin-top: 10%">
+        <div class="u-full-width">
+          <h4 id="actions-header">Actions</h4>
+          <button class="button-primary" onclick="gain()">Gain</button>
+          <button class="button-primary" onclick="swap()">Swap</button>
+          <button class="button-primary" onclick="stand()">Stand</button>
+          <button class="button-primary" onclick="trash()">Trash</button>
+        </div>
       </div>
+
+      <div class="row">
+        <div class="u-full-width">
+          <h4 id="your-hand-header">Your Hand</h4>
+        </div>
+      </div>
+      <div id="your-hand-cards" class="row"></div>
+
+      <div class="row">
+        <div class="u-full-width">
+          <h4>Discard Pile</h4>
+        </div>
+      </div>
+      <div id="discard-pile" class="row"></div>
     </div>
 
-		<div class="row">
-			<div class="u-full-width">
-        <h4 id="your-hand-header">Your Hand</h4>
-			</div>
-		</div>
-		<div id="your-hand-cards" class="row"></div>
-
-		<div class="row">
-			<div class="u-full-width">
-        <h4>Discard Pile</h4>
-			</div>
-		</div>
-		<div id="discard-pile" class="row"></div>
-  </div>
-
-<!-- End Document
+    <!-- End Document
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-</body>
+  </body>
 </html>
