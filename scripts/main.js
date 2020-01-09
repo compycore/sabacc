@@ -224,7 +224,7 @@ function swap(card) {
         // Remove the card in question from the player's hand
         database.players[database.turn].hand.splice(cardIndexInHand, 1);
         // Put the draw card in the player's hand
-        database.players[database.turn].hand.push(dabase.draw);
+        database.players[database.turn].hand.push(database.draw);
         // Wipe the drawn card
         database.draw = "";
         endTurn();
