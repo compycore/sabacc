@@ -105,7 +105,7 @@ func gameLoop(queryString string) (models.Database, error) {
 			return models.Database{}, err
 		}
 
-		finalResultsMessage = finalResultsMessage + `<a href="` + rematchDatabaseString + `">Click here for a rematch!</a>`
+		finalResultsMessage = finalResultsMessage + `\n\n<a href="` + os.Getenv("SABACC_UI_HREF") + "?" + rematchDatabaseString + `">Click here for a rematch!</a>`
 
 		// Send an email to every player
 		for _, player := range database.AllPlayers {
