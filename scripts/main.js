@@ -10,7 +10,7 @@ var database = JSON.parse(decodeURIComponent(window.location.search.substr(1)));
 console.log(database);
 
 function init() {
-  if (database && database.rematch.length > 0) {
+  if (database && database.rematch && database.rematch.length > 0) {
     for (var i = 0; i < database.rematch.length; i++) {
       database.players.push({
         email: database.rematch[i]
@@ -196,7 +196,7 @@ function swap(card) {
         },
         swap: {
           text: "Swap with discard pile",
-          value: "swa",
+          value: "swap",
           visible: true,
           className: "",
           closeModal: true
@@ -208,7 +208,7 @@ function swap(card) {
         element => element.value == card.value && element.stave == card.stave
       );
 
-      if ((value = "swap")) {
+      if (value = "swap") {
         // Remove the card in question from the player's hand
         database.players[database.turn].hand.splice(cardIndexInHand, 1);
         // Put the top of the discard pile in the player's hand
@@ -220,7 +220,7 @@ function swap(card) {
         // Put the card in the discard pile
         database.discards.push(card);
         endTurn();
-      } else if ((value = "gain")) {
+      } else if (value = "gain") {
         // Remove the card in question from the player's hand
         database.players[database.turn].hand.splice(cardIndexInHand, 1);
         // Put the draw card in the player's hand
