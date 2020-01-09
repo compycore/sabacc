@@ -97,6 +97,16 @@ func gameLoop(queryString string) (models.Database, error) {
 			finalResultsMessage = finalResultsMessage + player.Email + " got a final score of " + strconv.Itoa(player.Score) + " with a hand of " + getHandString(player.Hand) + "\n\n"
 		}
 
+		rematchDatabase := models.Database{}
+		rematchDatabase.Rematch = database.AllPlayers
+
+		rematchDatabaseString, err := encodeDatabase(rematchDatabase)
+		if err != nil {
+			return models.Database{}, err
+		}
+
+		finalResultsMessage = finalResultsMessage + `<a href="` + rematchDatabaseString + `">Click here for a rematch!</a>`
+
 		// Send an email to every player
 		for _, player := range database.AllPlayers {
 			// TODO Make the function smart enough to not need both HTML and plain if only plain is passed
