@@ -208,7 +208,7 @@ function swap(card) {
         element => element.value == card.value && element.stave == card.stave
       );
 
-      if (value = "swap") {
+      if (value == "swap") {
         // Remove the card in question from the player's hand
         database.players[database.turn].hand.splice(cardIndexInHand, 1);
         // Put the top of the discard pile in the player's hand
@@ -220,7 +220,7 @@ function swap(card) {
         // Put the card in the discard pile
         database.discards.push(card);
         endTurn();
-      } else if (value = "gain") {
+      } else if (value == "gain") {
         // Remove the card in question from the player's hand
         database.players[database.turn].hand.splice(cardIndexInHand, 1);
         // Put the draw card in the player's hand
