@@ -273,6 +273,12 @@ function trash() {
 }
 
 function endTurn(showTurnOver = true) {
+  swal({
+    title:
+      "Recording your turn. Please don't close the page. This may take a moment.",
+		buttons: false
+  });
+
   // Make an API call to the backend with the updated database info
   $.ajax({
     url: backendEndpoint + "?" + encodeURIComponent(JSON.stringify(database)),
