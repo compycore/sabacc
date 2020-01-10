@@ -16,21 +16,22 @@ function init() {
 
     // Start a rematch
     for (var i = 0; i < database.rematch.length; i++) {
-      playerString += database.rematch[i] + ",";
+      playerString += database.rematch[i].email + ",";
 
       database.players.push({
-        email: database.rematch[i]
+        email: database.rematch[i].email
       });
     }
 
-		database.rematch = null;
+    database.rematch = null;
 
-    swal(
-      "A rematch has started with " +
-        playerString.split(",").join(", ") +
-        ". The first player listed will now receive an email! You can now close this window."
-    );
-    endTurn();
+    endTurn(function() {
+      swal(
+        "A rematch has started with " +
+          playerString.split(",").join(", ") +
+          ". The first player listed will now receive an email! You can now close this window."
+      );
+    });
   } else if (database && database.players.length > 0) {
     // Play the game if there's a game going
     populatePage();
@@ -59,12 +60,13 @@ function startNewGame() {
         });
       }
 
-      swal(
-        "A new game has started with " +
-          value.split(",").join(", ") +
-          ". The first player listed will now receive an email! You can now close this window."
-      );
-      endTurn(false);
+      endTurn(function() {
+        swal(
+          "A new game has started with " +
+            value.split(",").join(", ") +
+            ". The first player listed will now receive an email! You can now close this window."
+        );
+      });
     } else if (value.split(",").length == 1) {
       swal("Please enter more than one email address.").then(() => {
         location.reload(false);
@@ -268,11 +270,11 @@ function trash() {
   }).then(willDelete => {
     if (willDelete) {
       database.players.splice(database.turn, 1);
-      endTurn(false);
-
-      swal("You've withdrawn from the game.", {
-        icon: "success",
-        button: "'Til the Spire."
+      endTurn(function() {
+        swal("You've withdrawn from the game.", {
+          icon: "success",
+          button: "'Til the Spire."
+        });
       });
     } else {
       swal("You're still in the game!");
@@ -280,7 +282,7 @@ function trash() {
   });
 }
 
-function endTurn(showTurnOver = true) {
+function endTurn(callback) {
   swal({
     title: "Saving data...",
     text: "Please don't close the page. This may take a moment.",
@@ -292,7 +294,7 @@ function endTurn(showTurnOver = true) {
     url: backendEndpoint + "?" + encodeURIComponent(JSON.stringify(database)),
     crossDomain: true
   }).done(function(data) {
-    if (showTurnOver) {
+    if (callback == null) {
       swal({
         title: "Data saved!",
         text: "Please wait for the next email.",
@@ -300,6 +302,7 @@ function endTurn(showTurnOver = true) {
         button: "Patience, young padawan."
       }).then(wipePage());
     } else {
+      callback();
       wipePage();
     }
   });
