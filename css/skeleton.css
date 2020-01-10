@@ -273,8 +273,7 @@ a:hover {
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 .skeleton-button,
 input[type="submit"],
-input[type="reset"],
-input[type="skeleton-button"] {
+input[type="reset"] {
   display: inline-block;
   height: 38px;
   padding: 0 30px;
@@ -296,19 +295,16 @@ input[type="skeleton-button"] {
 .skeleton-button:hover,
 input[type="submit"]:hover,
 input[type="reset"]:hover,
-input[type="skeleton-button"]:hover,
 .skeleton-button:focus,
 input[type="submit"]:focus,
-input[type="reset"]:focus,
-input[type="skeleton-button"]:focus {
+input[type="reset"]:focus {
   color: #333;
   border-color: #888;
   outline: 0;
 }
 .skeleton-button.skeleton-button-primary,
 input[type="submit"].skeleton-button-primary,
-input[type="reset"].skeleton-button-primary,
-input[type="skeleton-button"].skeleton-button-primary {
+input[type="reset"].skeleton-button-primary {
   color: #fff;
   background-color: #33c3f0;
   border-color: #33c3f0;
@@ -316,11 +312,9 @@ input[type="skeleton-button"].skeleton-button-primary {
 .skeleton-button.skeleton-button-primary:hover,
 input[type="submit"].skeleton-button-primary:hover,
 input[type="reset"].skeleton-button-primary:hover,
-input[type="skeleton-button"].skeleton-button-primary:hover,
 .skeleton-button.skeleton-button-primary:focus,
 input[type="submit"].skeleton-button-primary:focus,
-input[type="reset"].skeleton-button-primary:focus,
-input[type="skeleton-button"].skeleton-button-primary:focus {
+input[type="reset"].skeleton-button-primary:focus {
   color: #fff;
   background-color: #1eaedb;
   border-color: #1eaedb;
