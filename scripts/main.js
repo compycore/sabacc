@@ -11,18 +11,26 @@ console.log(database);
 
 function init() {
   if (database && database.rematch && database.rematch.length > 0) {
+    playerString = "";
+    database.players = [];
+
+    // Start a rematch
     for (var i = 0; i < database.rematch.length; i++) {
+      playerString += database.rematch[i] + ",";
+
       database.players.push({
         email: database.rematch[i]
       });
     }
 
+		database.rematch = null;
+
     swal(
-      "A new game has started with " +
-        value.split(",").join(", ") +
+      "A rematch has started with " +
+        playerString.split(",").join(", ") +
         ". The first player listed will now receive an email! You can now close this window."
     );
-    endTurn(false);
+    endTurn();
   } else if (database && database.players.length > 0) {
     // Play the game if there's a game going
     populatePage();
@@ -274,9 +282,9 @@ function trash() {
 
 function endTurn(showTurnOver = true) {
   swal({
-    title:
-      "Recording your turn. Please don't close the page. This may take a moment.",
-		buttons: false
+    title: "Saving data...",
+    text: "Please don't close the page. This may take a moment.",
+    buttons: false
   });
 
   // Make an API call to the backend with the updated database info
@@ -286,8 +294,8 @@ function endTurn(showTurnOver = true) {
   }).done(function(data) {
     if (showTurnOver) {
       swal({
-        title: "Turn over.",
-        text: "Your turn is now over! Please wait for the next email.",
+        title: "Data saved!",
+        text: "Please wait for the next email.",
         icon: "success",
         button: "Patience, young padawan."
       }).then(wipePage());
