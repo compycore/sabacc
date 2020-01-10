@@ -1,5 +1,3 @@
 #!/usr/bin/env bash
 
-generate zero black 0 zero.png
-
-# 1100x1600
+mogrify -crop 1100x1600+0+0 -gravity Center *.png
