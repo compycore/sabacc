@@ -65,7 +65,7 @@ func gameLoop(queryString string) (models.Database, error) {
 	database = calculatePlayerScores(database)
 
 	// Send an email confirmation to the player that just took their turn
-	if database.Round > 0 {
+	if database.Round > 0 && database.Turn > 0 {
 		previousTurn := database.Turn - 1
 		if previousTurn < 0 {
 			previousTurn = len(database.AllPlayers) - 1
