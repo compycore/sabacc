@@ -49,11 +49,6 @@ func gameLoop(queryString string) (models.Database, error) {
 		for i, _ := range database.AllPlayers {
 			gameDeck, database.AllPlayers[i].Hand = deck.Deal(gameDeck, 2)
 		}
-
-		// Only set the round to 1 if it's a new game (as opposed to deleting hands because the dice were doubles)
-		if database.Round == 0 {
-			database.Round = 1
-		}
 	}
 
 	if database.Turn == len(database.AllPlayers) {
@@ -65,12 +60,17 @@ func gameLoop(queryString string) (models.Database, error) {
 	database = calculatePlayerScores(database)
 
 	// Send an email confirmation to the player that just took their turn
-	if database.Round > 0 && database.Turn > 0 {
+	if database.Round > 0 {
 		previousTurn := database.Turn - 1
 		if previousTurn < 0 {
 			previousTurn = len(database.AllPlayers) - 1
 		}
 		email.SendConfirmation(database.AllPlayers[previousTurn].Email, getHandString(database.AllPlayers[previousTurn].Hand), strconv.Itoa(database.AllPlayers[previousTurn].Score))
+	}
+
+	// Only set the round to 1 if it's a new game (as opposed to deleting hands because the dice were doubles)
+	if database.Round == 0 {
+		database.Round = 1
 	}
 
 	// If the game is still going
