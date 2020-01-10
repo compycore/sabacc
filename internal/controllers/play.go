@@ -60,7 +60,7 @@ func gameLoop(queryString string) (models.Database, error) {
 	database = calculatePlayerScores(database)
 
 	// Send an email confirmation to the player that just took their turn
-	if database.Round > 0 {
+	if database.Round > 0 && !isGameOver(database) {
 		previousTurn := database.Turn - 1
 		if previousTurn < 0 {
 			previousTurn = len(database.AllPlayers) - 1
@@ -74,7 +74,7 @@ func gameLoop(queryString string) (models.Database, error) {
 	}
 
 	// If the game is still going
-	if database.Round <= 3 && database.Turn < len(database.AllPlayers) && len(database.AllPlayers) > 1 {
+	if !isGameOver(database) {
 		encodedDatabase, err := encodeDatabase(database)
 		if err != nil {
 			return models.Database{}, err
@@ -186,4 +186,8 @@ func getHandString(hand deck.Deck) string {
 	}
 
 	return handString
+}
+
+func isGameOver(database models.Database) bool {
+	return database.Round <= 3 && database.Turn < len(database.AllPlayers) && len(database.AllPlayers) > 1
 }
