@@ -189,5 +189,9 @@ func getHandString(hand deck.Deck) string {
 }
 
 func isGameOver(database models.Database) bool {
-	return database.Round <= 3 && database.Turn < len(database.AllPlayers) && len(database.AllPlayers) > 1
+	if database.Round <= 3 && database.Turn < len(database.AllPlayers) && len(database.AllPlayers) > 1 {
+		return false
+	}
+
+	return true
 }

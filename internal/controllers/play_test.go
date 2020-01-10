@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"errors"
 	"log"
 	"testing"
 
@@ -176,6 +177,11 @@ func TestGameFlow(t *testing.T) {
 	// ----------
 	// Round 1 - Player 1
 	// ----------
+
+	// Check that the game isn't erroneously over
+	if len(resultDatabase.Result) > 0 {
+		t.Error(errors.New("The game is over prematurely"))
+	}
 
 	// Player 1 draws a card
 	resultDatabase.AllPlayers[0].Hand = append(resultDatabase.AllPlayers[0].Hand, resultDatabase.Draw)
