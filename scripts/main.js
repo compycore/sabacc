@@ -318,7 +318,7 @@ function endTurn(callback) {
   Swal.fire({
     title: "Saving data...",
     text: "Please don't close the page. This may take a moment.",
-    buttons: false
+		showConfirmButton: false
   });
 
   // Make an API call to the backend with the updated database info
