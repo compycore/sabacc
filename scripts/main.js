@@ -143,7 +143,7 @@ function populateEnemyHands() {
 
       for (var j = 0; j < hand.length; j++) {
         document.getElementById("container").innerHTML +=
-          '<div class="two columns"><img src="images/cards/back.jpg" class="u-max-full-width" /></div>';
+          '<div class="two columns"><img src="images/cards/back.png" class="u-max-full-width" /></div>';
       }
 
       document.getElementById("container").innerHTML += "</div>";
@@ -323,9 +323,9 @@ function getCardColor(cardValue) {
 
 function getCardFilename(card) {
   if (card.value == 0) {
-    return "images/cards/zero.jpg";
+    return "images/cards/zero.png";
   } else {
-    return "images/cards/" + getCardString(card, "-") + ".jpg";
+    return "images/cards/" + getCardString(card, "-") + ".png";
   }
 }
 
