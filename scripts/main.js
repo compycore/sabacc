@@ -45,9 +45,12 @@ function startNewGame() {
     {
       content: "input"
     }
-  ).then(value => {
-    if (value.split(",").length > 1 && value.split(",").length <= 8) {
-      var emailAddresses = value.split(",");
+  ).then(result => {
+    if (
+      result.value.split(",").length > 1 &&
+      result.value.split(",").length <= 8
+    ) {
+      var emailAddresses = result.value.split(",");
       database = {
         players: []
       };
@@ -61,15 +64,15 @@ function startNewGame() {
       endTurn(function() {
         Swal.fire(
           "A new game has started with " +
-            value.split(",").join(", ") +
+            result.value.split(",").join(", ") +
             ". The first player listed will now receive an email! You can now close this window."
         );
       });
-    } else if (value.split(",").length == 1) {
+    } else if (result.value.split(",").length == 1) {
       Swal.fire("Please enter more than one email address.").then(() => {
         location.reload(false);
       });
-    } else if (value.split(",").length > 8) {
+    } else if (result.value.split(",").length > 8) {
       Swal.fire("Please enter less than eight email addresses.").then(() => {
         location.reload(false);
       });
@@ -189,14 +192,16 @@ function gain() {
   Swal.fire({
     title: "Do you want to discard a card first?",
     text: "You can discard a card before drawing a new one if you'd like.",
-    icon: "warning",
-    buttons: ["Nah.", "Yeah!"]
-  }).then(willDiscard => {
-    if (willDiscard) {
-      Swal.fire("Please tap on the card in your hand you wish to discard.", {
-        icon: "info"
-      });
-    } else {
+    icon: "question",
+    showCancelButton: true,
+    focusConfirm: false,
+    showCloseButton: true,
+    confirmButtonText: "Just draw",
+    confirmButtonColor: "#33C3F0",
+    cancelButtonText: "Discard then draw",
+    cancelButtonColor: "#33C3F0"
+  }).then(result => {
+    if (result.value) {
       Swal.fire({
         title: "You drew...",
         text: "the " + getCardString(database.draw) + "!",
@@ -205,6 +210,10 @@ function gain() {
         database.players[database.turn].hand.push(database.draw);
         delete database.draw;
         endTurn();
+      });
+    } else if (result.dismiss === Swal.DismissReason.cancel) {
+      Swal.fire("Please tap on the card in your hand you wish to discard.", {
+        icon: "info"
       });
     }
   });
@@ -233,9 +242,9 @@ function swap(card) {
       showCancelButton: true,
       focusConfirm: false,
       confirmButtonText: "Discard and draw",
-      confirmButtonColor: "#3085d6",
+      confirmButtonColor: "#33C3F0",
       cancelButtonText: "Swap with " + topDiscardCard,
-      cancelButtonColor: "#d33"
+      cancelButtonColor: "#33C3F0"
     }).then(result => {
       // Find the object for the card in question in the player's hand
       var cardIndexInHand = database.players[database.turn].hand.findIndex(
