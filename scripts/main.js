@@ -342,7 +342,7 @@ function endTurn(callback) {
         title: "Data saved!",
         text: "Please wait for the next email.",
         icon: "success",
-        button: "Patience, young padawan."
+				confirmButtonText: "Patience, young padawan"
       }).then(wipePage());
     } else {
       callback();
