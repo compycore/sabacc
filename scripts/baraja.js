@@ -137,7 +137,10 @@ function Baraja(container, options) {
     items.forEach(function(item) {
       const eventHandler = function() {
         if (!self.isAnimating) {
-          move2front(item);
+          // move2front(item);
+          if (item.onclick != null) {
+            item.onclick();
+          }
         }
       };
 

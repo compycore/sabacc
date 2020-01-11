@@ -102,9 +102,7 @@ function populateDiscardPile() {
   addCardToHand(
     "discard-pile",
     database.discards[database.discards.length - 1],
-    function() {
-      promptSwap();
-    }
+    "promptSwap();"
   );
 }
 
@@ -120,16 +118,18 @@ function addCardToHand(barajaDivId, card, onclick) {
   var image = document.createElement("img");
   image.className = "sabacc-card";
   image.src = getCardFilename(card);
+  li.appendChild(image);
+
   if (card != "back") {
     if (!onclick) {
-      image.onclick = function() {
-        swap(JSON.stringify(card));
-      };
+      li.setAttribute(
+        "onClick",
+        "javascript: swap(" + JSON.stringify(card) + ");"
+      );
     } else {
-      image.onclick = onclick;
+      li.setAttribute("onClick", "javascript: " + onclick);
     }
   }
-  li.appendChild(image);
 
   if (cardCount > 1) {
     hand.add(li);
@@ -180,9 +180,7 @@ function populateEnemyHands() {
 function fanCards(divId) {
   // TODO Figure out a better way to wait for the DOM to be ready
   setTimeout(function() {
-    var cardCount = getLiCount(divId);
     var baraja = window.baraja(document.getElementById(divId));
-
     baraja.fan();
   }, 500);
 }
