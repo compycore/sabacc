@@ -1,0 +1,14 @@
+body {
+  background-color: #000000;
+	color: #ffffff;
+}
+
+.row {
+  margin-bottom: 1%;
+}
+
+.sabacc-card {
+  height: 100%;
+  width: auto;
+	cursor: pointer;
+}

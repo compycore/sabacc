@@ -9,19 +9,6 @@ var database = JSON.parse(decodeURIComponent(window.location.search.substr(1)));
 console.log(database);
 
 function init() {
-  var baraja = window.baraja(document.getElementById("baraja-el"));
-
-  baraja.fan({
-    direction: "right",
-    easing: "ease-out",
-    origin: { minX: 20, maxX: 80, y: 100 },
-    speed: 500,
-    range: 90,
-    translation: 60,
-    center: true,
-    scatter: true
-  });
-
   if (database && database.rematch && database.rematch.length > 0) {
     playerString = "";
     database.players = [];
@@ -109,7 +96,7 @@ function populateScore() {
   var player = database.players[database.turn];
 
   document.getElementById("your-hand-header").innerHTML =
-    "Your Hand (Score: " + player.score + ") [" + player.email + "]";
+    "Your Hand (Score: " + player.score + ")";
 }
 
 // Populate card image divs
@@ -119,13 +106,17 @@ function populateYourHand() {
   for (var i = 0; i < hand.length; i++) {
     var card = hand[i];
 
-    document.getElementById("your-hand-cards").innerHTML +=
-      "<div class='two columns'><img src='" +
-      getCardFilename(card) +
-      "' class='u-max-full-width' onclick='swap(" +
-      JSON.stringify(card) +
-      ")' style='cursor: pointer;' /></div>";
+    var ul = document.getElementById("your-hand-cards");
+    var li = document.createElement("li");
+    var image = document.createElement("img");
+    image.className = "sabacc-card";
+    image.src = getCardFilename(card);
+    image.onclick = "swap(" + JSON.stringify(card) + ")";
+    li.appendChild(image);
+    ul.appendChild(li);
   }
+
+  fanCards("your-hand-cards");
 }
 
 function populateDiscardPile() {
@@ -161,6 +152,24 @@ function populateEnemyHands() {
       document.getElementById("container").innerHTML += "</div>";
     }
   }
+}
+
+function fanCards(divId) {
+	// TODO Figure out a better way to wait for the DOM to be ready
+  setTimeout(function() {
+    var cardCount = document.getElementById(divId).getElementsByTagName("li")
+      .length;
+    var baraja = window.baraja(document.getElementById(divId));
+
+    baraja.fan({
+      direction: "right",
+      easing: "ease-out",
+      origin: { x: 50, y: 200 },
+      speed: 500,
+      range: cardCount * 10,
+      center: true
+    });
+  }, 500);
 }
 
 function gain() {

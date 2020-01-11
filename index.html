@@ -17,21 +17,7 @@
     <link rel="stylesheet" href="css/normalize.css" />
     <link rel="stylesheet" href="css/skeleton.css" />
     <link rel="stylesheet" href="css/baraja.min.css" media="all" />
-
-    <style>
-      body {
-        background-color: #000000;
-      }
-
-      .row {
-        margin-bottom: 1%;
-      }
-
-      .sabacc-card {
-        height: 100%;
-        width: auto;
-      }
-    </style>
+    <link rel="stylesheet" href="css/main.css" />
 
     <script src="//cdn.jsdelivr.net/npm/sweetalert"></script>
     <script src="//code.jquery.com/jquery-3.4.1.min.js"></script>
@@ -55,11 +41,6 @@
     </script>
   </head>
   <body onload="init()">
-    <ul id="baraja-el" class="baraja-container">
-      <li><img class="sabacc-card" src="images/cards/back.png" /></li>
-      <li><img class="sabacc-card" src="images/cards/back.png" /></li>
-    </ul>
-
     <div id="container" class="container">
       <div id="action-buttons" class="row" style="margin-top: 10%">
         <div class="u-full-width">
@@ -96,7 +77,11 @@
           <h4 id="your-hand-header">Your Hand</h4>
         </div>
       </div>
-      <div id="your-hand-cards" class="row"></div>
+      <div class="row">
+        <div class="u-full-width">
+          <ul id="your-hand-cards" class="baraja-container"></ul>
+        </div>
+      </div>
 
       <div class="row">
         <div class="u-full-width">
