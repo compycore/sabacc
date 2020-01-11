@@ -4,12 +4,24 @@ var backendEndpoint = "https://jessemillar-sabacc.herokuapp.com/sabacc";
 
 // Global variables
 var turnTaken = false;
-var database;
 var pickAction = "Pick your action!";
 var database = JSON.parse(decodeURIComponent(window.location.search.substr(1)));
 console.log(database);
 
 function init() {
+  var baraja = window.baraja(document.getElementById("baraja-el"));
+
+  baraja.fan({
+    direction: "right",
+    easing: "ease-out",
+    origin: { minX: 20, maxX: 80, y: 100 },
+    speed: 500,
+    range: 90,
+    translation: 60,
+    center: true,
+    scatter: true
+  });
+
   if (database && database.rematch && database.rematch.length > 0) {
     playerString = "";
     database.players = [];
