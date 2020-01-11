@@ -40,12 +40,14 @@ function init() {
 }
 
 function startNewGame() {
-  Swal.fire(
-    "Enter email addresses (separated by a comma) of the people you want to play with:",
-    {
-      content: "input"
-    }
-  ).then(result => {
+  Swal.fire({
+		title: "Start a new game!",
+    text: "Enter email addresses (separated by a comma) of the people you want to play with:",
+		input: "text",
+		inputAttributes: {
+    autocapitalize: "off"
+  },
+	}).then(result => {
     if (
       result.value.split(",").length > 1 &&
       result.value.split(",").length <= 8
@@ -112,9 +114,10 @@ function populateDiscardPile() {
 function addCardToHand(barajaDivId, card, onclick) {
   var cardCount = getLiCount(barajaDivId);
 
+	// TODO Use the nice deck animations by uncommenting and fixing the below stuff
   var hand = document.getElementById(barajaDivId);
   if (cardCount > 1) {
-    hand = window.baraja(document.getElementById(barajaDivId));
+    // hand = window.baraja(document.getElementById(barajaDivId));
   }
 
   var li = document.createElement("li");
@@ -135,7 +138,8 @@ function addCardToHand(barajaDivId, card, onclick) {
   }
 
   if (cardCount > 1) {
-    hand.add(li);
+    // hand.add(li.outerHTML);
+    hand.appendChild(li);
   } else {
     hand.appendChild(li);
   }
@@ -342,6 +346,7 @@ function endTurn(callback) {
         title: "Data saved!",
         text: "Please wait for the next email.",
         icon: "success",
+    confirmButtonColor: "#33C3F0",
 				confirmButtonText: "Patience, young padawan"
       }).then(wipePage());
     } else {
