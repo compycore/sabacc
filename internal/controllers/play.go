@@ -5,6 +5,7 @@ import (
 	"net/url"
 	"os"
 	"strconv"
+	"strings"
 
 	"github.com/jessemillar/sabacc/internal/deck"
 	"github.com/jessemillar/sabacc/internal/email"
@@ -34,6 +35,8 @@ func gameLoop(queryString string) (models.Database, error) {
 	if len(database.Codename) == 0 {
 		database.Codename = helpers.GetCodename()
 	}
+	// Remove "+" characters
+	database.Codename = strings.ReplaceAll(database.Codename, "+", " ")
 
 	if database.Draw == (deck.Card{}) {
 		gameDeck, database.Draw = deck.DealSingle(gameDeck)
