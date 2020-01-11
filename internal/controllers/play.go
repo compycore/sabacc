@@ -94,7 +94,7 @@ func gameLoop(queryString string) (models.Database, error) {
 		// TODO Break this into a function
 		finalResultsMessage := ""
 		for _, player := range database.AllPlayers {
-			finalResultsMessage = finalResultsMessage + player.Email + " got a final score of " + strconv.Itoa(player.Score) + " with a hand of " + getHandString(player.Hand) + "\n\n"
+			finalResultsMessage = finalResultsMessage + player.Email + " got a final score of " + strconv.Itoa(player.Score) + " with a hand of " + getHandString(player.Hand)
 		}
 
 		rematchDatabase := models.Database{}
@@ -105,7 +105,7 @@ func gameLoop(queryString string) (models.Database, error) {
 			return models.Database{}, err
 		}
 
-		finalResultsMessage = finalResultsMessage + `\n\n<a href="` + os.Getenv("SABACC_UI_HREF") + "?" + rematchDatabaseString + `">Click here for a rematch!</a>`
+		finalResultsMessage = finalResultsMessage + `<br><br><a href="` + os.Getenv("SABACC_UI_HREF") + "?" + rematchDatabaseString + `">Click here for a rematch!</a>`
 
 		// Send an email to every player
 		for _, player := range database.AllPlayers {
@@ -182,7 +182,7 @@ func getHandString(hand deck.Deck) string {
 	handString := ""
 
 	for _, card := range hand {
-		handString = handString + "\n" + card.Stave + " " + strconv.Itoa(card.Value)
+		handString = handString + card.Stave + " " + strconv.Itoa(card.Value) + "<br>"
 	}
 
 	return handString
