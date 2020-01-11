@@ -8,6 +8,7 @@ import (
 
 	"github.com/jessemillar/sabacc/internal/deck"
 	"github.com/jessemillar/sabacc/internal/email"
+	"github.com/jessemillar/sabacc/internal/helpers"
 	"github.com/jessemillar/sabacc/internal/models"
 	"github.com/labstack/echo"
 )
@@ -29,6 +30,10 @@ func gameLoop(queryString string) (models.Database, error) {
 	}
 
 	gameDeck := prepDeck(database)
+
+	if len(database.Codename) == 0 {
+		database.Codename = helpers.GetCodename()
+	}
 
 	if database.Draw == (deck.Card{}) {
 		gameDeck, database.Draw = deck.DealSingle(gameDeck)
@@ -65,7 +70,7 @@ func gameLoop(queryString string) (models.Database, error) {
 		if previousTurn < 0 {
 			previousTurn = len(database.AllPlayers) - 1
 		}
-		email.SendConfirmation(database.AllPlayers[previousTurn].Email, getHandString(database.AllPlayers[previousTurn].Hand), strconv.Itoa(database.AllPlayers[previousTurn].Score))
+		email.SendConfirmation(database.AllPlayers[previousTurn].Email, database.Codename, getHandString(database.AllPlayers[previousTurn].Hand), strconv.Itoa(database.AllPlayers[previousTurn].Score))
 	}
 
 	// Only set the round to 1 if it's a new game (as opposed to deleting hands because the dice were doubles)
@@ -85,7 +90,7 @@ func gameLoop(queryString string) (models.Database, error) {
 			allEmailAddresses = allEmailAddresses + player.Email + ", "
 		}
 
-		err = email.SendLink(database.AllPlayers[database.Turn].Email, allEmailAddresses, os.Getenv("SABACC_UI_HREF")+"?"+encodedDatabase, database.Round)
+		err = email.SendLink(database.AllPlayers[database.Turn].Email, allEmailAddresses, database.Codename, os.Getenv("SABACC_UI_HREF")+"?"+encodedDatabase, database.Round)
 		if err != nil {
 			return models.Database{}, err
 		}
@@ -110,7 +115,7 @@ func gameLoop(queryString string) (models.Database, error) {
 		// Send an email to every player
 		for _, player := range database.AllPlayers {
 			// TODO Make the function smart enough to not need both HTML and plain if only plain is passed
-			err = email.SendMessage(player.Email, finalResultsMessage, finalResultsMessage)
+			err = email.SendMessage(player.Email, database.Codename, finalResultsMessage, finalResultsMessage)
 			if err != nil {
 				return models.Database{}, err
 			}

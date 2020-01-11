@@ -3,6 +3,7 @@ package models
 import "github.com/jessemillar/sabacc/internal/deck"
 
 type Database struct {
+	Codename    string    `json:"codename"`
 	Round       int       `json:"round"`
 	Turn        int       `json:"turn"`
 	AllPlayers  []Player  `json:"players"`

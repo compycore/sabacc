@@ -4,27 +4,28 @@ import (
 	"errors"
 	"os"
 	"strconv"
+	"strings"
 
 	"github.com/sendgrid/sendgrid-go"
 	"github.com/sendgrid/sendgrid-go/helpers/mail"
 )
 
-func SendLink(emailAddress string, allEmailAddreses string, linkString string, round int) error {
+func SendLink(emailAddress string, allEmailAddreses string, codename string, linkString string, round int) error {
 	plainTextContent := "It's round " + strconv.Itoa(round) + " in your Sabacc game against " + allEmailAddreses + "! Click here to take your turn, " + emailAddress + "!" + linkString
 	htmlContent := `It's round ` + strconv.Itoa(round) + ` in your game against ` + allEmailAddreses + `!<br><br><a href="` + linkString + `">Click here to take your turn, ` + emailAddress + `!</a>`
-	return SendMessage(emailAddress, plainTextContent, htmlContent)
+	return SendMessage(emailAddress, codename, plainTextContent, htmlContent)
 }
 
-func SendConfirmation(emailAddress string, hand string, score string) error {
+func SendConfirmation(emailAddress string, codename string, hand string, score string) error {
 	message := "Your turn has been recorded. Your hand is currently " + hand + " with a score of " + score + ". Please wait patiently for the next email alerting you that it's your turn."
-	return SendMessage(emailAddress, message, message)
+	return SendMessage(emailAddress, codename, message, message)
 }
 
-func SendMessage(emailAddress string, messagePlain string, messageHTML string) error {
+func SendMessage(toEmailAddress string, codename string, messagePlain string, messageHTML string) error {
 	if len(os.Getenv("SABACC_DEBUG")) == 0 {
-		from := mail.NewEmail("Sabaac Dealer", "sabaac@jessemillar.com")
-		subject := "Your Sabacc Game"
-		to := mail.NewEmail("Sabacc Player", emailAddress)
+		from := mail.NewEmail("Sabaac Dealer", getFromEmailAddress(codename))
+		subject := "Your Sabacc Game (Codename: " + codename + ")"
+		to := mail.NewEmail("Sabacc Player", toEmailAddress)
 
 		message := mail.NewSingleEmail(from, subject, to, messagePlain, messageHTML)
 
@@ -42,4 +43,8 @@ func SendMessage(emailAddress string, messagePlain string, messageHTML string) e
 	}
 
 	return nil
+}
+
+func getFromEmailAddress(codename string) string {
+	return strings.ToLower(strings.ReplaceAll(codename, " ", "-")) + "@jessemillar.com"
 }
