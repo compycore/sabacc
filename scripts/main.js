@@ -34,7 +34,6 @@ function init() {
   } else if (database && database.players.length > 0) {
     // Play the game if there's a game going
     populatePage();
-    swal(pickAction);
   } else {
     startNewGame();
   }
@@ -99,35 +98,55 @@ function populateScore() {
     "Your Hand (Score: " + player.score + ")";
 }
 
+function populateDiscardPile() {
+  addCardToHand(
+    "discard-pile",
+    database.discards[database.discards.length - 1],
+    function() {
+      promptSwap();
+    }
+  );
+}
+
+function addCardToHand(barajaDivId, card, onclick) {
+  var cardCount = getLiCount(barajaDivId);
+
+  var hand = document.getElementById(barajaDivId);
+  if (cardCount > 1) {
+    hand = window.baraja(document.getElementById(barajaDivId));
+  }
+
+  var li = document.createElement("li");
+  var image = document.createElement("img");
+  image.className = "sabacc-card";
+  image.src = getCardFilename(card);
+  if (card != "back") {
+    if (!onclick) {
+      image.onclick = function() {
+        swap(JSON.stringify(card));
+      };
+    } else {
+      image.onclick = onclick;
+    }
+  }
+  li.appendChild(image);
+
+  if (cardCount > 1) {
+    hand.add(li);
+  } else {
+    hand.appendChild(li);
+  }
+}
+
 // Populate card image divs
 function populateYourHand() {
   var hand = database.players[database.turn].hand;
 
   for (var i = 0; i < hand.length; i++) {
-    var card = hand[i];
-
-    var ul = document.getElementById("your-hand-cards");
-    var li = document.createElement("li");
-    var image = document.createElement("img");
-    image.className = "sabacc-card";
-    image.src = getCardFilename(card);
-    image.onclick = "swap(" + JSON.stringify(card) + ")";
-    li.appendChild(image);
-    ul.appendChild(li);
+    addCardToHand("your-hand-cards", hand[i]);
   }
 
   fanCards("your-hand-cards");
-}
-
-function populateDiscardPile() {
-  document.getElementById("discard-pile").innerHTML +=
-    "<div class='two columns'><img src='" +
-    getCardFilename(database.discards[database.discards.length - 1]) +
-    "' class='u-max-full-width' onclick='promptSwap()' style='cursor: pointer;' /></div>";
-}
-
-function promptSwap() {
-  swal("Tap a card in your hand to swap it with the one in the discard pile.");
 }
 
 function populateEnemyHands() {
@@ -141,34 +160,30 @@ function populateEnemyHands() {
       document.getElementById("container").innerHTML += "</div>";
       document.getElementById("container").innerHTML += "</div>";
       document.getElementById("container").innerHTML += '<div class="row">';
+      document.getElementById("container").innerHTML +=
+        '<div class="u-full-width">';
+      document.getElementById("container").innerHTML +=
+        '<ul id="enemyHand' + i + '" class="baraja-container"></ul>';
+      document.getElementById("container").innerHTML += "</div>";
 
       var hand = database.players[i].hand;
 
       for (var j = 0; j < hand.length; j++) {
-        document.getElementById("container").innerHTML +=
-          '<div class="two columns"><img src="images/cards/back.png" class="u-max-full-width" /></div>';
+        addCardToHand("enemyHand" + i, "back");
       }
 
-      document.getElementById("container").innerHTML += "</div>";
+      fanCards("enemyHand" + i);
     }
   }
 }
 
 function fanCards(divId) {
-	// TODO Figure out a better way to wait for the DOM to be ready
+  // TODO Figure out a better way to wait for the DOM to be ready
   setTimeout(function() {
-    var cardCount = document.getElementById(divId).getElementsByTagName("li")
-      .length;
+    var cardCount = getLiCount(divId);
     var baraja = window.baraja(document.getElementById(divId));
 
-    baraja.fan({
-      direction: "right",
-      easing: "ease-out",
-      origin: { x: 50, y: 200 },
-      speed: 500,
-      range: cardCount * 10,
-      center: true
-    });
+    baraja.fan();
   }, 500);
 }
 
@@ -345,6 +360,8 @@ function getCardColor(cardValue) {
 function getCardFilename(card) {
   if (card.value == 0) {
     return "images/cards/zero.png";
+  } else if (card == "back") {
+    return "images/cards/back.png";
   } else {
     return "images/cards/" + getCardString(card, "-") + ".png";
   }
@@ -358,4 +375,12 @@ function getCardString(card, separator = " ") {
     separator +
     Math.abs(card.value)
   );
+}
+
+function promptSwap() {
+  swal("Tap a card in your hand to swap it with the one in the discard pile.");
+}
+
+function getLiCount(ulId) {
+  return document.getElementById(ulId).getElementsByTagName("li").length;
 }
