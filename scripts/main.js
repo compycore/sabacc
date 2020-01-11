@@ -281,12 +281,18 @@ function stand() {
   Swal.fire({
     title: "You want to stand?",
     text: "You're sure you want to do nothing for your turn?",
-    icon: "warning",
-    buttons: ["Nah.", "Yeah!"]
-  }).then(willStand => {
-    if (willStand) {
+    icon: "question",
+    showCancelButton: true,
+    focusConfirm: false,
+    showCloseButton: true,
+    confirmButtonText: "Yes",
+    confirmButtonColor: "#33C3F0",
+    cancelButtonText: "No",
+    cancelButtonColor: "#33C3F0"
+  }).then(result => {
+    if (result.value) {
       endTurn();
-    } else {
+    } else if (result.dismiss === Swal.DismissReason.cancel) {
       Swal.fire(pickAction);
     }
   });
@@ -297,18 +303,23 @@ function trash() {
     title: "Are you sure you want to trash?",
     text: "If you trash, you drop out of the game permanently.",
     icon: "warning",
-    buttons: ["Nope!", "Yes."],
-    dangerMode: true
-  }).then(willDelete => {
-    if (willDelete) {
+    showCancelButton: true,
+    focusConfirm: false,
+    showCloseButton: true,
+    confirmButtonText: "Yes",
+    confirmButtonColor: "#ff0000",
+    cancelButtonText: "No",
+    cancelButtonColor: "#33C3F0"
+  }).then(result => {
+    if (result.value) {
       database.players.splice(database.turn, 1);
       endTurn(function() {
         Swal.fire("You've withdrawn from the game.", {
           icon: "success",
-          button: "'Til the Spire."
+          confirmButtonText: "'Til the Spire."
         });
       });
-    } else {
+    } else if (result.dismiss === Swal.DismissReason.cancel) {
       Swal.fire("You're still in the game!");
     }
   });
@@ -318,7 +329,7 @@ function endTurn(callback) {
   Swal.fire({
     title: "Saving data...",
     text: "Please don't close the page. This may take a moment.",
-		showConfirmButton: false
+    showConfirmButton: false
   });
 
   // Make an API call to the backend with the updated database info
