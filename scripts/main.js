@@ -25,11 +25,15 @@ function init() {
     database.rematch = null;
 
     endTurn(function() {
-      Swal.fire(
-        "A rematch has started with " +
+      Swal.fire({
+        icon: "success",
+        title: "Rematch started!",
+        text:
+          "A rematch has started with " +
           playerString.split(",").join(", ") +
-          ". The first player listed will now receive an email! You can now close this window."
-      );
+          ". The first player listed will now receive an email! You can now close this window.",
+        confirmButtonColor: "#33C3F0"
+      });
     });
   } else if (database && database.players.length > 0) {
     // Play the game if there's a game going
@@ -41,13 +45,14 @@ function init() {
 
 function startNewGame() {
   Swal.fire({
-		title: "Start a new game!",
-    text: "Enter email addresses (separated by a comma) of the people you want to play with:",
-		input: "text",
-		inputAttributes: {
-    autocapitalize: "off"
-  },
-	}).then(result => {
+    title: "Start a new game!",
+    text:
+      "Enter email addresses (separated by a comma) of the people you want to play with:",
+    input: "text",
+    inputAttributes: {
+      autocapitalize: "off"
+    }
+  }).then(result => {
     if (
       result.value.split(",").length > 1 &&
       result.value.split(",").length <= 8
@@ -114,7 +119,7 @@ function populateDiscardPile() {
 function addCardToHand(barajaDivId, card, onclick) {
   var cardCount = getLiCount(barajaDivId);
 
-	// TODO Use the nice deck animations by uncommenting and fixing the below stuff
+  // TODO Use the nice deck animations by uncommenting and fixing the below stuff
   var hand = document.getElementById(barajaDivId);
   if (cardCount > 1) {
     // hand = window.baraja(document.getElementById(barajaDivId));
@@ -346,8 +351,8 @@ function endTurn(callback) {
         title: "Data saved!",
         text: "Please wait for the next email.",
         icon: "success",
-    confirmButtonColor: "#33C3F0",
-				confirmButtonText: "Patience, young padawan"
+        confirmButtonColor: "#33C3F0",
+        confirmButtonText: "Patience, young padawan"
       }).then(wipePage());
     } else {
       callback();
