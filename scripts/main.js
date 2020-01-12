@@ -7,8 +7,11 @@ var turnTaken = false;
 var pickAction = "Pick your action!";
 var database = JSON.parse(decodeURIComponent(window.location.search.substr(1)));
 console.log(database);
+var warp;
 
 function init() {
+  warp = new WarpSpeed("canvas", { speedAdjFactor: 0.02 });
+
   if (database && database.rematch && database.rematch.length > 0) {
     playerString = "";
     database.players = [];
@@ -335,6 +338,8 @@ function trash() {
 }
 
 function endTurn(callback) {
+  punchItChewie();
+
   Swal.fire({
     title: "Saving data...",
     text: "Please don't close the page. This may take a moment.",
@@ -410,4 +415,8 @@ function promptSwap() {
 
 function getLiCount(ulId) {
   return document.getElementById(ulId).getElementsByTagName("li").length;
+}
+
+function punchItChewie() {
+  warp.TARGET_SPEED = 50;
 }
