@@ -235,7 +235,7 @@ function swap(card) {
     );
 
     Swal.fire({
-      title: "What is the fate of this card?",
+      title: "Your " + getCardString(card) + "?",
       html:
         "Do you want to discard your " +
         getCardString(card) +
