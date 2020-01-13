@@ -23,7 +23,7 @@ func SendConfirmation(emailAddress string, codename string, hand string, score s
 
 func SendMessage(toEmailAddress string, codename string, messagePlain string, messageHTML string) error {
 	if len(os.Getenv("SABACC_DEBUG")) == 0 {
-		from := mail.NewEmail("Sabaac Dealer", getFromEmailAddress(codename))
+		from := mail.NewEmail("Sabacc Dealer", getFromEmailAddress(codename))
 		subject := "Your Sabacc Game (Codename: " + codename + ")"
 		to := mail.NewEmail("Sabacc Player", toEmailAddress)
 
