@@ -10,6 +10,7 @@ import (
 	"github.com/jessemillar/sabacc/internal/models"
 )
 
+// A struct representing a mid-game state (used in a couple tests, but not all)
 var databaseStruct = models.Database{
 	Round: 0,
 	Turn:  0,
@@ -390,5 +391,213 @@ func TestTrashing(t *testing.T) {
 
 	if len(resultDatabase.Result) == 0 {
 		t.Error("There were no game results after trashing")
+	}
+}
+
+// TODO Write a test that checks the dealer rotation for 2 players and for more than 3 players
+func TestDealerRotation(t *testing.T) {
+	// An empty struct with only emails starts the game
+	startingDatabase := models.Database{
+		AllPlayers: []models.Player{
+			{
+				Email: "hellojessemillar@gmail.com",
+			},
+			{
+				Email: "penguinshatestuff@gmail.com",
+			},
+			{
+				Email: "michael@compycore.com",
+			},
+		},
+	}
+
+	// Pass the bare database to the game loop to start the game
+	resultDatabase, err := gameLoop(databaseToURI(startingDatabase))
+	if err != nil {
+		t.Error(err)
+	}
+
+	// ----------
+	// Round 1 - Player 2 (Player 1 as dealer)
+	// ----------
+
+	// Check that the correct player is the dealer
+	if resultDatabase.Dealer != 0 {
+		t.Errorf("Wrong player is the dealer; want: %d, got: %d", 0, resultDatabase.Dealer)
+	}
+
+	// Check that the correct player is taking their turn
+	if resultDatabase.Turn != 1 {
+		t.Errorf("Wrong player taking their turn; want: %d, got: %d", 1, resultDatabase.Dealer)
+	}
+
+	// Send the updated database to take a mock turn
+	resultDatabase, err = gameLoop(databaseToURI(resultDatabase))
+	if err != nil {
+		t.Error(err)
+	}
+
+	// ----------
+	// Round 1 - Player 3 (Player 1 as dealer)
+	// ----------
+
+	// Check that the correct player is the dealer
+	if resultDatabase.Dealer != 0 {
+		t.Errorf("Wrong player is the dealer; want: %d, got: %d", 0, resultDatabase.Dealer)
+	}
+
+	// Check that the correct player is taking their turn
+	if resultDatabase.Turn != 2 {
+		t.Errorf("Wrong player taking their turn; want: %d, got: %d", 2, resultDatabase.Dealer)
+	}
+
+	// Send the updated database to take a mock turn
+	resultDatabase, err = gameLoop(databaseToURI(resultDatabase))
+	if err != nil {
+		t.Error(err)
+	}
+
+	// ----------
+	// Round 1 - Player 1 (Player 1 as dealer)
+	// ----------
+
+	// Check that the correct player is the dealer
+	if resultDatabase.Dealer != 0 {
+		t.Errorf("Wrong player is the dealer; want: %d, got: %d", 0, resultDatabase.Dealer)
+	}
+
+	// Check that the correct player is taking their turn
+	if resultDatabase.Turn != 0 {
+		t.Errorf("Wrong player taking their turn; want: %d, got: %d", 0, resultDatabase.Dealer)
+	}
+
+	// Send the updated database to take a mock turn
+	resultDatabase, err = gameLoop(databaseToURI(resultDatabase))
+	if err != nil {
+		t.Error(err)
+	}
+
+	// ----------
+	// Round 2 - Player 3 (Player 2 as dealer)
+	// ----------
+
+	// Check that the correct player is the dealer
+	if resultDatabase.Dealer != 1 {
+		t.Errorf("Wrong player is the dealer; want: %d, got: %d", 1, resultDatabase.Dealer)
+	}
+
+	// Check that the correct player is taking their turn
+	if resultDatabase.Turn != 2 {
+		t.Errorf("Wrong player taking their turn; want: %d, got: %d", 2, resultDatabase.Dealer)
+	}
+
+	// Send the updated database to take a mock turn
+	resultDatabase, err = gameLoop(databaseToURI(resultDatabase))
+	if err != nil {
+		t.Error(err)
+	}
+
+	// ----------
+	// Round 2 - Player 1 (Player 2 as dealer)
+	// ----------
+
+	// Check that the correct player is the dealer
+	if resultDatabase.Dealer != 1 {
+		t.Errorf("Wrong player is the dealer; want: %d, got: %d", 1, resultDatabase.Dealer)
+	}
+
+	// Check that the correct player is taking their turn
+	if resultDatabase.Turn != 0 {
+		t.Errorf("Wrong player taking their turn; want: %d, got: %d", 0, resultDatabase.Dealer)
+	}
+
+	// Send the updated database to take a mock turn
+	resultDatabase, err = gameLoop(databaseToURI(resultDatabase))
+	if err != nil {
+		t.Error(err)
+	}
+
+	// ----------
+	// Round 2 - Player 2 (Player 2 as dealer)
+	// ----------
+
+	// Check that the correct player is the dealer
+	if resultDatabase.Dealer != 1 {
+		t.Errorf("Wrong player is the dealer; want: %d, got: %d", 1, resultDatabase.Dealer)
+	}
+
+	// Check that the correct player is taking their turn
+	if resultDatabase.Turn != 1 {
+		t.Errorf("Wrong player taking their turn; want: %d, got: %d", 1, resultDatabase.Dealer)
+	}
+
+	// Send the updated database to take a mock turn
+	resultDatabase, err = gameLoop(databaseToURI(resultDatabase))
+	if err != nil {
+		t.Error(err)
+	}
+
+	// ----------
+	// Round 3 - Player 1 (Player 3 as dealer)
+	// ----------
+
+	// Check that the correct player is the dealer
+	if resultDatabase.Dealer != 2 {
+		t.Errorf("Wrong player is the dealer; want: %d, got: %d", 2, resultDatabase.Dealer)
+	}
+
+	// Check that the correct player is taking their turn
+	if resultDatabase.Turn != 0 {
+		t.Errorf("Wrong player taking their turn; want: %d, got: %d", 0, resultDatabase.Dealer)
+	}
+
+	// Send the updated database to take a mock turn
+	resultDatabase, err = gameLoop(databaseToURI(resultDatabase))
+	if err != nil {
+		t.Error(err)
+	}
+
+	// ----------
+	// Round 3 - Player 2 (Player 3 as dealer)
+	// ----------
+
+	// Check that the correct player is the dealer
+	if resultDatabase.Dealer != 2 {
+		t.Errorf("Wrong player is the dealer; want: %d, got: %d", 2, resultDatabase.Dealer)
+	}
+
+	// Check that the correct player is taking their turn
+	if resultDatabase.Turn != 1 {
+		t.Errorf("Wrong player taking their turn; want: %d, got: %d", 1, resultDatabase.Dealer)
+	}
+
+	// Send the updated database to take a mock turn
+	resultDatabase, err = gameLoop(databaseToURI(resultDatabase))
+	if err != nil {
+		t.Error(err)
+	}
+
+	// ----------
+	// Round 3 - Player 3 (Player 3 as dealer)
+	// ----------
+
+	// Check that the correct player is the dealer
+	if resultDatabase.Dealer != 2 {
+		t.Errorf("Wrong player is the dealer; want: %d, got: %d", 2, resultDatabase.Dealer)
+	}
+
+	// Check that the correct player is taking their turn
+	if resultDatabase.Turn != 2 {
+		t.Errorf("Wrong player taking their turn; want: %d, got: %d", 2, resultDatabase.Dealer)
+	}
+
+	// Send the updated database to take a mock turn
+	resultDatabase, err = gameLoop(databaseToURI(resultDatabase))
+	if err != nil {
+		t.Error(err)
+	}
+
+	if len(resultDatabase.Result) == 0 {
+		t.Error("There were no game results after a full game")
 	}
 }

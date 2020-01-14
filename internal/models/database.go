@@ -6,6 +6,7 @@ type Database struct {
 	Codename    string    `json:"codename"`
 	Round       int       `json:"round"`
 	Turn        int       `json:"turn"`
+	Dealer      int       `json:"dealer"`
 	AllPlayers  []Player  `json:"players"`
 	Draw        deck.Card `json:"draw"`
 	AllDiscards deck.Deck `json:"discards"`
