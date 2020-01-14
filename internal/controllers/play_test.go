@@ -150,9 +150,14 @@ func TestGameFlow(t *testing.T) {
 		t.Errorf("Round number incorrect; want: %d, got: %d", 1, resultDatabase.Round)
 	}
 
-	// Check that it's player 1's turn
-	if resultDatabase.Turn != 0 {
-		t.Errorf("Turn number incorrect; want: %d, got: %d", 0, resultDatabase.Turn)
+	// Check that player 1 is the dealer
+	if resultDatabase.Dealer != 0 {
+		t.Errorf("Turn number incorrect; want: %d, got: %d", 0, resultDatabase.Dealer)
+	}
+
+	// Check that it's player 2's turn
+	if resultDatabase.Turn != 1 {
+		t.Errorf("Turn number incorrect; want: %d, got: %d", 1, resultDatabase.Turn)
 	}
 
 	// Verify that player 1 got a hand dealt to them
@@ -176,41 +181,7 @@ func TestGameFlow(t *testing.T) {
 	}
 
 	// ----------
-	// Round 1 - Player 1
-	// ----------
-
-	// Check that the game isn't erroneously over
-	if len(resultDatabase.Result) > 0 {
-		t.Error(errors.New("The game is over prematurely"))
-	}
-
-	// Player 1 draws a card
-	resultDatabase.AllPlayers[0].Hand = append(resultDatabase.AllPlayers[0].Hand, resultDatabase.Draw)
-	resultDatabase.Draw = deck.Card{}
-
-	// Send the new database to the game loop
-	resultDatabase, err = gameLoop(databaseToURI(resultDatabase))
-	if err != nil {
-		t.Error(err)
-	}
-
-	// Verify that player 1 has the new card
-	if len(resultDatabase.AllPlayers[0].Hand) != 3 {
-		t.Errorf("Player 1 hand size incorrect; want: %d, got: %d", 3, len(resultDatabase.AllPlayers[0].Hand))
-	}
-
-	// Check that there's a new card in the draw pile
-	if resultDatabase.Draw == (deck.Card{}) {
-		t.Error("There's no card in the draw pile")
-	}
-
-	// Check that the round is the same
-	if resultDatabase.Round != 1 {
-		t.Errorf("Round number incorrect; want: %d, got: %d", 1, resultDatabase.Round)
-	}
-
-	// ----------
-	// Round 1 - Player 2
+	// Round 1 - Player 2 (Player 1 as dealer)
 	// ----------
 
 	// Check that it's player 2's turn
@@ -259,13 +230,50 @@ func TestGameFlow(t *testing.T) {
 		t.Errorf("Discard pile size incorrect; want: %d, got: %d", 1, len(resultDatabase.AllDiscards))
 	}
 
+	// Check that the round stayed the same
+	if resultDatabase.Round != 1 {
+		t.Errorf("Round number incorrect; want: %d, got: %d", 1, resultDatabase.Round)
+	}
+
+	// ----------
+	// Round 1 - Player 1 (Player 1 as dealer)
+	// ----------
+
+	// Check that the game isn't erroneously over
+	if len(resultDatabase.Result) > 0 {
+		t.Error(errors.New("The game is over prematurely"))
+	}
+
+	// Player 1 draws a card
+	resultDatabase.AllPlayers[0].Hand = append(resultDatabase.AllPlayers[0].Hand, resultDatabase.Draw)
+	resultDatabase.Draw = deck.Card{}
+
+	// Tell the backend that we rolled the dice
+	resultDatabase.Rolled = true
+
+	// Send the new database to the game loop
+	resultDatabase, err = gameLoop(databaseToURI(resultDatabase))
+	if err != nil {
+		t.Error(err)
+	}
+
+	// Verify that player 1 has the new card
+	if len(resultDatabase.AllPlayers[0].Hand) != 3 {
+		t.Errorf("Player 1 hand size incorrect; want: %d, got: %d", 3, len(resultDatabase.AllPlayers[0].Hand))
+	}
+
+	// Check that there's a new card in the draw pile
+	if resultDatabase.Draw == (deck.Card{}) {
+		t.Error("There's no card in the draw pile")
+	}
+
 	// Check that the round increased
 	if resultDatabase.Round != 2 {
 		t.Errorf("Round number incorrect; want: %d, got: %d", 2, resultDatabase.Round)
 	}
 
 	// ----------
-	// Round 2 - Player 1
+	// Round 2 - Player 1 (Player 2 as dealer)
 	// ----------
 
 	// Check that it's player 1's turn
@@ -287,7 +295,7 @@ func TestGameFlow(t *testing.T) {
 	}
 
 	// ----------
-	// Round 2 - Player 2
+	// Round 2 - Player 2 (Player 2 as dealer)
 	// ----------
 
 	// Check that it's player 2's turn
@@ -302,6 +310,9 @@ func TestGameFlow(t *testing.T) {
 	resultDatabase.AllPlayers[1].Hand = append(resultDatabase.AllPlayers[1].Hand, resultDatabase.Draw)
 	resultDatabase.Draw = deck.Card{}
 
+	// Tell the backend that we rolled the dice
+	resultDatabase.Rolled = true
+
 	// Send the updated database to the game loop
 	resultDatabase, err = gameLoop(databaseToURI(resultDatabase))
 	if err != nil {
@@ -314,15 +325,15 @@ func TestGameFlow(t *testing.T) {
 	}
 
 	// ----------
-	// Round 3 - Player 1
+	// Round 3 - Player 2 (Player 1 as dealer)
 	// ----------
 
-	// Check that it's player 1's turn
-	if resultDatabase.Turn != 0 {
+	// Check that it's player 2's turn
+	if resultDatabase.Turn != 1 {
 		t.Errorf("Turn number incorrect; want: %d, got: %d", 1, resultDatabase.Turn)
 	}
 
-	// Player 1 stands (does nothing)
+	// Player 2 stands (does nothing)
 
 	// Send the untouched database to the game loop
 	resultDatabase, err = gameLoop(databaseToURI(resultDatabase))
@@ -336,15 +347,18 @@ func TestGameFlow(t *testing.T) {
 	}
 
 	// ----------
-	// Round 3 - Player 2
+	// Round 3 - Player 1 (Player 1 as dealer)
 	// ----------
 
-	// Check that it's player 2's turn
-	if resultDatabase.Turn != 1 {
+	// Check that it's player 1's turn
+	if resultDatabase.Turn != 0 {
 		t.Errorf("Turn number incorrect; want: %d, got: %d", 1, resultDatabase.Turn)
 	}
 
-	// Player 2 stands (does nothing)
+	// Player 1 stands (does nothing)
+
+	// Tell the backend that we rolled the dice
+	resultDatabase.Rolled = true
 
 	// Send the untouched database to the game loop
 	resultDatabase, err = gameLoop(databaseToURI(resultDatabase))
