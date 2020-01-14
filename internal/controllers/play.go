@@ -61,37 +61,21 @@ func gameLoop(queryString string) (models.Database, error) {
 
 	// Send emails
 	if !isGameOver(database) {
+		// Since the game is not over, notify the next player that it's their turn
 		err = sendNextTurnEmail(database)
 		if err != nil {
 			return models.Database{}, err
 		}
 	} else {
 		// TODO Determine who won
-		finalResultsMessage := ""
-		for _, player := range database.AllPlayers {
-			finalResultsMessage = finalResultsMessage + player.Email + " got a final score of " + strconv.Itoa(player.Score) + " with a hand of " + getHandString(player.Hand)
-		}
+		// Set a value to database.Result so the tests can know that a match finished
+		database.Result = generateResultString(database)
 
-		rematchDatabase := models.Database{}
-		rematchDatabase.Rematch = database.AllPlayers
-
-		rematchDatabaseString, err := encodeDatabase(rematchDatabase)
+		// Send a game over email to every player
+		err = sendGameOverEmails(database)
 		if err != nil {
 			return models.Database{}, err
 		}
-
-		finalResultsMessage = finalResultsMessage + `<br><br><a href="` + os.Getenv("SABACC_UI_HREF") + "?" + rematchDatabaseString + `">Click here for a rematch!</a>`
-
-		// Send an email to every player
-		for _, player := range database.AllPlayers {
-			// TODO Make the function smart enough to not need both HTML and plain if only plain is passed
-			err = email.SendMessage(player.Email, database.Codename, finalResultsMessage, finalResultsMessage)
-			if err != nil {
-				return models.Database{}, err
-			}
-		}
-
-		database.Result = finalResultsMessage
 	}
 
 	return database, nil
@@ -257,4 +241,43 @@ func sendNextTurnEmail(database models.Database) error {
 	}
 
 	return nil
+}
+
+func sendGameOverEmails(database models.Database) error {
+	// Send an email to every player
+	for _, player := range database.AllPlayers {
+		// TODO Make the function smart enough to not need both HTML and plain if only plain is passed
+		// TODO Decide if I'm gonna handle text-only emails or if HTML is required
+		err := email.SendMessage(player.Email, database.Codename, database.Result, database.Result)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func generateResultString(database models.Database) string {
+	return generateHandSummaries(database) + "<br><br>" + generateRematchLink(database)
+}
+
+func generateHandSummaries(database models.Database) string {
+	finalResultsMessage := ""
+	for _, player := range database.AllPlayers {
+		finalResultsMessage = finalResultsMessage + player.Email + " got a final score of " + strconv.Itoa(player.Score) + " with a hand of " + getHandString(player.Hand)
+	}
+
+	return finalResultsMessage
+}
+
+func generateRematchLink(database models.Database) string {
+	rematchDatabase := models.Database{}
+	rematchDatabase.Rematch = database.AllPlayers
+
+	rematchDatabaseString, err := encodeDatabase(rematchDatabase)
+	if err != nil {
+		return models.Database{}, err
+	}
+
+	return `<a href="` + os.Getenv("SABACC_UI_HREF") + "?" + rematchDatabaseString + `">Click here for a rematch!</a>`
 }
