@@ -420,3 +420,14 @@ function getLiCount(ulId) {
 function punchItChewie() {
   warp.TARGET_SPEED = 50;
 }
+
+function rollDice() {
+  var face = 1;
+
+  $(".cube1").attr("class", "cube cube1 show" + face);
+  if (face == 6) {
+    face = 1;
+  } else {
+    face++;
+  }
+}
