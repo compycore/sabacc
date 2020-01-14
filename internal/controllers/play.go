@@ -50,14 +50,14 @@ func gameLoop(queryString string) (models.Database, error) {
 	// Calculate player scores
 	database = calculatePlayerScores(database)
 
-	// Send an email confirmation to the player that just took their turn
+	// Send an email confirmation to the player that just took their turn (as long as the game has started)
 	sendTurnConfirmationEmail(database)
 
 	// We use round 0 as an indicator that a game is just starting; we need to increase that to round 1 now that everything is set up
-	database.Round = endRoundZero(database)
+	database = endRoundZero(database)
 
-	// Change whose turn it is
-	database.Turn = increaseTurn(database)
+	// Change whose turn it is (also increase the round and change the dealer if necessary)
+	database = endTurn(database)
 
 	// Send emails
 	if !isGameOver(database) {
@@ -180,17 +180,33 @@ func populateDraw(database models.Database, gameDeck deck.Deck) (deck.Deck, deck
 	return gameDeck, database.Draw
 }
 
-func increaseTurn(database models.Database) int {
-	if database.Round > 0 {
-		database.Turn = database.Turn + 1
-	}
-
-	if database.Turn == len(database.AllPlayers) {
+func endTurn(database models.Database) models.Database {
+	if database.Rolled && database.Turn == database.Dealer {
 		database.Round = database.Round + 1
-		database.Turn = 0
+		database.Dealer = changeDealer(database)
+		database.Turn = database.Dealer
+		database.Rolled = false
 	}
 
-	return database.Turn
+	database.Turn = increaseTurn(database)
+
+	return database
+}
+
+func increaseTurn(database models.Database) int {
+	if database.Turn+1 < len(database.AllPlayers) {
+		return database.Turn + 1
+	}
+
+	return 0
+}
+
+func changeDealer(database models.Database) int {
+	if database.Dealer+1 < len(database.AllPlayers) {
+		return database.Dealer + 1
+	}
+
+	return 0
 }
 
 func dealHands(database models.Database, gameDeck deck.Deck) (models.Database, deck.Deck) {
@@ -213,12 +229,12 @@ func populateDiscard(database models.Database, gameDeck deck.Deck) (models.Datab
 	return database, gameDeck
 }
 
-func endRoundZero(database models.Database) int {
+func endRoundZero(database models.Database) models.Database {
 	if database.Round == 0 {
-		return 1
+		database.Round = 1
 	}
 
-	return database.Round
+	return database
 }
 
 func sendTurnConfirmationEmail(database models.Database) {

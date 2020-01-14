@@ -614,6 +614,9 @@ func TestDealerRotationThreePlayers(t *testing.T) {
 		t.Errorf("Wrong player taking their turn; want: %d, got: %d", 0, resultDatabase.Dealer)
 	}
 
+	// Tell the backend that we rolled the dice
+	resultDatabase.Rolled = true
+
 	// Send the updated database to take a mock turn
 	resultDatabase, err = gameLoop(databaseToURI(resultDatabase))
 	if err != nil {
