@@ -1055,3 +1055,56 @@ func TestDealerRotationFourPlayers(t *testing.T) {
 		t.Error("There were no game results after a full game")
 	}
 }
+
+func TestNewHandsAfterDiceDiscard(t *testing.T) {
+	// An empty struct with only emails starts the game
+	startingDatabase := models.Database{
+		AllPlayers: []models.Player{
+			{
+				Email: "hellojessemillar@gmail.com",
+			},
+			{
+				Email: "penguinshatestuff@gmail.com",
+			},
+			{
+				Email: "michael@compycore.com",
+			},
+		},
+	}
+
+	// Pass the bare database to the game loop to start the game
+	resultDatabase, err := gameLoop(databaseToURI(startingDatabase))
+	if err != nil {
+		t.Error(err)
+	}
+
+	for i, player := range resultDatabase.AllPlayers {
+		for _, card := range player.Hand {
+			resultDatabase.AllDiscards = append(resultDatabase.AllDiscards, card)
+		}
+
+		player.Hand = []deck.Card{}
+
+		if len(player.Hand) != 0 {
+			t.Errorf("Wrong hand count for player %d; want: %d, got: %d", i, 0, len(player.Hand))
+		}
+	}
+
+	// Pass the modified database back to the server to deal new hands
+	resultDatabase, err = gameLoop(databaseToURI(resultDatabase))
+	if err != nil {
+		t.Error(err)
+	}
+
+	// Check that all players have new hands
+	for i, player := range resultDatabase.AllPlayers {
+		if len(player.Hand) != 2 {
+			t.Errorf("Wrong hand count for player %d; want: %d, got: %d", i, 2, len(player.Hand))
+		}
+	}
+
+	// Check that the discard pile has 7 cards in it (6 from the players and 1 from the start of the game)
+	if len(resultDatabase.AllDiscards) != 7 {
+		t.Errorf("Wrong number of cards in the discard pile; want: %d, got: %d", 7, len(resultDatabase.AllDiscards))
+	}
+}
