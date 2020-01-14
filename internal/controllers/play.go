@@ -69,7 +69,10 @@ func gameLoop(queryString string) (models.Database, error) {
 	} else {
 		// TODO Determine who won
 		// Set a value to database.Result so the tests can know that a match finished
-		database.Result = generateResultString(database)
+		database.Result, err = generateResultString(database)
+		if err != nil {
+			return models.Database{}, err
+		}
 
 		// Send a game over email to every player
 		err = sendGameOverEmails(database)
@@ -257,8 +260,13 @@ func sendGameOverEmails(database models.Database) error {
 	return nil
 }
 
-func generateResultString(database models.Database) string {
-	return generateHandSummaries(database) + "<br><br>" + generateRematchLink(database)
+func generateResultString(database models.Database) (string, error) {
+	rematchLink, err := generateRematchLink(database)
+	if err != nil {
+		return "", err
+	}
+
+	return generateHandSummaries(database) + "<br><br>" + rematchLink, nil
 }
 
 func generateHandSummaries(database models.Database) string {
@@ -270,14 +278,14 @@ func generateHandSummaries(database models.Database) string {
 	return finalResultsMessage
 }
 
-func generateRematchLink(database models.Database) string {
+func generateRematchLink(database models.Database) (string, error) {
 	rematchDatabase := models.Database{}
 	rematchDatabase.Rematch = database.AllPlayers
 
 	rematchDatabaseString, err := encodeDatabase(rematchDatabase)
 	if err != nil {
-		return models.Database{}, err
+		return "", err
 	}
 
-	return `<a href="` + os.Getenv("SABACC_UI_HREF") + "?" + rematchDatabaseString + `">Click here for a rematch!</a>`
+	return `<a href="` + os.Getenv("SABACC_UI_HREF") + "?" + rematchDatabaseString + `">Click here for a rematch!</a>`, nil
 }
