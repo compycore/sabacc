@@ -447,6 +447,9 @@ func TestDealerRotationTwoPlayers(t *testing.T) {
 		t.Errorf("Wrong player taking their turn; want: %d, got: %d", 0, resultDatabase.Dealer)
 	}
 
+	// Tell the backend that we rolled the dice
+	resultDatabase.Rolled = true
+
 	// Send the updated database to take a mock turn
 	resultDatabase, err = gameLoop(databaseToURI(resultDatabase))
 	if err != nil {
@@ -487,6 +490,9 @@ func TestDealerRotationTwoPlayers(t *testing.T) {
 		t.Errorf("Wrong player taking their turn; want: %d, got: %d", 1, resultDatabase.Dealer)
 	}
 
+	// Tell the backend that we rolled the dice
+	resultDatabase.Rolled = true
+
 	// Send the updated database to take a mock turn
 	resultDatabase, err = gameLoop(databaseToURI(resultDatabase))
 	if err != nil {
@@ -503,8 +509,8 @@ func TestDealerRotationTwoPlayers(t *testing.T) {
 	}
 
 	// Check that the correct player is taking their turn
-	if resultDatabase.Turn != 0 {
-		t.Errorf("Wrong player taking their turn; want: %d, got: %d", 0, resultDatabase.Dealer)
+	if resultDatabase.Turn != 1 {
+		t.Errorf("Wrong player taking their turn; want: %d, got: %d", 1, resultDatabase.Dealer)
 	}
 
 	// Send the updated database to take a mock turn
@@ -526,6 +532,9 @@ func TestDealerRotationTwoPlayers(t *testing.T) {
 	if resultDatabase.Turn != 0 {
 		t.Errorf("Wrong player taking their turn; want: %d, got: %d", 0, resultDatabase.Dealer)
 	}
+
+	// Tell the backend that we rolled the dice
+	resultDatabase.Rolled = true
 
 	// Send the updated database to take a mock turn
 	resultDatabase, err = gameLoop(databaseToURI(resultDatabase))
@@ -677,6 +686,9 @@ func TestDealerRotationThreePlayers(t *testing.T) {
 		t.Errorf("Wrong player taking their turn; want: %d, got: %d", 1, resultDatabase.Dealer)
 	}
 
+	// Tell the backend that we rolled the dice
+	resultDatabase.Rolled = true
+
 	// Send the updated database to take a mock turn
 	resultDatabase, err = gameLoop(databaseToURI(resultDatabase))
 	if err != nil {
@@ -736,6 +748,9 @@ func TestDealerRotationThreePlayers(t *testing.T) {
 	if resultDatabase.Turn != 2 {
 		t.Errorf("Wrong player taking their turn; want: %d, got: %d", 2, resultDatabase.Dealer)
 	}
+
+	// Tell the backend that we rolled the dice
+	resultDatabase.Rolled = true
 
 	// Send the updated database to take a mock turn
 	resultDatabase, err = gameLoop(databaseToURI(resultDatabase))
@@ -847,6 +862,9 @@ func TestDealerRotationFourPlayers(t *testing.T) {
 		t.Errorf("Wrong player taking their turn; want: %d, got: %d", 0, resultDatabase.Dealer)
 	}
 
+	// Tell the backend that we rolled the dice
+	resultDatabase.Rolled = true
+
 	// Send the updated database to take a mock turn
 	resultDatabase, err = gameLoop(databaseToURI(resultDatabase))
 	if err != nil {
@@ -927,6 +945,9 @@ func TestDealerRotationFourPlayers(t *testing.T) {
 		t.Errorf("Wrong player taking their turn; want: %d, got: %d", 1, resultDatabase.Dealer)
 	}
 
+	// Tell the backend that we rolled the dice
+	resultDatabase.Rolled = true
+
 	// Send the updated database to take a mock turn
 	resultDatabase, err = gameLoop(databaseToURI(resultDatabase))
 	if err != nil {
@@ -943,8 +964,8 @@ func TestDealerRotationFourPlayers(t *testing.T) {
 	}
 
 	// Check that the correct player is taking their turn
-	if resultDatabase.Turn != 4 {
-		t.Errorf("Wrong player taking their turn; want: %d, got: %d", 4, resultDatabase.Dealer)
+	if resultDatabase.Turn != 3 {
+		t.Errorf("Wrong player taking their turn; want: %d, got: %d", 3, resultDatabase.Dealer)
 	}
 
 	// Send the updated database to take a mock turn
@@ -1006,6 +1027,9 @@ func TestDealerRotationFourPlayers(t *testing.T) {
 	if resultDatabase.Turn != 2 {
 		t.Errorf("Wrong player taking their turn; want: %d, got: %d", 2, resultDatabase.Dealer)
 	}
+
+	// Tell the backend that we rolled the dice
+	resultDatabase.Rolled = true
 
 	// Send the updated database to take a mock turn
 	resultDatabase, err = gameLoop(databaseToURI(resultDatabase))
