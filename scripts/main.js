@@ -1,4 +1,3 @@
-// TODO Implement dice rolling when the current player is the dealer and just ended their turn
 // Configuration
 var backendEndpoint = "https://jessemillar-sabacc.herokuapp.com/sabacc";
 
@@ -6,10 +5,12 @@ var backendEndpoint = "https://jessemillar-sabacc.herokuapp.com/sabacc";
 var turnTaken = false;
 var pickAction = "Pick your action!";
 var database = JSON.parse(decodeURIComponent(window.location.search.substr(1)));
-console.log(database);
 var warp;
 
 function init() {
+  setInterval("rollDice(1)", 100);
+  setInterval("rollDice(2)", 100);
+
   warp = new WarpSpeed("canvas", { speedAdjFactor: 0.02 });
 
   if (database && database.rematch && database.rematch.length > 0) {
@@ -421,13 +422,10 @@ function punchItChewie() {
   warp.TARGET_SPEED = 50;
 }
 
-function rollDice() {
-  var face = 1;
-
-  $(".cube1").attr("class", "cube cube1 show" + face);
-  if (face == 6) {
-    face = 1;
-  } else {
-    face++;
+function rollDice(dice = 1, face) {
+  if (face == null) {
+    face = Math.floor(Math.random() * Math.floor(6)) + 1;
   }
+
+  $("#dice" + dice).attr("class", "cube show" + face);
 }
