@@ -425,8 +425,9 @@
   border: 0.25em solid transparent;
   border-radius: 100%;
   border-color: transparent;
-  background-color: transparent !important;
   color: transparent;
+  background-color: #FFE81F;
+  color: #000000;
   cursor: default;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -464,8 +465,8 @@
   border: 0;
   border-radius: 0.25em;
   background: initial;
-  background-color: #3085d6;
-  color: #fff;
+  background-color: #FFE81F;
+  color: #000000;
   font-size: 1.0625em;
 }
 .swal2-styled.swal2-cancel {

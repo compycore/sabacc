@@ -55,7 +55,6 @@ function startRematch() {
             "A rematch has started with " +
             arrayToSentence(allPlayers) +
             ". The second player listed will now receive an email! You can close this browser window.",
-          confirmButtonColor: "#33C3F0"
         });
       });
     }
@@ -227,9 +226,7 @@ function gain() {
     focusConfirm: false,
     showCloseButton: true,
     confirmButtonText: "Just draw",
-    confirmButtonColor: "#33C3F0",
     cancelButtonText: "Discard then draw",
-    cancelButtonColor: "#33C3F0"
   }).then(result => {
     if (result.value) {
       Swal.fire({
@@ -272,9 +269,7 @@ function swap(card) {
       showCancelButton: true,
       focusConfirm: false,
       confirmButtonText: "Discard and draw",
-      confirmButtonColor: "#33C3F0",
       cancelButtonText: "Swap with " + topDiscardCard,
-      cancelButtonColor: "#33C3F0"
     }).then(result => {
       // Find the object for the card in question in the player's hand
       var cardIndexInHand = database.players[database.turn].hand.findIndex(
@@ -316,9 +311,7 @@ function stand() {
     focusConfirm: false,
     showCloseButton: true,
     confirmButtonText: "Yes",
-    confirmButtonColor: "#33C3F0",
     cancelButtonText: "No",
-    cancelButtonColor: "#33C3F0"
   }).then(result => {
     if (result.value) {
       endTurn();
@@ -337,9 +330,7 @@ function trash() {
     focusConfirm: false,
     showCloseButton: true,
     confirmButtonText: "Yes",
-    confirmButtonColor: "#ff0000",
     cancelButtonText: "No",
-    cancelButtonColor: "#33C3F0"
   }).then(result => {
     if (result.value) {
       database.players.splice(database.turn, 1);
@@ -382,7 +373,6 @@ function saveData(callback) {
         title: "Data saved!",
         text: "Please wait for the next email.",
         icon: "success",
-        confirmButtonColor: "#33C3F0",
         confirmButtonText: "Patience, young padawan"
       }).then(wipePage());
     } else {
