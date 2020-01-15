@@ -12,37 +12,51 @@ function init() {
   warp = new WarpSpeed("canvas", { speedAdjFactor: 0.02 });
 
   if (database && database.rematch && database.rematch.length > 0) {
-    playerString = "";
-    database.players = [];
-
-    // Start a rematch
-    for (var i = 0; i < database.rematch.length; i++) {
-      playerString += database.rematch[i].email + ",";
-
-      database.players.push({
-        email: database.rematch[i].email
-      });
-    }
-
-    database.rematch = null;
-
-    endTurn(function() {
-      Swal.fire({
-        icon: "success",
-        title: "Rematch started!",
-        text:
-          "A rematch has started with " +
-          playerString.split(",").join(", ") +
-          ". The second player listed will now receive an email! You can close this browser window.",
-        confirmButtonColor: "#33C3F0"
-      });
-    });
+    startRematch();
   } else if (database && database.players.length > 0) {
     // Play the game if there's a game going
     populatePage();
   } else {
     startNewGame();
   }
+}
+
+function startRematch() {
+  playerString = "";
+  database.players = [];
+
+  // Start a rematch
+  for (var i = 0; i < database.rematch.length; i++) {
+    playerString += database.rematch[i].email + ",";
+
+    database.players.push({
+      email: database.rematch[i].email
+    });
+  }
+
+  database.rematch = null;
+
+  Swal.fire({
+    title: "Rematch?",
+    text: "Do you want to start a rematch with " + playerString + "?",
+    icon: "question",
+    showCancelButton: true,
+    confirmButtonText: "Yes"
+  }).then(result => {
+    if (result.value) {
+      endTurn(function() {
+        Swal.fire({
+          icon: "success",
+          title: "Rematch started!",
+          text:
+            "A rematch has started with " +
+            playerString.split(",").join(", ") +
+            ". The second player listed will now receive an email! You can close this browser window.",
+          confirmButtonColor: "#33C3F0"
+        });
+      });
+    }
+  });
 }
 
 function startNewGame() {
