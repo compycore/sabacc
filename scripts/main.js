@@ -542,6 +542,12 @@ function showDiceResultDiscard() {
     icon: "warning"
   }).then(() => {
     database.rolled = true;
+
+    for (var i = 0; i < database.players.length; i++) {
+      database.discards.concat(database.players[i].hand);
+      database.players[i].hand = [];
+    }
+
     saveData();
   });
 }
