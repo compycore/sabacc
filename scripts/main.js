@@ -54,7 +54,7 @@ function startRematch() {
           text:
             "A rematch has started with " +
             arrayToSentence(allPlayers) +
-            ". The second player listed will now receive an email! You can close this browser window.",
+            ". The second player listed will now receive an email! You can close this browser window."
         });
       });
     }
@@ -89,7 +89,7 @@ function startNewGame() {
       endTurn(function() {
         Swal.fire(
           "A new game has started with " +
-            result.value.split(",").join(", ") +
+            arrayToSentence(result.value.split(",")) +
             ". The first player listed will now receive an email! You can now close this window."
         );
       });
@@ -226,7 +226,7 @@ function gain() {
     focusConfirm: false,
     showCloseButton: true,
     confirmButtonText: "Just draw",
-    cancelButtonText: "Discard then draw",
+    cancelButtonText: "Discard then draw"
   }).then(result => {
     if (result.value) {
       Swal.fire({
@@ -269,7 +269,7 @@ function swap(card) {
       showCancelButton: true,
       focusConfirm: false,
       confirmButtonText: "Discard and draw",
-      cancelButtonText: "Swap with " + topDiscardCard,
+      cancelButtonText: "Swap with " + topDiscardCard
     }).then(result => {
       // Find the object for the card in question in the player's hand
       var cardIndexInHand = database.players[database.turn].hand.findIndex(
@@ -311,7 +311,7 @@ function stand() {
     focusConfirm: false,
     showCloseButton: true,
     confirmButtonText: "Yes",
-    cancelButtonText: "No",
+    cancelButtonText: "No"
   }).then(result => {
     if (result.value) {
       endTurn();
@@ -330,7 +330,7 @@ function trash() {
     focusConfirm: false,
     showCloseButton: true,
     confirmButtonText: "Yes",
-    cancelButtonText: "No",
+    cancelButtonText: "No"
   }).then(result => {
     if (result.value) {
       database.players.splice(database.turn, 1);
