@@ -6,11 +6,10 @@ var turnTaken = false;
 var pickAction = "Pick your action!";
 var database = JSON.parse(decodeURIComponent(window.location.search.substr(1)));
 var warp;
+var rollInterval;
 
 function init() {
-  setInterval("rollDice(1)", 200);
-  setInterval("rollDice(2)", 200);
-	showDice();
+  promptDealerRoll();
 
   warp = new WarpSpeed("canvas", { speedAdjFactor: 0.02 });
 
@@ -423,15 +422,57 @@ function punchItChewie() {
   warp.TARGET_SPEED = 50;
 }
 
-function rollDice(dice = 1, face) {
-  if (face == null) {
-    face = Math.floor(Math.random() * Math.floor(6)) + 1;
-  }
+function rollD6() {
+  return Math.floor(Math.random() * Math.floor(6)) + 1;
+}
 
-  $("#dice" + dice).attr("class", "cube show" + face);
+function animateRollDice() {
+  $("#dice1").attr("class", "cube show" + rollD6());
+  $("#dice2").attr("class", "cube show" + rollD6());
+}
+
+function promptDealerRoll() {
+  Swal.fire({
+    title: "Time to roll!",
+    text: "You were the dealer this round which means you get to roll the dice!",
+    icon: "info"
+  }).then(() => {
+		showDice();
+  });
 }
 
 function showDice() {
+  Swal.fire({
+    confirmButtonText: "Roll!",
+    html:
+      "<div class='dice-container'>" +
+      "<div id='dice1' class='cube'>" +
+      "<div class='top'></div>" +
+      "<div class='front'></div>" +
+      "<div class='left'></div>" +
+      "<div class='back'></div>" +
+      "<div class='right'></div>" +
+      "<div class='bottom'></div>" +
+      "</div>" +
+      "</div>" +
+      "<div class='dice-container'>" +
+      "<div id='dice2' class='cube'>" +
+      "<div class='top'></div>" +
+      "<div class='front'></div>" +
+      "<div class='left'></div>" +
+      "<div class='back'></div>" +
+      "<div class='right'></div>" +
+      "<div class='bottom'></div>" +
+      "</div>" +
+      "</div>"
+  }).then(() => {
+    rollDice();
+  });
+}
+
+function rollDice() {
+  rollInterval = setInterval("animateRollDice()", 200);
+
   Swal.fire({
     showConfirmButton: false,
     html:
@@ -454,6 +495,44 @@ function showDice() {
       "<div class='right'></div>" +
       "<div class='bottom'></div>" +
       "</div>" +
-      "</div>",
+      "</div>"
+  });
+
+  setTimeout(function() {
+    rollDiceToSide(rollD6(), rollD6());
+  }, 2000);
+}
+
+function rollDiceToSide(side1, side2) {
+  clearInterval(rollInterval);
+  $("#dice1").attr("class", "cube show" + side1);
+  $("#dice2").attr("class", "cube show" + side2);
+
+  setTimeout(function() {
+    if (side1 == side2) {
+      showDiceResultDiscard();
+    } else {
+      showDiceResultNoDiscard();
+    }
+  }, 2000);
+}
+
+function showDiceResultNoDiscard() {
+  Swal.fire({
+    title: "Dice didn't match!",
+    text: "That means everyone keeps their current hands.",
+    icon: "info"
+  }).then(() => {
+    endTurn();
+  });
+}
+
+function showDiceResultDiscard() {
+  Swal.fire({
+    title: "Dice matched!",
+    text: "That means everyone has to discard their current hands!",
+    icon: "warning"
+  }).then(() => {
+    endTurn();
   });
 }

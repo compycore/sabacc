@@ -14,10 +14,11 @@
 }
 
 .cube div {
-  border-radius: 10px;
-  width: 98px;
-  height: 98px;
+  border-radius: 5px;
+  width: 100px;
+  height: 100px;
   position: absolute;
+	background-color: #e29923;
 }
 
 .front {
