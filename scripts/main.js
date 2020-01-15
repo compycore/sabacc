@@ -8,8 +8,9 @@ var database = JSON.parse(decodeURIComponent(window.location.search.substr(1)));
 var warp;
 
 function init() {
-  setInterval("rollDice(1)", 100);
-  setInterval("rollDice(2)", 100);
+  setInterval("rollDice(1)", 200);
+  setInterval("rollDice(2)", 200);
+	showDice();
 
   warp = new WarpSpeed("canvas", { speedAdjFactor: 0.02 });
 
@@ -428,4 +429,31 @@ function rollDice(dice = 1, face) {
   }
 
   $("#dice" + dice).attr("class", "cube show" + face);
+}
+
+function showDice() {
+  Swal.fire({
+    showConfirmButton: false,
+    html:
+      "<div class='dice-container'>" +
+      "<div id='dice1' class='cube'>" +
+      "<div class='top'></div>" +
+      "<div class='front'></div>" +
+      "<div class='left'></div>" +
+      "<div class='back'></div>" +
+      "<div class='right'></div>" +
+      "<div class='bottom'></div>" +
+      "</div>" +
+      "</div>" +
+      "<div class='dice-container'>" +
+      "<div id='dice2' class='cube'>" +
+      "<div class='top'></div>" +
+      "<div class='front'></div>" +
+      "<div class='left'></div>" +
+      "<div class='back'></div>" +
+      "<div class='right'></div>" +
+      "<div class='bottom'></div>" +
+      "</div>" +
+      "</div>",
+  });
 }

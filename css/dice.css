@@ -1,7 +1,7 @@
 .dice-container {
   margin: 50px auto;
-  width: 200px;
-  height: 200px;
+  width: 100px;
+  height: 100px;
   perspective: 600px;
 }
 
@@ -15,9 +15,9 @@
 
 .cube div {
   border: 1px solid .ccc;
-  border-radius: 20px;
-  width: 198px;
-  height: 198px;
+  border-radius: 10px;
+  width: 98px;
+  height: 98px;
   position: absolute;
   background-image: url("../images/dice.png");
   background-repeat: no-repeat;
@@ -25,45 +25,45 @@
 }
 
 .front {
-  transform: rotateY(0deg) translateZ(100px);
+  transform: rotateY(0deg) translateZ(50px);
   background-position: -12px -12px;
 }
 .back {
-  transform: rotateX(180deg) translateZ(100px);
+  transform: rotateX(180deg) translateZ(50px);
   background-position: -463px -239px;
 }
 .right {
-  transform: rotateY(90deg) translateZ(100px);
+  transform: rotateY(90deg) translateZ(50px);
   background-position: -236px -12px;
 }
 .left {
-  transform: rotateY(-90deg) translateZ(100px);
+  transform: rotateY(-90deg) translateZ(50px);
   background-position: -241px -235px;
 }
 .top {
-  transform: rotateX(90deg) translateZ(100px);
+  transform: rotateX(90deg) translateZ(50px);
   background-position: -459px -12px;
 }
 .bottom {
-  transform: rotateX(-90deg) translateZ(100px);
+  transform: rotateX(-90deg) translateZ(50px);
   background-position: -12px -235px;
 }
 
 .cube.show1 {
-  transform: translateZ(-100px) rotateY(0deg);
+  transform: translateZ(-50px) rotateY(0deg);
 }
 .cube.show2 {
-  transform: translateZ(-100px) rotateX(-180deg);
+  transform: translateZ(-50px) rotateX(-180deg);
 }
 .cube.show3 {
-  transform: translateZ(-100px) rotateY(-90deg);
+  transform: translateZ(-50px) rotateY(-90deg);
 }
 .cube.show4 {
-  transform: translateZ(-100px) rotateY(90deg);
+  transform: translateZ(-50px) rotateY(90deg);
 }
 .cube.show5 {
-  transform: translateZ(-100px) rotateX(-90deg);
+  transform: translateZ(-50px) rotateX(-90deg);
 }
 .cube.show6 {
-  transform: translateZ(-100px) rotateX(90deg);
+  transform: translateZ(-50px) rotateX(90deg);
 }
