@@ -39,3 +39,11 @@ https://jessemillar.github.io/sabacc?round=1&turn=hellojessemillar@gmail.com&pla
 ### Notes
 
 - See [this link](https://golang.org/pkg/net/url/#example_Values) for an example of how to encode an array for a URL in Golang
+
+## Credits
+
+- [Mailjet](https://github.com/mailjet/mailjet-apiv3-go) for sending emails
+- [Echo](https://echo.labstack.com) for HTTP server
+- [warpspeed.js](https://fdossena.com/?p=warpspeed/i.frag) for starfield effect
+- [SweetAlert2](https://sweetalert2.github.io) for pretty prompts
+- [Skeleton](http://getskeleton.com) for CSS boilerplate
