@@ -14,39 +14,41 @@
 }
 
 .cube div {
-  border: 1px solid .ccc;
   border-radius: 10px;
   width: 98px;
   height: 98px;
   position: absolute;
-  background-image: url("../images/dice.png");
-  background-repeat: no-repeat;
-  background-color: white;
 }
 
 .front {
   transform: rotateY(0deg) translateZ(50px);
-  background-position: -12px -12px;
+  background-image: url("../images/dice/side1.png");
+	background-size: cover;
 }
 .back {
   transform: rotateX(180deg) translateZ(50px);
-  background-position: -463px -239px;
+  background-image: url("../images/dice/side2.png");
+	background-size: cover;
 }
 .right {
   transform: rotateY(90deg) translateZ(50px);
-  background-position: -236px -12px;
+  background-image: url("../images/dice/side3.png");
+	background-size: cover;
 }
 .left {
   transform: rotateY(-90deg) translateZ(50px);
-  background-position: -241px -235px;
+  background-image: url("../images/dice/side4.png");
+	background-size: cover;
 }
 .top {
   transform: rotateX(90deg) translateZ(50px);
-  background-position: -459px -12px;
+  background-image: url("../images/dice/side5.png");
+	background-size: cover;
 }
 .bottom {
   transform: rotateX(-90deg) translateZ(50px);
-  background-position: -12px -235px;
+  background-image: url("../images/dice/side6.png");
+	background-size: cover;
 }
 
 .cube.show1 {
