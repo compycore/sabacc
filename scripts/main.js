@@ -39,7 +39,7 @@ function startRematch() {
   Swal.fire({
     title: "Rematch?",
     text:
-      "Do you want to start a rematch with " +
+      "Do you want to start a rematch between " +
       arrayToSentence(allPlayers) +
       "?",
     icon: "question",
