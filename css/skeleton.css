@@ -275,6 +275,7 @@ input[type="reset"] {
   display: inline-block;
   height: 38px;
   padding: 0 30px;
+	margin: 0 2px;
   color: #555;
   text-align: center;
   font-size: 11px;
@@ -303,9 +304,9 @@ input[type="reset"]:focus {
 .skeleton-button.skeleton-button-primary,
 input[type="submit"].skeleton-button-primary,
 input[type="reset"].skeleton-button-primary {
-  color: #fff;
-  background-color: #33c3f0;
-  border-color: #33c3f0;
+  color: #000000;
+  background-color: #FFE81F;
+  border-color: #FFE81F;
 }
 .skeleton-button.skeleton-button-primary:hover,
 input[type="submit"].skeleton-button-primary:hover,
@@ -313,9 +314,9 @@ input[type="reset"].skeleton-button-primary:hover,
 .skeleton-button.skeleton-button-primary:focus,
 input[type="submit"].skeleton-button-primary:focus,
 input[type="reset"].skeleton-button-primary:focus {
-  color: #fff;
-  background-color: #1eaedb;
-  border-color: #1eaedb;
+  background-color: #000000;
+  border-color: #FFE81F;
+  color: #FFE81F;
 }
 
 /* Forms
