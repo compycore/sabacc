@@ -216,7 +216,7 @@ function gain() {
       Swal.fire({
         title: "You drew...",
         text: "the " + getCardString(database.draw) + "!",
-        icon: getCardFilename(database.draw)
+        imageUrl: getCardFilename(database.draw)
       }).then(() => {
         database.players[database.turn].hand.push(database.draw);
         delete database.draw;
