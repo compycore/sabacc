@@ -9,8 +9,6 @@ var warp;
 var rollInterval;
 
 function init() {
-  promptDealerRoll();
-
   warp = new WarpSpeed("canvas", { speedAdjFactor: 0.02 });
 
   if (database && database.rematch && database.rematch.length > 0) {
@@ -339,6 +337,14 @@ function trash() {
 }
 
 function endTurn(callback) {
+  if (database.turn == database.dealer && database.round > 0) {
+    promptDealerRoll();
+  } else {
+    saveData(callback);
+  }
+}
+
+function saveData(callback) {
   punchItChewie();
 
   Swal.fire({
@@ -434,10 +440,11 @@ function animateRollDice() {
 function promptDealerRoll() {
   Swal.fire({
     title: "Time to roll!",
-    text: "You were the dealer this round which means you get to roll the dice!",
+    text:
+      "You were the dealer this round which means you get to roll the dice!",
     icon: "info"
   }).then(() => {
-		showDice();
+    showDice();
   });
 }
 
@@ -523,7 +530,7 @@ function showDiceResultNoDiscard() {
     text: "That means everyone keeps their current hands.",
     icon: "info"
   }).then(() => {
-    endTurn();
+    saveData();
   });
 }
 
@@ -533,6 +540,6 @@ function showDiceResultDiscard() {
     text: "That means everyone has to discard their current hands!",
     icon: "warning"
   }).then(() => {
-    endTurn();
+    saveData();
   });
 }
