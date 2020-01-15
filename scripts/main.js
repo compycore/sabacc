@@ -22,12 +22,12 @@ function init() {
 }
 
 function startRematch() {
-  playerString = "";
+  allPlayers = [];
   database.players = [];
 
   // Start a rematch
   for (var i = 0; i < database.rematch.length; i++) {
-    playerString += database.rematch[i].email + ",";
+    allPlayers.push(database.rematch[i].email);
 
     database.players.push({
       email: database.rematch[i].email
@@ -38,7 +38,10 @@ function startRematch() {
 
   Swal.fire({
     title: "Rematch?",
-    text: "Do you want to start a rematch with " + playerString + "?",
+    text:
+      "Do you want to start a rematch with " +
+      arrayToSentence(allPlayers) +
+      "?",
     icon: "question",
     showCancelButton: true,
     confirmButtonText: "Yes"
@@ -50,7 +53,7 @@ function startRematch() {
           title: "Rematch started!",
           text:
             "A rematch has started with " +
-            playerString.split(",").join(", ") +
+            arrayToSentence(allPlayers) +
             ". The second player listed will now receive an email! You can close this browser window.",
           confirmButtonColor: "#33C3F0"
         });
@@ -105,6 +108,8 @@ function startNewGame() {
 
 // Don't populate the page before we know we're dealing with the right person
 function populatePage() {
+  document.getElementById("container").style = "display: block;";
+
   populateRound();
   populateScore();
   populateYourHand();
@@ -389,6 +394,7 @@ function saveData(callback) {
 
 function wipePage() {
   turnTaken = true;
+  document.getElementById("actions-header").innerHTML = "";
   document.getElementById("action-buttons").innerHTML = "";
 }
 
@@ -568,4 +574,12 @@ function showDiceResultDiscard() {
 
     saveData();
   });
+}
+
+function arrayToSentence(arr) {
+  return (
+    arr.slice(0, -2).join(", ") +
+    (arr.slice(0, -2).length ? ", " : "") +
+    arr.slice(-2).join(" and ")
+  );
 }
