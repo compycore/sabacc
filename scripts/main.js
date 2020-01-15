@@ -530,6 +530,7 @@ function showDiceResultNoDiscard() {
     text: "That means everyone keeps their current hands.",
     icon: "info"
   }).then(() => {
+    database.rolled = true;
     saveData();
   });
 }
@@ -540,6 +541,7 @@ function showDiceResultDiscard() {
     text: "That means everyone has to discard their current hands!",
     icon: "warning"
   }).then(() => {
+    database.rolled = true;
     saveData();
   });
 }
