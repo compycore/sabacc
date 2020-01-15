@@ -33,7 +33,7 @@ function init() {
         text:
           "A rematch has started with " +
           playerString.split(",").join(", ") +
-          ". The first player listed will now receive an email! You can now close this browser window.",
+          ". The second player listed will now receive an email! You can close this browser window.",
         confirmButtonColor: "#33C3F0"
       });
     });
