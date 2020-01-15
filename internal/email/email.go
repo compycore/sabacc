@@ -21,6 +21,11 @@ func SendConfirmation(emailAddress string, codename string, hand string, score s
 	return SendMessage(emailAddress, codename, message, message)
 }
 
+func SendHandDiscardNotice(emailAddress string, codename string, hand string, score string) error {
+	message := "Someone rolled matching dice so everyone's hands were discarded. Your new hand is " + hand + " with a score of " + score + ". Please wait patiently for the next email alerting you that it's your turn."
+	return SendMessage(emailAddress, codename, message, message)
+}
+
 func SendMessage(toEmailAddress string, codename string, messagePlain string, messageHTML string) error {
 	if len(os.Getenv("SABACC_DEBUG")) == 0 {
 		mailjetClient := mailjet.NewMailjetClient(os.Getenv("MAILJET_API_KEY_PUBLIC"), os.Getenv("MAILJET_API_KEY_PRIVATE"))

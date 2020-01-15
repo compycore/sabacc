@@ -44,8 +44,11 @@ func gameLoop(queryString string) (models.Database, error) {
 	// Populate the discard pile
 	database, gameDeck = populateDiscard(database, gameDeck)
 
-	// Deal hands if we're starting a new game or if hands were discarded because of a dice roll
-	database, gameDeck = dealHands(database, gameDeck)
+	// Deal hands if we're starting a new game or if hands were discarded because of a dice roll (notify players if hands were discarded)
+	database, gameDeck, err = dealHands(database, gameDeck)
+	if err != nil {
+		return models.Database{}, err
+	}
 
 	// Calculate player scores
 	database = calculatePlayerScores(database)
@@ -209,14 +212,19 @@ func changeDealer(database models.Database) int {
 	return 0
 }
 
-func dealHands(database models.Database, gameDeck deck.Deck) (models.Database, deck.Deck) {
+func dealHands(database models.Database, gameDeck deck.Deck) (models.Database, deck.Deck, error) {
 	if len(database.AllPlayers[0].Hand) == 0 {
 		for i, _ := range database.AllPlayers {
 			gameDeck, database.AllPlayers[i].Hand = deck.Deal(gameDeck, 2)
 		}
+
+		err := sendHandDiscardEmails(database)
+		if err != nil {
+			return models.Database{}, deck.Deck{}, err
+		}
 	}
 
-	return database, gameDeck
+	return database, gameDeck, nil
 }
 
 func populateDiscard(database models.Database, gameDeck deck.Deck) (models.Database, deck.Deck) {
@@ -257,6 +265,22 @@ func sendNextTurnEmail(database models.Database) error {
 	err = email.SendLink(database.AllPlayers[database.Turn].Email, allEmailAddresses, database.Codename, os.Getenv("SABACC_UI_HREF")+"?"+encodedDatabase, database.Round)
 	if err != nil {
 		return err
+	}
+
+	return nil
+}
+
+func sendHandDiscardEmails(database models.Database) error {
+	if database.Round > 0 {
+		// Send an email to every player
+		for _, player := range database.AllPlayers {
+			// TODO Make the function smart enough to not need both HTML and plain if only plain is passed
+			// TODO Decide if I'm gonna handle text-only emails or if HTML is required
+			err := email.SendHandDiscardNotice(player.Email, database.Codename, getHandString(player.Hand), strconv.Itoa(player.Score))
+			if err != nil {
+				return err
+			}
+		}
 	}
 
 	return nil
