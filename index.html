@@ -49,7 +49,13 @@
     <canvas id="canvas"></canvas>
 
     <div id="container" class="container" style="display: none;">
-      <div id="action-buttons" class="row" style="margin-top: 10%">
+      <div id="logo" class="row">
+        <div class="u-full-width">
+          <center>Sabacc</center>
+        </div>
+      </div>
+
+      <div id="action-buttons" class="row">
         <div class="u-full-width">
           <h4 id="actions-header">Actions</h4>
           <center>
@@ -100,6 +106,21 @@
       <div class="row">
         <div class="u-full-width">
           <ul id="discard-pile" class="baraja-container"></ul>
+        </div>
+      </div>
+
+      <div id="enemy-hands"></div>
+
+      <div id="copyright" class="row">
+        <div class="u-full-width">
+          <center>
+            &copy; 2019
+            <script>
+              new Date().getFullYear() > 2019 &&
+                document.write("-" + new Date().getFullYear());
+            </script>
+            CompyCore Games
+          </center>
         </div>
       </div>
     </div>

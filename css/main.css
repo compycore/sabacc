@@ -8,6 +8,20 @@ h4 {
   color: #ffffff;
 }
 
+#logo {
+  font-family: "Montserrat", sans-serif;
+	font-size: 5rem;
+  color: #FFE81F;
+	margin-top: 5%;
+}
+
+#copyright {
+	color: #ffffff;
+	opacity: 0.5;
+	padding-top: 25px;
+	padding-bottom: 15px;
+}
+
 #canvas {
   position: fixed;
   top: 0;

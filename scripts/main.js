@@ -184,19 +184,19 @@ function populateYourHand() {
 function populateEnemyHands() {
   for (var i = 0; i < database.players.length; i++) {
     if (database.players[i].email != database.players[database.turn].email) {
-      document.getElementById("container").innerHTML += '<div class="row">';
-      document.getElementById("container").innerHTML +=
+      document.getElementById("enemy-hands").innerHTML += '<div class="row">';
+      document.getElementById("enemy-hands").innerHTML +=
         '<div class="u-full-width">';
-      document.getElementById("container").innerHTML +=
+      document.getElementById("enemy-hands").innerHTML +=
         "<h4>" + database.players[i].email + "'s Hand</h4>";
-      document.getElementById("container").innerHTML += "</div>";
-      document.getElementById("container").innerHTML += "</div>";
-      document.getElementById("container").innerHTML += '<div class="row">';
-      document.getElementById("container").innerHTML +=
+      document.getElementById("enemy-hands").innerHTML += "</div>";
+      document.getElementById("enemy-hands").innerHTML += "</div>";
+      document.getElementById("enemy-hands").innerHTML += '<div class="row">';
+      document.getElementById("enemy-hands").innerHTML +=
         '<div class="u-full-width">';
-      document.getElementById("container").innerHTML +=
+      document.getElementById("enemy-hands").innerHTML +=
         '<ul id="enemyHand' + i + '" class="baraja-container"></ul>';
-      document.getElementById("container").innerHTML += "</div>";
+      document.getElementById("enemy-hands").innerHTML += "</div>";
 
       var hand = database.players[i].hand;
 
