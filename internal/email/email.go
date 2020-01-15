@@ -2,12 +2,12 @@ package email
 
 import (
 	"errors"
+	"fmt"
 	"os"
 	"strconv"
 	"strings"
 
-	"github.com/sendgrid/sendgrid-go"
-	"github.com/sendgrid/sendgrid-go/helpers/mail"
+	mailjet "github.com/mailjet/mailjet-apiv3-go"
 )
 
 func SendLink(emailAddress string, allEmailAddreses string, codename string, linkString string, round int) error {
@@ -23,28 +23,36 @@ func SendConfirmation(emailAddress string, codename string, hand string, score s
 
 func SendMessage(toEmailAddress string, codename string, messagePlain string, messageHTML string) error {
 	if len(os.Getenv("SABACC_DEBUG")) == 0 {
-		from := mail.NewEmail("Sabacc Dealer", getFromEmailAddress(codename))
-		subject := "Your Sabacc Game (Codename: " + codename + ")"
-		to := mail.NewEmail("Sabacc Player", toEmailAddress)
-
-		message := mail.NewSingleEmail(from, subject, to, messagePlain, messageHTML)
-
-		client := sendgrid.NewSendClient(os.Getenv("SENDGRID_API_KEY"))
-
-		response, err := client.Send(message)
+		mailjetClient := mailjet.NewMailjetClient(os.Getenv("MAILJET_API_KEY_PUBLIC"), os.Getenv("MAILJET_API_KEY_PRIVATE"))
+		messagesInfo := []mailjet.InfoMessagesV31{
+			mailjet.InfoMessagesV31{
+				From: &mailjet.RecipientV31{
+					Email: getFromEmailAddress(codename),
+					Name:  "Sabacc Dealer",
+				},
+				To: &mailjet.RecipientsV31{
+					mailjet.RecipientV31{
+						Email: toEmailAddress,
+						Name:  "Sabacc Player",
+					},
+				},
+				Subject:  "Your Sabacc Game (Codename: " + codename + ")",
+				TextPart: messagePlain,
+				HTMLPart: messageHTML,
+			},
+		}
+		messages := mailjet.MessagesV31{Info: messagesInfo}
+		res, err := mailjetClient.SendMailV31(&messages)
 		if err != nil {
 			return errors.New("Email error: " + err.Error())
 		}
 
-		// Catch issues with the email API
-		if response.StatusCode != 202 {
-			return errors.New(response.Body)
-		}
+		fmt.Printf("Data: %+v\n", res)
 	}
 
 	return nil
 }
 
 func getFromEmailAddress(codename string) string {
-	return strings.ToLower(strings.ReplaceAll(codename, " ", "-")) + "@jessemillar.com"
+	return strings.ToLower(strings.ReplaceAll(codename, " ", "-")) + "@compycore.com"
 }
