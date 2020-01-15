@@ -401,12 +401,16 @@ function getCardString(card, separator = " ") {
 
   // Humans don't care about the stave and they like uppercase letters
   if (separator == " ") {
-    return (
-      cardColor.charAt(0).toUpperCase() +
-      cardColor.slice(1) +
-      separator +
-      Math.abs(card.value)
-    );
+    if (card.value == 0) {
+      return "Black 0";
+    } else {
+      return (
+        cardColor.charAt(0).toUpperCase() +
+        cardColor.slice(1) +
+        separator +
+        Math.abs(card.value)
+      );
+    }
   } else {
     return (
       card.stave + separator + cardColor + separator + Math.abs(card.value)
