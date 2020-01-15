@@ -14,6 +14,7 @@ import (
 	"github.com/labstack/echo"
 )
 
+// Play is the main function that is called by Echo from main.go
 func Play(c echo.Context) error {
 	result, err := gameLoop(c.QueryString())
 	if err != nil {
@@ -25,106 +26,59 @@ func Play(c echo.Context) error {
 
 // Broken into a function for easier unit testing (don't have to mock an Echo context this way)
 func gameLoop(queryString string) (models.Database, error) {
+	// Parse the encoded-as-a-query-string database into a models.Database{} struct
 	database, err := parseDatabase(queryString)
 	if err != nil {
 		return models.Database{}, err
 	}
 
+	// We use codenames to prevent all Sabacc emails from being threaded into the same thread in Gmail
+	database.Codename = getCodename(database)
+
+	// Build a new deck of cards and make it match the contents of the database (remove cards from the players' hands, populate the discard pile, etc.)
 	gameDeck := prepDeck(database)
 
-	if len(database.Codename) == 0 {
-		database.Codename = helpers.GetCodename()
-	}
-	// Remove "+" characters
-	database.Codename = strings.ReplaceAll(database.Codename, "+", " ")
+	// Put a card on top of the draw pile if necessary
+	gameDeck, database.Draw = populateDraw(database, gameDeck)
 
-	if database.Draw == (deck.Card{}) {
-		gameDeck, database.Draw = deck.DealSingle(gameDeck)
-	}
+	// Populate the discard pile
+	database, gameDeck = populateDiscard(database, gameDeck)
 
-	if len(database.AllDiscards) == 0 {
-		discard := deck.Card{}
-		gameDeck, discard = deck.DealSingle(gameDeck)
-		database.AllDiscards = append(database.AllDiscards, discard)
-	}
-
-	if database.Round > 0 {
-		database.Turn = database.Turn + 1
-	}
-
-	// Start a new game if needed
-	if len(database.AllPlayers[0].Hand) == 0 {
-		for i, _ := range database.AllPlayers {
-			gameDeck, database.AllPlayers[i].Hand = deck.Deal(gameDeck, 2)
-		}
-	}
-
-	if database.Turn == len(database.AllPlayers) {
-		database.Round = database.Round + 1
-		database.Turn = 0
-	}
+	// Deal hands if we're starting a new game or if hands were discarded because of a dice roll
+	database, gameDeck = dealHands(database, gameDeck)
 
 	// Calculate player scores
 	database = calculatePlayerScores(database)
 
-	// Send an email confirmation to the player that just took their turn
-	if database.Round > 0 && !isGameOver(database) {
-		previousTurn := database.Turn - 1
-		if previousTurn < 0 {
-			previousTurn = len(database.AllPlayers) - 1
-		}
-		email.SendConfirmation(database.AllPlayers[previousTurn].Email, database.Codename, getHandString(database.AllPlayers[previousTurn].Hand), strconv.Itoa(database.AllPlayers[previousTurn].Score))
-	}
+	// Send an email confirmation to the player that just took their turn (as long as the game has started)
+	sendTurnConfirmationEmail(database)
 
-	// Only set the round to 1 if it's a new game (as opposed to deleting hands because the dice were doubles)
-	if database.Round == 0 {
-		database.Round = 1
-	}
+	// We use round 0 as an indicator that a game is just starting; we need to increase that to round 1 now that everything is set up
+	database = endRoundZero(database)
 
-	// If the game is still going
+	// Change whose turn it is (also increase the round and change the dealer if necessary)
+	database = endTurn(database)
+
+	// Send emails
 	if !isGameOver(database) {
-		encodedDatabase, err := encodeDatabase(database)
-		if err != nil {
-			return models.Database{}, err
-		}
-
-		allEmailAddresses := ""
-		for _, player := range database.AllPlayers {
-			allEmailAddresses = allEmailAddresses + player.Email + ", "
-		}
-
-		err = email.SendLink(database.AllPlayers[database.Turn].Email, allEmailAddresses, database.Codename, os.Getenv("SABACC_UI_HREF")+"?"+encodedDatabase, database.Round)
+		// Since the game is not over, notify the next player that it's their turn
+		err = sendNextTurnEmail(database)
 		if err != nil {
 			return models.Database{}, err
 		}
 	} else {
 		// TODO Determine who won
-		// TODO Break this into a function
-		finalResultsMessage := ""
-		for _, player := range database.AllPlayers {
-			finalResultsMessage = finalResultsMessage + player.Email + " got a final score of " + strconv.Itoa(player.Score) + " with a hand of " + getHandString(player.Hand)
-		}
-
-		rematchDatabase := models.Database{}
-		rematchDatabase.Rematch = database.AllPlayers
-
-		rematchDatabaseString, err := encodeDatabase(rematchDatabase)
+		// Set a value to database.Result so the tests can know that a match finished
+		database.Result, err = generateResultString(database)
 		if err != nil {
 			return models.Database{}, err
 		}
 
-		finalResultsMessage = finalResultsMessage + `<br><br><a href="` + os.Getenv("SABACC_UI_HREF") + "?" + rematchDatabaseString + `">Click here for a rematch!</a>`
-
-		// Send an email to every player
-		for _, player := range database.AllPlayers {
-			// TODO Make the function smart enough to not need both HTML and plain if only plain is passed
-			err = email.SendMessage(player.Email, database.Codename, finalResultsMessage, finalResultsMessage)
-			if err != nil {
-				return models.Database{}, err
-			}
+		// Send a game over email to every player
+		err = sendGameOverEmails(database)
+		if err != nil {
+			return models.Database{}, err
 		}
-
-		database.Result = finalResultsMessage
 	}
 
 	return database, nil
@@ -196,10 +150,158 @@ func getHandString(hand deck.Deck) string {
 	return handString
 }
 
+func hasGameStarted(database models.Database) bool {
+	return database.Round > 0
+}
+
 func isGameOver(database models.Database) bool {
 	if database.Round <= 3 && database.Turn < len(database.AllPlayers) && len(database.AllPlayers) > 1 {
 		return false
 	}
 
 	return true
+}
+
+func getCodename(database models.Database) string {
+	if len(database.Codename) == 0 {
+		database.Codename = helpers.GetCodename()
+	}
+
+	// Remove "+" characters that get put there by the Golang marshal process (Go encodes spaces as "+" instead of "%20")
+	return strings.ReplaceAll(database.Codename, "+", " ")
+}
+
+func populateDraw(database models.Database, gameDeck deck.Deck) (deck.Deck, deck.Card) {
+	if database.Draw == (deck.Card{}) {
+		gameDeck, database.Draw = deck.DealSingle(gameDeck)
+		return deck.DealSingle(gameDeck)
+	}
+
+	return gameDeck, database.Draw
+}
+
+func endTurn(database models.Database) models.Database {
+	if database.Rolled && database.Turn == database.Dealer {
+		database.Round = database.Round + 1
+		database.Dealer = changeDealer(database)
+		database.Turn = database.Dealer
+		database.Rolled = false
+	}
+
+	database.Turn = increaseTurn(database)
+
+	return database
+}
+
+func increaseTurn(database models.Database) int {
+	if database.Turn+1 < len(database.AllPlayers) {
+		return database.Turn + 1
+	}
+
+	return 0
+}
+
+func changeDealer(database models.Database) int {
+	if database.Dealer+1 < len(database.AllPlayers) {
+		return database.Dealer + 1
+	}
+
+	return 0
+}
+
+func dealHands(database models.Database, gameDeck deck.Deck) (models.Database, deck.Deck) {
+	if len(database.AllPlayers[0].Hand) == 0 {
+		for i, _ := range database.AllPlayers {
+			gameDeck, database.AllPlayers[i].Hand = deck.Deal(gameDeck, 2)
+		}
+	}
+
+	return database, gameDeck
+}
+
+func populateDiscard(database models.Database, gameDeck deck.Deck) (models.Database, deck.Deck) {
+	if len(database.AllDiscards) == 0 {
+		discard := deck.Card{}
+		gameDeck, discard = deck.DealSingle(gameDeck)
+		database.AllDiscards = append(database.AllDiscards, discard)
+	}
+
+	return database, gameDeck
+}
+
+func endRoundZero(database models.Database) models.Database {
+	if database.Round == 0 {
+		database.Round = 1
+	}
+
+	return database
+}
+
+func sendTurnConfirmationEmail(database models.Database) {
+	if hasGameStarted(database) && !isGameOver(database) {
+		email.SendConfirmation(database.AllPlayers[database.Turn].Email, database.Codename, getHandString(database.AllPlayers[database.Turn].Hand), strconv.Itoa(database.AllPlayers[database.Turn].Score))
+	}
+}
+
+func sendNextTurnEmail(database models.Database) error {
+	encodedDatabase, err := encodeDatabase(database)
+	if err != nil {
+		return err
+	}
+
+	allEmailAddresses := ""
+	for _, player := range database.AllPlayers {
+		allEmailAddresses = allEmailAddresses + player.Email + ", "
+	}
+
+	err = email.SendLink(database.AllPlayers[database.Turn].Email, allEmailAddresses, database.Codename, os.Getenv("SABACC_UI_HREF")+"?"+encodedDatabase, database.Round)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func sendGameOverEmails(database models.Database) error {
+	// Send an email to every player
+	for _, player := range database.AllPlayers {
+		// TODO Make the function smart enough to not need both HTML and plain if only plain is passed
+		// TODO Decide if I'm gonna handle text-only emails or if HTML is required
+		err := email.SendMessage(player.Email, database.Codename, database.Result, database.Result)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func generateResultString(database models.Database) (string, error) {
+	rematchLink, err := generateRematchLink(database)
+	if err != nil {
+		return "", err
+	}
+
+	return generateHandSummaries(database) + "<br><br>" + rematchLink, nil
+}
+
+func generateHandSummaries(database models.Database) string {
+	finalResultsMessage := ""
+	for _, player := range database.AllPlayers {
+		finalResultsMessage = finalResultsMessage + player.Email + " got a final score of " + strconv.Itoa(player.Score) + " with a hand of " + getHandString(player.Hand)
+	}
+
+	return finalResultsMessage
+}
+
+func generateRematchLink(database models.Database) (string, error) {
+	rematchDatabase := models.Database{}
+	rematchDatabase.Rematch = database.AllPlayers
+
+	rematchDatabaseString, err := encodeDatabase(rematchDatabase)
+	if err != nil {
+		return "", err
+	}
+
+	return `<a href="` + os.Getenv("SABACC_UI_HREF") + "?" + rematchDatabaseString + `">Click here for a rematch!</a>`, nil
 }
