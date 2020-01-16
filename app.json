@@ -1,5 +1,6 @@
 {
   "name": "Sabacc",
   "description": "A microservice for playing Sabacc in an async way with email notifications",
-  "repository": "https://github.com/jessemillar/sabacc"
+  "repository": "https://github.com/jessemillar/sabacc",
+  "logo": "https://jessemillar.github.io/sabacc/images/cards/zero.png"
 }
