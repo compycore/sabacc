@@ -292,6 +292,7 @@ function swap(card) {
         database.players[database.turn].hand.push(database.draw);
         addCardToHand("your-hand-cards", database.draw);
         // TODO Animate the discard of the card in question (take it out of your hand and put it in the discard pile)
+				// TODO Recalculate and show score
         // Wipe the drawn card
         database.draw = "";
 				// TODO Delay ending the turn
@@ -312,6 +313,7 @@ function swap(card) {
         // Remove the card that was just added to the player's hand from the discard pile
         database.discards.splice(database.discards.length - 1, 1);
         // TODO Animate removing a card from the discard pile (potentially making the discard pile go away)
+				// TODO Recalculate and show score
         // Put the card in the discard pile
         database.discards.push(card);
 				// TODO Delay ending the turn
