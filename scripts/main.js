@@ -117,8 +117,8 @@ function populatePage() {
 }
 
 function populateRound() {
-  document.getElementById("actions-header").innerHTML =
-    "Actions (Round: " + database.round + ")";
+  document.getElementById("round-count").innerHTML =
+    "<center>Round " + database.round + "</center>";
 }
 
 // extra is used when we add or remove cards from the player's hand and want to recalculate
