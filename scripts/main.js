@@ -7,7 +7,7 @@ var pickAction = "Pick your action!";
 var database = JSON.parse(decodeURIComponent(window.location.search.substr(1)));
 var warp;
 var rollInterval;
-var cardAnimateDelay = 3000;
+var cardAnimateDelay = 2000;
 
 function init() {
   warp = new WarpSpeed("canvas", { speedAdjFactor: 0.02 });
@@ -106,9 +106,10 @@ function startNewGame() {
   });
 }
 
-// Don't populate the page before we know we're dealing with the right person
 function populatePage() {
   document.getElementById("container").style = "display: block;";
+
+  preloadCardImage(database.draw);
 
   populateRound();
   populateScore();
@@ -141,14 +142,7 @@ function populateDiscardPile() {
   }
 }
 
-function addCardToHand(barajaDivId, card, onclick, callback) {
-  var cardCount = getLiCount(barajaDivId);
-
-  var hand = document.getElementById(barajaDivId);
-  if (cardCount > 1) {
-    hand = window.baraja(document.getElementById(barajaDivId));
-  }
-
+function createCardLi(card, onClick) {
   var li = document.createElement("li");
   li.id = getCardString(card, "-");
   var image = document.createElement("img");
@@ -161,15 +155,34 @@ function addCardToHand(barajaDivId, card, onclick, callback) {
   }
 
   if (card != "back" && card != "transparent") {
-    if (!onclick) {
+    if (!onClick) {
       li.setAttribute(
         "onClick",
         "javascript: swap(" + JSON.stringify(card) + ");"
       );
     } else {
-      li.setAttribute("onClick", "javascript: " + onclick);
+      li.setAttribute("onClick", "javascript: " + onClick);
     }
   }
+
+  return li;
+}
+
+function addCardToHand(divId, card, onClick) {
+  var hand = document.getElementById(divId);
+  var li = createCardLi(card, onClick);
+  hand.appendChild(li);
+}
+
+function animateAddCardToHand(barajaDivId, card, onClick, callback) {
+  var cardCount = getLiCount(barajaDivId);
+
+  var hand = document.getElementById(barajaDivId);
+  if (cardCount > 1) {
+    hand = window.baraja(document.getElementById(barajaDivId));
+  }
+
+  var li = createCardLi(card, onClick);
 
   if (cardCount > 1) {
     hand.add(li.outerHTML);
@@ -251,14 +264,15 @@ function gain() {
     cancelButtonText: "Discard then draw"
   }).then(result => {
     if (result.value) {
-      addCardToHand("your-hand-cards", database.draw);
-      database.players[database.turn].hand.push(database.draw);
-      populateScore(database.draw.value);
-      delete database.draw;
+      animateAddCardToHand("your-hand-cards", database.draw, null, function() {
+        database.players[database.turn].hand.push(database.draw);
+        populateScore(database.draw.value);
+        delete database.draw;
 
-      setTimeout(function() {
-        endTurn();
-      }, cardAnimateDelay);
+        setTimeout(function() {
+          endTurn();
+        }, cardAnimateDelay);
+      });
     } else if (result.dismiss === Swal.DismissReason.cancel) {
       Swal.fire("Please tap on the card in your hand you wish to discard.", {
         icon: "info"
@@ -306,58 +320,78 @@ function swap(card) {
         // Discard and draw
 
         // Animate drawing a card
-        addCardToHand("your-hand-cards", database.draw, null, function() {
-          // Animate removing the card in question
-          removeCard(getCardString(cardInQuestion, "-"), function() {
-            // Animate adding the card in question to the discard pile
-            addCardToHand("discard-pile", cardInQuestion, null, function() {
-              // Recalculate and show score
-              populateScore(-cardInQuestion.value + database.draw.value);
-              // Remove the card in question from the player's hand
-              database.players[database.turn].hand.splice(
-                cardInQuestionHandIndex,
-                1
+        animateAddCardToHand(
+          "your-hand-cards",
+          database.draw,
+          null,
+          function() {
+            // Animate removing the card in question
+            removeCard(getCardString(cardInQuestion, "-"), function() {
+              // Animate adding the card in question to the discard pile
+              animateAddCardToHand(
+                "discard-pile",
+                cardInQuestion,
+                null,
+                function() {
+                  // Recalculate and show score
+                  populateScore(-cardInQuestion.value + database.draw.value);
+                  // Remove the card in question from the player's hand
+                  database.players[database.turn].hand.splice(
+                    cardInQuestionHandIndex,
+                    1
+                  );
+                  // Put the draw card in the player's hand
+                  database.players[database.turn].hand.push(database.draw);
+                  // Wipe the drawn card
+                  database.draw = "";
+                  setTimeout(function() {
+                    endTurn();
+                  }, cardAnimateDelay);
+                }
               );
-              // Put the draw card in the player's hand
-              database.players[database.turn].hand.push(database.draw);
-              // Wipe the drawn card
-              database.draw = "";
-              setTimeout(function() {
-                endTurn();
-              }, cardAnimateDelay);
             });
-          });
-        });
+          }
+        );
       } else if (result.dismiss === Swal.DismissReason.cancel) {
         // Swap with the discard pile
 
         // Animate removing the card from the discard pile
         removeCard(getCardString(discardTopCard, "-"), function() {
           // Animate adding the top discard card to the player's hand
-          addCardToHand("your-hand-cards", discardTopCard, null, function() {
-            // Animate removing the card in question from the player's hand
-            removeCard(getCardString(cardInQuestion, "-"), function() {
-              // Animate adding the card in question to the discard pile
-              addCardToHand("discard-pile", cardInQuestion, null, function() {
-                // Remove the card in question from the player's hand
-                database.players[database.turn].hand.splice(
-                  cardInQuestionHandIndex,
-                  1
+          animateAddCardToHand(
+            "your-hand-cards",
+            discardTopCard,
+            null,
+            function() {
+              // Animate removing the card in question from the player's hand
+              removeCard(getCardString(cardInQuestion, "-"), function() {
+                // Animate adding the card in question to the discard pile
+                animateAddCardToHand(
+                  "discard-pile",
+                  cardInQuestion,
+                  null,
+                  function() {
+                    // Remove the card in question from the player's hand
+                    database.players[database.turn].hand.splice(
+                      cardInQuestionHandIndex,
+                      1
+                    );
+                    // Put the top of the discard pile in the player's hand
+                    database.players[database.turn].hand.push(discardTopCard);
+                    // Remove the card that was just added to the player's hand from the discard pile
+                    database.discards.splice(database.discards.length - 1, 1);
+                    // Recalculate and show score
+                    populateScore(-cardInQuestion.value + discardTopCard.value);
+                    // Put the card in the discard pile
+                    database.discards.push(card);
+                    setTimeout(function() {
+                      endTurn();
+                    }, cardAnimateDelay);
+                  }
                 );
-                // Put the top of the discard pile in the player's hand
-                database.players[database.turn].hand.push(discardTopCard);
-                // Remove the card that was just added to the player's hand from the discard pile
-                database.discards.splice(database.discards.length - 1, 1);
-                // Recalculate and show score
-                populateScore(-cardInQuestion.value + discardTopCard.value);
-                // Put the card in the discard pile
-                database.discards.push(card);
-                setTimeout(function() {
-                  endTurn();
-                }, cardAnimateDelay);
               });
-            });
-          });
+            }
+          );
         });
       }
     });
@@ -646,4 +680,9 @@ function removeCard(divId, callback) {
       callback();
     }
   });
+}
+
+function preloadCardImage(card) {
+  var img = new Image();
+  img.src = getCardFilename(card);
 }
