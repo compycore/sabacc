@@ -15,41 +15,42 @@
 
 .cube div {
   border-radius: 5px;
+  border: 2px solid #ffe81f;
   width: 100px;
   height: 100px;
   position: absolute;
-	background-color: #e29923;
+  background-color: #e29923;
 }
 
 .front {
   transform: rotateY(0deg) translateZ(50px);
   background-image: url("../images/dice/side1.png");
-	background-size: cover;
+  background-size: cover;
 }
 .back {
   transform: rotateX(180deg) translateZ(50px);
   background-image: url("../images/dice/side2.png");
-	background-size: cover;
+  background-size: cover;
 }
 .right {
   transform: rotateY(90deg) translateZ(50px);
   background-image: url("../images/dice/side3.png");
-	background-size: cover;
+  background-size: cover;
 }
 .left {
   transform: rotateY(-90deg) translateZ(50px);
   background-image: url("../images/dice/side4.png");
-	background-size: cover;
+  background-size: cover;
 }
 .top {
   transform: rotateX(90deg) translateZ(50px);
   background-image: url("../images/dice/side5.png");
-	background-size: cover;
+  background-size: cover;
 }
 .bottom {
   transform: rotateX(-90deg) translateZ(50px);
   background-image: url("../images/dice/side6.png");
-	background-size: cover;
+  background-size: cover;
 }
 
 .cube.show1 {

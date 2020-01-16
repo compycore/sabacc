@@ -567,7 +567,7 @@ function showDice() {
     confirmButtonText: "Roll!",
     html:
       "<div class='dice-container'>" +
-      "<div id='dice1' class='cube'>" +
+      "<div id='dice1' class='cube show1'>" +
       "<div class='top'></div>" +
       "<div class='front'></div>" +
       "<div class='left'></div>" +
@@ -577,7 +577,7 @@ function showDice() {
       "</div>" +
       "</div>" +
       "<div class='dice-container'>" +
-      "<div id='dice2' class='cube'>" +
+      "<div id='dice2' class='cube show2'>" +
       "<div class='top'></div>" +
       "<div class='front'></div>" +
       "<div class='left'></div>" +
@@ -598,7 +598,7 @@ function rollDice() {
     showConfirmButton: false,
     html:
       "<div class='dice-container'>" +
-      "<div id='dice1' class='cube'>" +
+      "<div id='dice1' class='cube show1'>" +
       "<div class='top'></div>" +
       "<div class='front'></div>" +
       "<div class='left'></div>" +
@@ -608,7 +608,7 @@ function rollDice() {
       "</div>" +
       "</div>" +
       "<div class='dice-container'>" +
-      "<div id='dice2' class='cube'>" +
+      "<div id='dice2' class='cube show2'>" +
       "<div class='top'></div>" +
       "<div class='front'></div>" +
       "<div class='left'></div>" +
