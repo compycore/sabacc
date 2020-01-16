@@ -121,11 +121,12 @@ function populateRound() {
     "Actions (Round: " + database.round + ")";
 }
 
-function populateScore() {
+// extra is used when we add or remove cards from the player's hand and want to recalculate
+function populateScore(extra = 0) {
   var player = database.players[database.turn];
 
   document.getElementById("your-hand-header").innerHTML =
-    "Your Hand (Score: " + player.score + ")";
+    "Your Hand (Score: " + (player.score + extra) + ")";
 }
 
 function populateDiscardPile() {
@@ -139,10 +140,9 @@ function populateDiscardPile() {
 function addCardToHand(barajaDivId, card, onclick) {
   var cardCount = getLiCount(barajaDivId);
 
-  // TODO Use the nice deck animations by uncommenting and fixing the below stuff
   var hand = document.getElementById(barajaDivId);
   if (cardCount > 1) {
-    // hand = window.baraja(document.getElementById(barajaDivId));
+    hand = window.baraja(document.getElementById(barajaDivId));
   }
 
   var li = document.createElement("li");
@@ -163,8 +163,11 @@ function addCardToHand(barajaDivId, card, onclick) {
   }
 
   if (cardCount > 1) {
-    // hand.add(li.outerHTML);
-    hand.appendChild(li);
+    hand.add(li.outerHTML);
+
+    setTimeout(function() {
+      fanCards("your-hand-cards");
+    }, 500);
   } else {
     hand.appendChild(li);
   }
@@ -229,15 +232,14 @@ function gain() {
     cancelButtonText: "Discard then draw"
   }).then(result => {
     if (result.value) {
-      Swal.fire({
-        title: "You drew...",
-        text: "the " + getCardString(database.draw) + "!",
-        imageUrl: getCardFilename(database.draw)
-      }).then(() => {
-        database.players[database.turn].hand.push(database.draw);
-        delete database.draw;
+      addCardToHand("your-hand-cards", database.draw);
+      database.players[database.turn].hand.push(database.draw);
+      populateScore(database.draw.value);
+      delete database.draw;
+
+      setTimeout(function() {
         endTurn();
-      });
+      }, 1000);
     } else if (result.dismiss === Swal.DismissReason.cancel) {
       Swal.fire("Please tap on the card in your hand you wish to discard.", {
         icon: "info"
