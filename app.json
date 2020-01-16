@@ -2,5 +2,20 @@
   "name": "Sabacc",
   "description": "A microservice for playing Sabacc in an async way with email notifications",
   "repository": "https://github.com/jessemillar/sabacc",
-  "logo": "https://jessemillar.github.io/sabacc/images/logo.png"
+  "logo": "https://jessemillar.github.io/sabacc/images/logo.png",
+  "env": {
+    "MAILJET_API_KEY_PUBLIC": {
+      "description": "The public API key you got from Mailjet."
+    },
+    "MAILJET_API_KEY_PRIVATE": {
+      "description": "The private API key you got from Mailjet."
+    },
+    "SENDGRID_API_KEY": {
+      "description": "The API key you got from SendGrid."
+    },
+    "SABACC_UI_HREF": {
+      "description": "A secret key for verifying the integrity of signed cookies.",
+      "value": "https://jessemillar.github.io/sabacc/"
+    }
+  }
 }
