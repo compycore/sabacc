@@ -12,7 +12,7 @@ There were a few goals for this project:
 
 There are a few steps to follow if you want to deploy your own copy of Sabacc:
 
-1. Sign up for one or more free email API accounts from the list below and note down your API keys
+1. Sign up for one or more free email API accounts from the list below and note down your API key(s)
 	- [Mailjet](https://www.mailjet.com)
 	- [SendGrid](https://sendgrid.com)
 1. Deploy to Heroku using the button below (fill in the environment variables section on the Heroku site with the API keys you obtained above)
