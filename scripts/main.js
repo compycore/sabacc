@@ -7,7 +7,7 @@ var pickAction = "Pick your action!";
 var database = JSON.parse(decodeURIComponent(window.location.search.substr(1)));
 var warp;
 var rollInterval;
-var cardAnimateDelay = 1000;
+var cardAnimateDelay = 3000;
 
 function init() {
   warp = new WarpSpeed("canvas", { speedAdjFactor: 0.02 });
@@ -141,7 +141,7 @@ function populateDiscardPile() {
   }
 }
 
-function addCardToHand(barajaDivId, card, onclick) {
+function addCardToHand(barajaDivId, card, onclick, callback) {
   var cardCount = getLiCount(barajaDivId);
 
   var hand = document.getElementById(barajaDivId);
@@ -150,6 +150,7 @@ function addCardToHand(barajaDivId, card, onclick) {
   }
 
   var li = document.createElement("li");
+  li.id = getCardString(card, "-");
   var image = document.createElement("img");
   image.className = "sabacc-card";
   image.src = getCardFilename(card);
@@ -168,12 +169,22 @@ function addCardToHand(barajaDivId, card, onclick) {
 
   if (cardCount > 1) {
     hand.add(li.outerHTML);
-
-    setTimeout(function() {
-      fanCards("your-hand-cards");
-    }, 500);
   } else {
     hand.appendChild(li);
+  }
+
+  if (barajaDivId != "discard-pile") {
+    setTimeout(function() {
+      fanCards(barajaDivId);
+
+      if (callback != null) {
+        callback();
+      }
+    }, cardAnimateDelay / 3);
+  } else {
+    if (callback != null) {
+      callback();
+    }
   }
 }
 
@@ -277,26 +288,34 @@ function swap(card) {
       confirmButtonText: "Discard and draw",
       cancelButtonText: "Swap with " + topDiscardCard
     }).then(result => {
+      // Discard and draw
+
       // Find the object for the card in question in the player's hand
       var cardIndexInHand = database.players[database.turn].hand.findIndex(
         element => element.value == card.value && element.stave == card.stave
       );
+      var cardObject = database.players[database.turn].hand[cardIndexInHand];
 
       // We hit the "confirm" button (which is actually "Discard and draw")
       if (result.value) {
-        // Discard and draw
-
-        // Remove the card in question from the player's hand
-        database.players[database.turn].hand.splice(cardIndexInHand, 1);
-        // Put the draw card in the player's hand
-        database.players[database.turn].hand.push(database.draw);
-        addCardToHand("your-hand-cards", database.draw);
-        // TODO Animate the discard of the card in question (take it out of your hand and put it in the discard pile)
-				// TODO Recalculate and show score
-        // Wipe the drawn card
-        database.draw = "";
-				// TODO Delay ending the turn
-        endTurn();
+        // Animate the discard of the card in question
+        addCardToHand("your-hand-cards", database.draw, null, function() {
+          removeCard(getCardString(cardObject, "-"), function() {
+            addCardToHand("discard-pile", cardObject, null, function() {
+              // Recalculate and show score
+              populateScore(-cardObject.value + database.draw.value);
+              // Remove the card in question from the player's hand
+              database.players[database.turn].hand.splice(cardIndexInHand, 1);
+              // Put the draw card in the player's hand
+              database.players[database.turn].hand.push(database.draw);
+              // Wipe the drawn card
+              database.draw = "";
+              setTimeout(function() {
+                endTurn();
+              }, cardAnimateDelay);
+            });
+          });
+        });
       } else if (result.dismiss === Swal.DismissReason.cancel) {
         // Swap with the discard pile
 
@@ -313,11 +332,12 @@ function swap(card) {
         // Remove the card that was just added to the player's hand from the discard pile
         database.discards.splice(database.discards.length - 1, 1);
         // TODO Animate removing a card from the discard pile (potentially making the discard pile go away)
-				// TODO Recalculate and show score
+        // TODO Recalculate and show score
         // Put the card in the discard pile
         database.discards.push(card);
-				// TODO Delay ending the turn
-        endTurn();
+        setTimeout(function() {
+          endTurn();
+        }, cardAnimateDelay);
       }
     });
   }
@@ -450,9 +470,11 @@ function getCardString(card, separator = " ") {
 }
 
 function promptSwap() {
-  Swal.fire(
-    "Tap a card in your hand to swap it with the one in the discard pile."
-  );
+  if (!turnTaken) {
+    Swal.fire(
+      "Tap a card in your hand to swap it with the one in the discard pile."
+    );
+  }
 }
 
 function getLiCount(ulId) {
@@ -597,4 +619,14 @@ function arrayToSentence(arr) {
 
 function hideDiscardPile() {
   document.getElementById("discard-row").innerHTML = "";
+}
+
+function removeCard(divId, callback) {
+  $("#" + divId).fadeOut(300, function() {
+    $(this).remove();
+
+    if (callback != null) {
+      callback();
+    }
+  });
 }
