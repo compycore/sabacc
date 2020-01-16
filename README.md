@@ -1,5 +1,7 @@
 # Sabacc
 
+[![Build Status](https://travis-ci.org/jessemillar/sabacc.svg?branch=master)](https://travis-ci.org/jessemillar/sabacc)
+
 Everything happens via URL links that are emailed to participants. There's nothing other than honesty stopping players from taking multiple turns or hijacking someone else's turn.
 
 ## Deploy
