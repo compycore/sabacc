@@ -14,7 +14,7 @@
       "description": "The API key you got from SendGrid."
     },
     "SABACC_UI_HREF": {
-      "description": "A secret key for verifying the integrity of signed cookies.",
+      "description": "The URI location of the static UI.",
       "value": "https://jessemillar.github.io/sabacc/"
     }
   }

@@ -8,13 +8,28 @@ There were a few goals for this project:
 - Async play to allow for a lack of time constraint (e.g. play casually throughout the day)
 - Not require money to play or maintain (use free hosting and deployment technologies)
 
-Everything happens via URL links that are emailed to participants. There's nothing other than honesty stopping players from taking multiple turns or hijacking someone else's turn.
-
 ## Deploy
 
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+There are a few steps to follow if you want to deploy your own copy of Sabacc:
+
+1. Sign up for one or more free email API accounts from the list below and note down your API keys
+	- [Mailjet](https://www.mailjet.com)
+	- [SendGrid](https://sendgrid.com)
+1. Deploy to Heroku using the button below (fill in the environment variables section on the Heroku site with the API keys you obtained above)
+
+	[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+
+## How to Play
+
+1. Navigate to [the static UI](https://jessemillar.github.io/sabacc) in your browser
+1. Enter email addresses for the players you want to play with
+1. Wait for an email notification that it's your turn
 
 ## Notes
+
+### General Notes
+
+- Everything happens via URL links that are emailed to participants. There are no accounts, databases, or "unnecessary" complexity. The game state is encoded as a URI parameter in each email that is sent which means there's nothing other than honesty stopping players from taking multiple turns, hijacking someone else's turn, or peeking at the cards in other players hands if they know how to use a browser debug console. We here at CompyCore are not concerned by this since it's quite easy to cheat in physical card games as well.
 
 ### Repository Branches
 
