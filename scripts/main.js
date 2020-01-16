@@ -7,6 +7,7 @@ var pickAction = "Pick your action!";
 var database = JSON.parse(decodeURIComponent(window.location.search.substr(1)));
 var warp;
 var rollInterval;
+var cardAnimateDelay = 1000;
 
 function init() {
   warp = new WarpSpeed("canvas", { speedAdjFactor: 0.02 });
@@ -130,11 +131,14 @@ function populateScore(extra = 0) {
 }
 
 function populateDiscardPile() {
-  addCardToHand(
-    "discard-pile",
-    database.discards[database.discards.length - 1],
-    "promptSwap();"
-  );
+  // Add a blank card because we can't animate unless there's 2 or more cards
+  if (database.discards.length == 1) {
+    addCardToHand("discard-pile", "back");
+  }
+
+  for (var i = 0; i < database.discards.length; i++) {
+    addCardToHand("discard-pile", database.discards[i], "promptSwap();");
+  }
 }
 
 function addCardToHand(barajaDivId, card, onclick) {
@@ -239,7 +243,7 @@ function gain() {
 
       setTimeout(function() {
         endTurn();
-      }, 1000);
+      }, cardAnimateDelay);
     } else if (result.dismiss === Swal.DismissReason.cancel) {
       Swal.fire("Please tap on the card in your hand you wish to discard.", {
         icon: "info"
@@ -280,24 +284,37 @@ function swap(card) {
 
       // We hit the "confirm" button (which is actually "Discard and draw")
       if (result.value) {
+        // Discard and draw
+
         // Remove the card in question from the player's hand
         database.players[database.turn].hand.splice(cardIndexInHand, 1);
         // Put the draw card in the player's hand
         database.players[database.turn].hand.push(database.draw);
+        addCardToHand("your-hand-cards", database.draw);
+        // TODO Animate the discard of the card in question (take it out of your hand and put it in the discard pile)
         // Wipe the drawn card
         database.draw = "";
+				// TODO Delay ending the turn
         endTurn();
       } else if (result.dismiss === Swal.DismissReason.cancel) {
+        // Swap with the discard pile
+
         // Remove the card in question from the player's hand
         database.players[database.turn].hand.splice(cardIndexInHand, 1);
         // Put the top of the discard pile in the player's hand
         database.players[database.turn].hand.push(
           database.discards[database.discards.length - 1]
         );
+        addCardToHand(
+          "your-hand-cards",
+          database.discards[database.discards.length - 1]
+        );
         // Remove the card that was just added to the player's hand from the discard pile
         database.discards.splice(database.discards.length - 1, 1);
+        // TODO Animate removing a card from the discard pile (potentially making the discard pile go away)
         // Put the card in the discard pile
         database.discards.push(card);
+				// TODO Delay ending the turn
         endTurn();
       }
     });
@@ -574,4 +591,8 @@ function arrayToSentence(arr) {
     (arr.slice(0, -2).length ? ", " : "") +
     arr.slice(-2).join(" and ")
   );
+}
+
+function hideDiscardPile() {
+  document.getElementById("discard-row").innerHTML = "";
 }
