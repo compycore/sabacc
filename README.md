@@ -1,5 +1,7 @@
 # Sabacc
 
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+
 There are two branches: `master` and `gh-pages`
 
 ## `master` branch
