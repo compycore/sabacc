@@ -133,7 +133,7 @@ function populateScore(extra = 0) {
 function populateDiscardPile() {
   // Add a blank card because we can't animate unless there's 2 or more cards
   if (database.discards.length == 1) {
-    addCardToHand("discard-pile", "back");
+    addCardToHand("discard-pile", "transparent");
   }
 
   for (var i = 0; i < database.discards.length; i++) {
@@ -156,7 +156,11 @@ function addCardToHand(barajaDivId, card, onclick, callback) {
   image.src = getCardFilename(card);
   li.appendChild(image);
 
-  if (card != "back") {
+  if (card == "transparent") {
+    image.style = "opacity: 0;";
+  }
+
+  if (card != "back" && card != "transparent") {
     if (!onclick) {
       li.setAttribute(
         "onClick",
