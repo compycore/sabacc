@@ -47,3 +47,4 @@ https://jessemillar.github.io/sabacc?round=1&turn=hellojessemillar@gmail.com&pla
 - [warpspeed.js](https://fdossena.com/?p=warpspeed/i.frag) for starfield effect
 - [SweetAlert2](https://sweetalert2.github.io) for pretty prompts
 - [Skeleton](http://getskeleton.com) for CSS boilerplate
+- [Baraja-JS](https://github.com/nuxy/baraja-js) for card animations
