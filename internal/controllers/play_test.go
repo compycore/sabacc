@@ -1078,15 +1078,21 @@ func TestNewHandsAfterDiceDiscard(t *testing.T) {
 		t.Error(err)
 	}
 
+	// Check that the round increased
+	if resultDatabase.Round != 1 {
+		t.Errorf("Round number incorrect; want: %d, got: %d", 1, resultDatabase.Round)
+	}
+
+	// Put all player hands in the discard pile
 	for i, player := range resultDatabase.AllPlayers {
 		for _, card := range player.Hand {
 			resultDatabase.AllDiscards = append(resultDatabase.AllDiscards, card)
 		}
 
-		player.Hand = []deck.Card{}
+		resultDatabase.AllPlayers[i].Hand = []deck.Card{}
 
-		if len(player.Hand) != 0 {
-			t.Errorf("Wrong hand count for player %d; want: %d, got: %d", i, 0, len(player.Hand))
+		if len(resultDatabase.AllPlayers[i].Hand) != 0 {
+			t.Errorf("Wrong hand count for player %d; want: %d, got: %d", i, 0, len(resultDatabase.AllPlayers[i].Hand))
 		}
 	}
 
@@ -1096,6 +1102,11 @@ func TestNewHandsAfterDiceDiscard(t *testing.T) {
 		t.Error(err)
 	}
 
+	// Check that the round stayed the same
+	if resultDatabase.Round != 1 {
+		t.Errorf("Round number incorrect; want: %d, got: %d", 1, resultDatabase.Round)
+	}
+
 	// Check that all players have new hands
 	for i, player := range resultDatabase.AllPlayers {
 		if len(player.Hand) != 2 {
@@ -1103,8 +1114,8 @@ func TestNewHandsAfterDiceDiscard(t *testing.T) {
 		}
 	}
 
-	// Check that the discard pile has 7 cards in it (6 from the players and 1 from the start of the game)
-	if len(resultDatabase.AllDiscards) != 7 {
-		t.Errorf("Wrong number of cards in the discard pile; want: %d, got: %d", 7, len(resultDatabase.AllDiscards))
+	// Check that the discard pile has 8 cards in it (6 from the players, 1 from the start of the game, and 1 placed on top of the player cards)
+	if len(resultDatabase.AllDiscards) != 8 {
+		t.Errorf("Wrong number of cards in the discard pile; want: %d, got: %d", 8, len(resultDatabase.AllDiscards))
 	}
 }

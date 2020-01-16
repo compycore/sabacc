@@ -41,7 +41,7 @@ func gameLoop(queryString string) (models.Database, error) {
 	// Put a card on top of the draw pile if necessary
 	gameDeck, database.Draw = populateDraw(database, gameDeck)
 
-	// Populate the discard pile
+	// Populate the discard pile if it's currently empty
 	database, gameDeck = populateDiscard(database, gameDeck)
 
 	// Deal hands if we're starting a new game or if hands were discarded because of a dice roll (notify players if hands were discarded)
@@ -218,9 +218,14 @@ func dealHands(database models.Database, gameDeck deck.Deck) (models.Database, d
 			gameDeck, database.AllPlayers[i].Hand = deck.Deal(gameDeck, 2)
 		}
 
-		err := sendHandDiscardEmails(database)
-		if err != nil {
-			return models.Database{}, deck.Deck{}, err
+		if database.Round > 0 {
+			// Put an extra card on top of the discard pile
+			database, gameDeck = dealIntoDiscard(database, gameDeck)
+
+			err := sendHandDiscardEmails(database)
+			if err != nil {
+				return models.Database{}, deck.Deck{}, err
+			}
 		}
 	}
 
@@ -229,10 +234,16 @@ func dealHands(database models.Database, gameDeck deck.Deck) (models.Database, d
 
 func populateDiscard(database models.Database, gameDeck deck.Deck) (models.Database, deck.Deck) {
 	if len(database.AllDiscards) == 0 {
-		discard := deck.Card{}
-		gameDeck, discard = deck.DealSingle(gameDeck)
-		database.AllDiscards = append(database.AllDiscards, discard)
+		database, gameDeck = dealIntoDiscard(database, gameDeck)
 	}
+
+	return database, gameDeck
+}
+
+func dealIntoDiscard(database models.Database, gameDeck deck.Deck) (models.Database, deck.Deck) {
+	discard := deck.Card{}
+	gameDeck, discard = deck.DealSingle(gameDeck)
+	database.AllDiscards = append(database.AllDiscards, discard)
 
 	return database, gameDeck
 }
@@ -271,15 +282,13 @@ func sendNextTurnEmail(database models.Database) error {
 }
 
 func sendHandDiscardEmails(database models.Database) error {
-	if database.Round > 0 {
-		// Send an email to every player
-		for _, player := range database.AllPlayers {
-			// TODO Make the function smart enough to not need both HTML and plain if only plain is passed
-			// TODO Decide if I'm gonna handle text-only emails or if HTML is required
-			err := email.SendHandDiscardNotice(player.Email, database.Codename, getHandString(player.Hand), strconv.Itoa(player.Score))
-			if err != nil {
-				return err
-			}
+	// Send an email to every player
+	for _, player := range database.AllPlayers {
+		// TODO Make the function smart enough to not need both HTML and plain if only plain is passed
+		// TODO Decide if I'm gonna handle text-only emails or if HTML is required
+		err := email.SendHandDiscardNotice(player.Email, database.Codename, getHandString(player.Hand), strconv.Itoa(player.Score))
+		if err != nil {
+			return err
 		}
 	}
 
