@@ -431,6 +431,8 @@ function trash() {
     if (result.value) {
       database.players.splice(database.turn, 1);
       endTurn(function() {
+        document.getElementById("container").style = "display: none;";
+
         Swal.fire("You've withdrawn from the game.", {
           icon: "success",
           confirmButtonText: "'Til the Spire."
