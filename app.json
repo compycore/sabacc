@@ -1,0 +1,5 @@
+{
+  "name": "Sabacc",
+  "description": "A microservice for playing Sabacc in an async way with email notifications",
+  "repository": "https://github.com/jessemillar/sabacc"
+}
