@@ -456,6 +456,7 @@ function saveData(callback) {
   punchItChewie();
 
   Swal.fire({
+		imageUrl: "images/d-0.gif",
     title: "Saving data...",
     text: "Please don't close the page. This may take a moment.",
     showConfirmButton: false
