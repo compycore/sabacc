@@ -6,8 +6,8 @@ import (
 	"log"
 	"testing"
 
-	"github.com/jessemillar/sabacc/internal/deck"
-	"github.com/jessemillar/sabacc/internal/models"
+	"github.com/compycore/sabacc/internal/deck"
+	"github.com/compycore/sabacc/internal/models"
 )
 
 // A struct representing a mid-game state (used in a couple tests, but not all)

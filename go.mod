@@ -1,4 +1,4 @@
-module github.com/jessemillar/sabacc
+module github.com/compycore/sabacc
 
 go 1.13
 

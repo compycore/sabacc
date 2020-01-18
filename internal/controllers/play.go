@@ -7,10 +7,10 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/jessemillar/sabacc/internal/deck"
-	"github.com/jessemillar/sabacc/internal/email"
-	"github.com/jessemillar/sabacc/internal/helpers"
-	"github.com/jessemillar/sabacc/internal/models"
+	"github.com/compycore/sabacc/internal/deck"
+	"github.com/compycore/sabacc/internal/email"
+	"github.com/compycore/sabacc/internal/helpers"
+	"github.com/compycore/sabacc/internal/models"
 	"github.com/labstack/echo"
 )
 

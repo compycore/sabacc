@@ -1,6 +1,6 @@
 package models
 
-import "github.com/jessemillar/sabacc/internal/deck"
+import "github.com/compycore/sabacc/internal/deck"
 
 type Database struct {
 	Codename    string    `json:"codename"`

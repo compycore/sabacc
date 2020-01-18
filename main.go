@@ -6,8 +6,8 @@ import (
 	"os"
 	"time"
 
+	"github.com/compycore/sabacc/internal/controllers"
 	"github.com/jessemillar/health"
-	"github.com/jessemillar/sabacc/internal/controllers"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 )
