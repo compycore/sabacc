@@ -24,3 +24,10 @@ do
 done
 
 generate zero black 0 zero.png
+
+cp full/back.png .
+
+echo "Cropping"
+mogrify -crop 1100x1600+0+0 -gravity Center *.png
+echo "Resizing"
+mogrify -resize x200 *.png
