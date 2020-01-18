@@ -1,6 +1,6 @@
 # Sabacc
 
-[![Build Status](https://travis-ci.org/jessemillar/sabacc.svg?branch=master)](https://travis-ci.org/jessemillar/sabacc) [![Go Report Card](https://goreportcard.com/badge/github.com/compycore/sabacc)](https://goreportcard.com/report/github.com/compycore/sabacc)
+[![Build Status](https://travis-ci.org/compycore/sabacc.svg?branch=master)](https://travis-ci.org/compycore/sabacc) [![Go Report Card](https://goreportcard.com/badge/github.com/compycore/sabacc)](https://goreportcard.com/report/github.com/compycore/sabacc)
 
 In Disney's newly-opened [Star Wars: Galaxy's Edge](https://disneyparks.disney.go.com/star-wars-galaxys-edge/) lands, you can buy a deck of [Sabacc playing cards](https://starwars.fandom.com/wiki/Sabacc). Over Christmas break, [Jesse Millar](https://jessemillar.com) became obsessed with playing Sabacc with his brothers and was quite disappointed when he could no longer play the game in person at the end of the holiday. This repo represents an attempt at creating a digital version of Sabacc so that people can play with each other regardless of distance or time commitments.
 
@@ -21,7 +21,7 @@ There are a few steps to follow if you want to deploy your own copy of Sabacc:
 
 ## How to Play
 
-1. Navigate to [the static UI](https://jessemillar.github.io/sabacc) in your browser
+1. Navigate to [the static UI](https://compycore.com/sabacc) in your browser
 1. Enter email addresses for the players you want to play with
 1. Wait for an email notification that it's your turn
 
