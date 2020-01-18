@@ -1,6 +1,6 @@
 # Sabacc
 
-[![Build Status](https://travis-ci.org/jessemillar/sabacc.svg?branch=master)](https://travis-ci.org/jessemillar/sabacc)
+[![Build Status](https://travis-ci.org/jessemillar/sabacc.svg?branch=master)](https://travis-ci.org/jessemillar/sabacc) [![Go Report Card](https://goreportcard.com/badge/github.com/compycore/sabacc)](https://goreportcard.com/report/github.com/compycore/sabacc)
 
 In Disney's newly-opened [Star Wars: Galaxy's Edge](https://disneyparks.disney.go.com/star-wars-galaxys-edge/) lands, you can buy a deck of [Sabacc playing cards](https://starwars.fandom.com/wiki/Sabacc). Over Christmas break, [Jesse Millar](https://jessemillar.com) became obsessed with playing Sabacc with his brothers and was quite disappointed when he could no longer play the game in person at the end of the holiday. This repo represents an attempt at creating a digital version of Sabacc so that people can play with each other regardless of distance or time commitments.
 
