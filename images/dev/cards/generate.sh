@@ -11,6 +11,8 @@ function generate() {
 	convert $4 reality/grunge/$(ls reality/grunge | shuf -n 1) -composite $4
 }
 
+echo "Generating cards"
+
 for COLOR in red green
 do
 	for STAVE in circle square triangle
@@ -27,7 +29,12 @@ generate zero black 0 zero.png
 
 cp full/back.png .
 
-echo "Cropping"
+echo "Cropping cards"
 mogrify -crop 1100x1600+0+0 -gravity Center *.png
-echo "Resizing"
-mogrify -resize x200 *.png
+echo "Resizing cards"
+mogrify -resize x300 *.png
+
+echo "Removing old card images"
+rm ../../cards/*.png
+echo "Installing new card images"
+mv *.png ../../cards/
