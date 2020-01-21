@@ -16,7 +16,8 @@ type Database struct {
 }
 
 type Player struct {
-	Email string    `json:"email"`
-	Hand  deck.Deck `json:"hand"`
-	Score int       `json:"score"`
+	Email    string    `json:"email"`
+	Hand     deck.Deck `json:"hand"`
+	HandSize int       `json:"handSize"`
+	Score    int       `json:"score"`
 }

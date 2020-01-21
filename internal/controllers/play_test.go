@@ -1083,8 +1083,26 @@ func TestNewHandsAfterDiceDiscard(t *testing.T) {
 		t.Errorf("Round number incorrect; want: %d, got: %d", 1, resultDatabase.Round)
 	}
 
+	// Player 1 draws a card
+	resultDatabase.AllPlayers[0].Hand = append(resultDatabase.AllPlayers[0].Hand, resultDatabase.Draw)
+	resultDatabase.Draw = deck.Card{}
+
+	// Pass the modified database back to the server to draw a new card
+	resultDatabase, err = gameLoop(databaseToURI(resultDatabase))
+	if err != nil {
+		t.Error(err)
+	}
+
+	// Check that the round stayed the same
+	if resultDatabase.Round != 1 {
+		t.Errorf("Round number incorrect; want: %d, got: %d", 1, resultDatabase.Round)
+	}
+
 	// Put all player hands in the discard pile
 	for i, player := range resultDatabase.AllPlayers {
+		// Log the player hand size for proper replacement hand sizes
+		resultDatabase.AllPlayers[i].HandSize = len(player.Hand)
+
 		for _, card := range player.Hand {
 			resultDatabase.AllDiscards = append(resultDatabase.AllDiscards, card)
 		}
@@ -1107,15 +1125,21 @@ func TestNewHandsAfterDiceDiscard(t *testing.T) {
 		t.Errorf("Round number incorrect; want: %d, got: %d", 1, resultDatabase.Round)
 	}
 
-	// Check that all players have new hands
-	for i, player := range resultDatabase.AllPlayers {
-		if len(player.Hand) != 2 {
-			t.Errorf("Wrong hand count for player %d; want: %d, got: %d", i, 2, len(player.Hand))
-		}
+	// Check that player 1 got three cards
+	if len(resultDatabase.AllPlayers[0].Hand) != 3 {
+		t.Errorf("Wrong hand count for player %d; want: %d, got: %d", 1, 3, len(resultDatabase.AllPlayers[0].Hand))
 	}
 
-	// Check that the discard pile has 8 cards in it (6 from the players, 1 from the start of the game, and 1 placed on top of the player cards)
-	if len(resultDatabase.AllDiscards) != 8 {
-		t.Errorf("Wrong number of cards in the discard pile; want: %d, got: %d", 8, len(resultDatabase.AllDiscards))
+	// Check that all other players have new hands of 2 cards
+	if len(resultDatabase.AllPlayers[1].Hand) != 2 {
+		t.Errorf("Wrong hand count for player %d; want: %d, got: %d", 2, 2, len(resultDatabase.AllPlayers[1].Hand))
+	}
+	if len(resultDatabase.AllPlayers[2].Hand) != 2 {
+		t.Errorf("Wrong hand count for player %d; want: %d, got: %d", 3, 2, len(resultDatabase.AllPlayers[2].Hand))
+	}
+
+	// Check that the discard pile has 9 cards in it (7 from the players, 1 from the start of the game, and 1 placed on top of the player cards)
+	if len(resultDatabase.AllDiscards) != 9 {
+		t.Errorf("Wrong number of cards in the discard pile; want: %d, got: %d", 9, len(resultDatabase.AllDiscards))
 	}
 }
