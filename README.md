@@ -1,3 +1,5 @@
+![Sabacc Logo](https://raw.githubusercontent.com/compycore/sabacc/gh-pages/images/logo.png)
+
 # Sabacc
 
 [![Build Status](https://travis-ci.org/compycore/sabacc.svg?branch=master)](https://travis-ci.org/compycore/sabacc) [![Go Report Card](https://goreportcard.com/badge/github.com/compycore/sabacc)](https://goreportcard.com/report/github.com/compycore/sabacc)
@@ -72,6 +74,12 @@ The `master` branch contains the Golang microservice that runs on Heroku and orc
 The `gh-pages` branch has a simple, static-file UI hosted on GitHub Pages that allows players to take actions on their turn.
 
 ## Credits
+
+### Art
+
+All art in Sabacc is custom and drawn and animated with love by [Jesse Millar](https://jessemillar.com).
+
+### Libraries
 
 - [Mailjet](https://github.com/mailjet/mailjet-apiv3-go) for sending emails
 - [Echo](https://echo.labstack.com) for HTTP server
