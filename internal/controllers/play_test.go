@@ -1100,6 +1100,9 @@ func TestNewHandsAfterDiceDiscard(t *testing.T) {
 
 	// Put all player hands in the discard pile
 	for i, player := range resultDatabase.AllPlayers {
+		// Log the player hand size for proper replacement hand sizes
+		resultDatabase.AllPlayers[i].HandSize = len(player.Hand)
+
 		for _, card := range player.Hand {
 			resultDatabase.AllDiscards = append(resultDatabase.AllDiscards, card)
 		}

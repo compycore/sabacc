@@ -215,7 +215,12 @@ func changeDealer(database models.Database) int {
 func dealHands(database models.Database, gameDeck deck.Deck) (models.Database, deck.Deck, error) {
 	if len(database.AllPlayers[0].Hand) == 0 {
 		for i, _ := range database.AllPlayers {
-			gameDeck, database.AllPlayers[i].Hand = deck.Deal(gameDeck, 2)
+			cardCount := database.AllPlayers[i].HandSize
+			if cardCount == 0 {
+				cardCount = 2
+			}
+
+			gameDeck, database.AllPlayers[i].Hand = deck.Deal(gameDeck, cardCount)
 		}
 
 		if database.Round > 0 {
