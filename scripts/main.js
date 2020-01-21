@@ -543,6 +543,7 @@ function punchItChewie() {
   warp.TARGET_SPEED = 50;
 }
 
+// Used to animate "rolling" the dice
 function rollD6() {
   return Math.floor(Math.random() * Math.floor(6)) + 1;
 }
@@ -621,17 +622,17 @@ function rollDice() {
   });
 
   setTimeout(function() {
-    rollDiceToSide(rollD6(), rollD6());
+    rollDiceToSide();
   }, 2000);
 }
 
-function rollDiceToSide(side1, side2) {
+function rollDiceToSide() {
   clearInterval(rollInterval);
-  $("#dice1").attr("class", "cube show" + side1);
-  $("#dice2").attr("class", "cube show" + side2);
+  $("#dice1").attr("class", "cube show" + database.dice[0]);
+  $("#dice2").attr("class", "cube show" + database.dice[1]);
 
   setTimeout(function() {
-    if (side1 == side2) {
+    if (database.dice[0] == database.dice[1]) {
       showDiceResultDiscard();
     } else {
       showDiceResultNoDiscard();
