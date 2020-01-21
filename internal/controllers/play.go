@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"math/rand"
 	"net/url"
 	"os"
 	"strconv"
@@ -40,6 +41,9 @@ func gameLoop(queryString string) (models.Database, error) {
 
 	// Put a card on top of the draw pile if necessary
 	gameDeck, database.Draw = populateDraw(database, gameDeck)
+
+	// Pre-roll the dice to prevent browser refresh cheating
+	database.Dice = rollDice()
 
 	// Populate the discard pile if it's currently empty
 	database, gameDeck = populateDiscard(database, gameDeck)
@@ -342,4 +346,14 @@ func generateRematchLink(database models.Database) (string, error) {
 	}
 
 	return `<a href="` + os.Getenv("SABACC_UI_HREF") + "?" + rematchDatabaseString + `">Click here for a rematch!</a>`, nil
+}
+
+func rollDice() []int {
+	dice := []int{}
+
+	for i := 0; i < 2; i++ {
+		dice = append(dice, rand.Intn(6)+1)
+	}
+
+	return dice
 }

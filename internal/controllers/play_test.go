@@ -1143,3 +1143,28 @@ func TestNewHandsAfterDiceDiscard(t *testing.T) {
 		t.Errorf("Wrong number of cards in the discard pile; want: %d, got: %d", 9, len(resultDatabase.AllDiscards))
 	}
 }
+
+func TestDiceRolling(t *testing.T) {
+	// An empty struct with only emails starts the game
+	startingDatabase := models.Database{
+		AllPlayers: []models.Player{
+			{
+				Email: "hellojessemillar@gmail.com",
+			},
+			{
+				Email: "penguinshatestuff@gmail.com",
+			},
+		},
+	}
+
+	// Pass the bare database to the game loop to start the game
+	resultDatabase, err := gameLoop(databaseToURI(startingDatabase))
+	if err != nil {
+		t.Error(err)
+	}
+
+	// Check that the returned database has dice roll values
+	if len(resultDatabase.Dice) == 0 {
+		t.Errorf("No dice values found in result database; want: %d, got: %d", 2, len(resultDatabase.Dice))
+	}
+}

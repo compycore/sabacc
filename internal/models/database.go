@@ -8,6 +8,7 @@ type Database struct {
 	Turn        int       `json:"turn"`
 	Dealer      int       `json:"dealer"`
 	Rolled      bool      `json:"rolled"`
+	Dice        []int     `json:"dice"`
 	AllPlayers  []Player  `json:"players"`
 	Draw        deck.Card `json:"draw"`
 	AllDiscards deck.Deck `json:"discards"`
