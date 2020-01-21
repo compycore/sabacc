@@ -1,4 +1,4 @@
-![Sabacc Logo](https://raw.githubusercontent.com/compycore/sabacc/gh-pages/images/logo.png)
+![Sabacc Logo](https://raw.githubusercontent.com/compycore/sabacc/gh-pages/images/logo.png#center)
 
 # Sabacc
 
@@ -87,3 +87,10 @@ All art in Sabacc is custom and drawn and animated with love by [Jesse Millar](h
 - [SweetAlert2](https://sweetalert2.github.io) for pretty prompts
 - [Skeleton](http://getskeleton.com) for CSS boilerplate
 - [Baraja-JS](https://github.com/nuxy/baraja-js) for card animations
+
+<style>
+img[src*='#center'] {
+    display: block;
+    margin: auto;
+}
+</style>
