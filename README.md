@@ -5,16 +5,16 @@
 In Disney's newly-opened [Star Wars: Galaxy's Edge](https://disneyparks.disney.go.com/star-wars-galaxys-edge/) lands, you can buy a deck of [Sabacc playing cards](https://starwars.fandom.com/wiki/Sabacc). Over Christmas break, [Jesse Millar](https://jessemillar.com) became obsessed with playing Sabacc with his brothers and was quite disappointed when he could no longer play the game in person at the end of the holiday. This repo represents an attempt at creating a digital version of Sabacc so that people can play with each other regardless of distance or time commitments.
 
 There were a few goals for this project:
-- Async play to allow for a lack of time constraint (e.g. play casually throughout the day)
+- Asynchronous play to allow for a lack of time constraint (e.g. play casually throughout the day)
 - Not require money to play or maintain (use free hosting and deployment technologies)
 
 ## Deploy
 
-There are a few steps to follow if you want to deploy your own copy of Sabacc:
+There are a few easy steps to follow if you want to deploy your own copy of Sabacc:
 
 1. Sign up for one or more free email API accounts from the list below and note down your API key(s)
-	- [Mailjet](https://www.mailjet.com)
-	- [SendGrid](https://sendgrid.com)
+	- [Mailjet](https://www.mailjet.com) (200 emails/day for free)
+	- [SendGrid](https://sendgrid.com) (100 emails/day for free)
 1. Deploy to Heroku using the button below (fill in the environment variables section on the Heroku site with the API keys you obtained above)
 
 	[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
@@ -24,6 +24,36 @@ There are a few steps to follow if you want to deploy your own copy of Sabacc:
 1. Navigate to [the static UI](https://compycore.com/sabacc) in your browser
 1. Enter email addresses for the players you want to play with
 1. Wait for an email notification that it's your turn
+
+## Develop
+
+If you want to deploy a copy of Sabacc without using Heroku or if you want to develop locally, you'll need to set the following environment variables:
+
+```
+// The port the Sabacc HTTP server listens on
+export PORT="8080"
+// The location of the HTML UI (either leave as the default or set to your own value)
+export SABACC_UI_HREF="https://compycore.com/sabacc/"
+```
+
+You'll need to choose at least one supported email API provider and provide API key details:
+
+```
+// The public API key you got from Mailjet
+export MAILJET_API_KEY_PUBLIC="..."
+// The private API key you got from Mailjet
+export MAILJET_API_KEY_PRIVATE="..."
+
+// The API key you got from SendGrid
+export SENDGRID_API_KEY="..."
+```
+
+Optional environment variables are defined below:
+
+```
+// Used to disable the sending of emails (only use when testing)
+export SABACC_DEBUG=true
+```
 
 ## Notes
 
