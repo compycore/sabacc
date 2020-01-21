@@ -456,7 +456,7 @@ function saveData(callback) {
   punchItChewie();
 
   Swal.fire({
-		imageUrl: "images/d-0.png",
+    imageUrl: "images/d-0.png",
     title: "Saving data...",
     text: "Please don't close the page. This may take a moment.",
     showConfirmButton: false
@@ -659,6 +659,7 @@ function showDiceResultDiscard() {
     database.rolled = true;
 
     for (var i = 0; i < database.players.length; i++) {
+      database.players[i].handSize = database.players[i].hand.length;
       database.discards.concat(database.players[i].hand);
       database.players[i].hand = [];
     }
