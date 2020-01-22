@@ -1,12 +1,15 @@
 package email
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
 	"os"
 	"strconv"
 	"strings"
+	"text/template"
 
+	"github.com/compycore/sabacc/internal/models"
 	mailjet "github.com/mailjet/mailjet-apiv3-go"
 )
 
@@ -60,4 +63,17 @@ func SendMessage(toEmailAddress string, codename string, messagePlain string, me
 
 func getFromEmailAddress(codename string) string {
 	return strings.ToLower(strings.ReplaceAll(codename, " ", "-")) + "@compycore.com"
+}
+
+// ExecuteTemplate takes data passed and uses it to execute the specified Go template and returns the result as a string
+func ExecuteTemplate(database models.Database, templateFile string) (string, error) {
+	parsedTemplate, err := template.ParseFiles(templateFile)
+	if err != nil {
+		return "", err
+	}
+
+	var content bytes.Buffer
+	parsedTemplate.Execute(&content, database)
+
+	return content.String(), nil
 }
