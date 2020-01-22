@@ -1,11 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8">
-    <title>Sabacc - Game Start</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="script.js"></script>
+    <meta charset="utf-8" />
+
+    <link
+      href="https://fonts.googleapis.com/css?family=Montserrat:900|Source+Sans+Pro:700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="https://compycore.github.io/sabacc/css/normalize.css" />
+    <link rel="stylesheet" href="https://compycore.github.io/sabacc/css/skeleton.css" />
+    <link rel="stylesheet" href="https://compycore.github.io/sabacc/css/main.css" />
   </head>
   <body>
+      <div id="logo" class="row">
+        <div class="u-full-width">
+          <center>Sabacc</center>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="u-full-width">
+          <h4>Discard Pile</h4>
+        </div>
+      </div>
+      <div class="row">
+        <div class="u-full-width">
+          <ul id="discard-pile" class="baraja-container"></ul>
+        </div>
+      </div>
+
+      <div id="copyright" class="row">
+        <div class="u-full-width">
+          <center>
+            &copy; 2019
+            <script>
+              new Date().getFullYear() > 2019 &&
+                document.write("-" + new Date().getFullYear());
+            </script>
+            CompyCore Games
+          </center>
+        </div>
+      </div>
   </body>
 </html>
