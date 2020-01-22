@@ -69,11 +69,11 @@ export SABACC_DEBUG=true
 
 #### `master` branch
 
-The `master` branch contains the Golang microservice that runs on Heroku and orchestrates the game logic and the sending of notification emails.
+The [`master` branch](https://github.com/compycore/sabacc/tree/master) contains the Golang microservice that runs on Heroku and orchestrates the game logic and the sending of notification emails.
 
 #### `gh-pages` branch
 
-The `gh-pages` branch has a simple, static-file UI hosted on GitHub Pages that allows players to take actions on their turn.
+The [`gh-pages` branch](https://github.com/compycore/sabacc/tree/gh-pages) has a simple, static-file UI hosted on GitHub Pages that allows players to take actions on their turn.
 
 ## Credits
 
