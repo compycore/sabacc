@@ -627,6 +627,11 @@ function rollDice() {
 }
 
 function rollDiceToSide() {
+  // Roll a D6 if one isn't passed from the server (useful during the transition from UI rolling to server rolling)
+  if (!database.dice) {
+    database.dice = [rollD6(), rollD6()];
+  }
+
   clearInterval(rollInterval);
   $("#dice1").attr("class", "cube show" + database.dice[0]);
   $("#dice2").attr("class", "cube show" + database.dice[1]);
