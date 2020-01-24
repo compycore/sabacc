@@ -91,7 +91,7 @@ function startNewGame() {
         Swal.fire(
           "A new game has started with " +
             arrayToSentence(result.value.split(",")) +
-            ". The first player listed will now receive an email! You can now close this window."
+            ". The second player listed will now receive an email! You can now close this window."
         );
       });
     } else if (result.value.split(",").length == 1) {
