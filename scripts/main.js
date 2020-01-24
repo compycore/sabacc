@@ -540,7 +540,7 @@ function getLiCount(ulId) {
 }
 
 function punchItChewie() {
-  warp.TARGET_SPEED = 50;
+  warp.TARGET_SPEED = 45;
 }
 
 // Used to animate "rolling" the dice
