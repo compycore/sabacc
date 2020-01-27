@@ -11,6 +11,8 @@ RUN apk add --no-cache ca-certificates
 ADD . /app
 WORKDIR /app
 RUN go mod download
-RUN go build -a .
+RUN go build -o main .
+RUN pwd
+RUN ls -la
 
-CMD ["/app/sabacc"]
+CMD ["/app/main"]
