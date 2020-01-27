@@ -1,0 +1,8 @@
+{{define "your-turn"}}
+{{template "top"}}
+It's round {{.Round}} in your game against ` + allEmailAddreses + `!
+<br>
+<br>
+<a href="{{.Link}}">Click here to take your turn, ` + emailAddress + `!</a>`
+{{template "bottom"}}
+{{end}}

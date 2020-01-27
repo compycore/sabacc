@@ -3,6 +3,7 @@ package models
 import "github.com/compycore/sabacc/internal/deck"
 
 type Database struct {
+	Password    string    `json:"password"`
 	Codename    string    `json:"codename"`
 	Round       int       `json:"round"`
 	Turn        int       `json:"turn"`
@@ -14,6 +15,7 @@ type Database struct {
 	AllDiscards deck.Deck `json:"discards"`
 	Rematch     []Player  `json:"rematch"`
 	Result      string    `json:"result"`
+	Link        string    `json:"link"`
 }
 
 type Player struct {

@@ -16,9 +16,8 @@ import (
 )
 
 func SendLink(emailAddress string, allEmailAddreses string, codename string, linkString string, round int) error {
-	plainTextContent := "It's round " + strconv.Itoa(round) + " in your Sabacc game against " + allEmailAddreses + "! Click here to take your turn, " + emailAddress + "!" + linkString
 	htmlContent := `It's round ` + strconv.Itoa(round) + ` in your game against ` + allEmailAddreses + `!<br><br><a href="` + linkString + `">Click here to take your turn, ` + emailAddress + `!</a>`
-	return SendMessage(emailAddress, codename, plainTextContent, htmlContent)
+	return SendMessage(emailAddress, codename, htmlContent)
 }
 
 func SendGameStartNotice(database models.Database) error {
@@ -27,8 +26,27 @@ func SendGameStartNotice(database models.Database) error {
 		return err
 	}
 
+	err = SendMessageToAllPlayers(database, message)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func SendConfirmation(emailAddress string, codename string, hand string, score string) error {
+	message := "Your turn has been recorded. Your hand is currently " + hand + " with a score of " + score + ". Please wait patiently for the next email alerting you that it's your turn."
+	return SendMessage(emailAddress, codename, message)
+}
+
+func SendHandDiscardNotice(emailAddress string, codename string, hand string, score string) error {
+	message := "Someone rolled matching dice so everyone's hands were discarded. Your new hand is " + hand + " with a score of " + score + ". Please wait patiently for the next email alerting you that it's your turn."
+	return SendMessage(emailAddress, codename, message)
+}
+
+func SendMessageToAllPlayers(database models.Database, message string) error {
 	for _, player := range database.AllPlayers {
-		err = SendMessage(player.Email, database.Codename, "Please use an HTML-enabled message viewer.", message)
+		err := SendMessage(player.Email, database.Codename, message)
 		if err != nil {
 			return err
 		}
@@ -37,17 +55,7 @@ func SendGameStartNotice(database models.Database) error {
 	return nil
 }
 
-func SendConfirmation(emailAddress string, codename string, hand string, score string) error {
-	message := "Your turn has been recorded. Your hand is currently " + hand + " with a score of " + score + ". Please wait patiently for the next email alerting you that it's your turn."
-	return SendMessage(emailAddress, codename, message, message)
-}
-
-func SendHandDiscardNotice(emailAddress string, codename string, hand string, score string) error {
-	message := "Someone rolled matching dice so everyone's hands were discarded. Your new hand is " + hand + " with a score of " + score + ". Please wait patiently for the next email alerting you that it's your turn."
-	return SendMessage(emailAddress, codename, message, message)
-}
-
-func SendMessage(toEmailAddress string, codename string, messagePlain string, messageHTML string) error {
+func SendMessage(toEmailAddress string, codename string, message string) error {
 	if len(os.Getenv("SABACC_DEBUG")) == 0 {
 		mailjetClient := mailjet.NewMailjetClient(os.Getenv("MAILJET_API_KEY_PUBLIC"), os.Getenv("MAILJET_API_KEY_PRIVATE"))
 		messagesInfo := []mailjet.InfoMessagesV31{
@@ -63,8 +71,8 @@ func SendMessage(toEmailAddress string, codename string, messagePlain string, me
 					},
 				},
 				Subject:  "Your Sabacc Game (Codename: " + codename + ")",
-				TextPart: messagePlain,
-				HTMLPart: messageHTML,
+				TextPart: "Please use a viewer capable of rendering HTML.",
+				HTMLPart: message,
 			},
 		}
 		messages := mailjet.MessagesV31{Info: messagesInfo}
@@ -83,7 +91,7 @@ func getFromEmailAddress(codename string) string {
 	return strings.ToLower(strings.ReplaceAll(codename, " ", "-")) + "@compycore.com"
 }
 
-// ExecuteTemplate takes data passed and uses it to execute the specified Go template and returns the result as a string
+// executeTemplate takes data passed and uses it to execute the specified Go template and returns the result as a string
 func executeTemplate(database models.Database, templateName string) (string, error) {
 	// Do some magic to find the path we're running from
 	_, b, _, _ := runtime.Caller(0)

@@ -73,6 +73,12 @@ func gameLoop(queryString string) (models.Database, error) {
 	// Change whose turn it is (also increase the round and change the dealer if necessary)
 	database = endTurn(database)
 
+	// Create the HTTP link representing the next player's turn (or a rematch)
+	database, err = createGameLink(database)
+	if err != nil {
+		return models.Database{}, err
+	}
+
 	// Send emails
 	if !isGameOver(database) {
 		// Since the game is not over, notify the next player that it's their turn
@@ -193,6 +199,8 @@ func tempSetPlayerNames(database models.Database) models.Database {
 			database.AllPlayers[i].Name = "Riley"
 		} else if player.Email == "jameston2001@gmail.com" {
 			database.AllPlayers[i].Name = "James"
+		} else if player.Email == "penguinshatestuff@gmail.com" {
+			database.AllPlayers[i].Name = "Michael"
 		} else {
 			database.AllPlayers[i].Name = player.Email
 		}
@@ -298,18 +306,23 @@ func sendNotices(database models.Database) error {
 	return nil
 }
 
-func sendNextTurnEmail(database models.Database) error {
-	encodedDatabase, err := encodeDatabase(database)
+func createGameLink(database models.Database) (models.Database, error) {
+	stringified, err := encodeDatabase(database)
 	if err != nil {
-		return err
+		return models.Database{}, err
 	}
 
+	database.Link = os.Getenv("SABACC_UI_HREF") + "?" + stringified
+	return database, nil
+}
+
+func sendNextTurnEmail(database models.Database) error {
 	allEmailAddresses := ""
 	for _, player := range database.AllPlayers {
 		allEmailAddresses = allEmailAddresses + player.Email + ", "
 	}
 
-	err = email.SendLink(database.AllPlayers[database.Turn].Email, allEmailAddresses, database.Codename, os.Getenv("SABACC_UI_HREF")+"?"+encodedDatabase, database.Round)
+	err := email.SendLink(database.AllPlayers[database.Turn].Email, allEmailAddresses, database.Codename, database.Link, database.Round)
 	if err != nil {
 		return err
 	}
@@ -336,7 +349,7 @@ func sendGameOverEmails(database models.Database) error {
 	for _, player := range database.AllPlayers {
 		// TODO Make the function smart enough to not need both HTML and plain if only plain is passed
 		// TODO Decide if I'm gonna handle text-only emails or if HTML is required
-		err := email.SendMessage(player.Email, database.Codename, database.Result, database.Result)
+		err := email.SendMessage(player.Email, database.Codename, database.Result)
 		if err != nil {
 			return err
 		}

@@ -1,9 +1,11 @@
 {{define "game-start"}}
 {{template "top"}}
 <p>A new game has started with the following players:</p>
+<ol>
 {{range .AllPlayers}}
-<center>{{.Name}} ({{.Email}})</center></br>
+<li>{{.Name}} ({{.Email}})</li></br>
 {{end}}
+</ol>
 
 <p>Please wait patiently for an email informing you that it's your turn!</p>
 {{template "bottom"}}
