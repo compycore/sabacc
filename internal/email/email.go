@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"log"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -27,8 +28,10 @@ func SendGameStartNotice(database models.Database) error {
 		return err
 	}
 
+	log.Println(message)
+
 	for _, player := range database.AllPlayers {
-		err = SendMessage(player.Email, database.Codename, message, message)
+		err = SendMessage(player.Email, database.Codename, "Please use an HTML-enabled message viewer.", message)
 		if err != nil {
 			return err
 		}
