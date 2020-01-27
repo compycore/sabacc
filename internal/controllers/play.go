@@ -193,6 +193,8 @@ func tempSetPlayerNames(database models.Database) models.Database {
 			database.AllPlayers[i].Name = "Riley"
 		} else if player.Email == "jameston2001@gmail.com" {
 			database.AllPlayers[i].Name = "James"
+		} else {
+			database.AllPlayers[i].Name = player.Email
 		}
 	}
 
