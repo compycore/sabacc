@@ -6,7 +6,7 @@
 
 [![Build Status](https://travis-ci.org/compycore/sabacc.svg?branch=master)](https://travis-ci.org/compycore/sabacc) [![Go Report Card](https://goreportcard.com/badge/github.com/compycore/sabacc)](https://goreportcard.com/report/github.com/compycore/sabacc)
 
-In Disney's newly-opened [Star Wars: Galaxy's Edge](https://disneyparks.disney.go.com/star-wars-galaxys-edge/) lands, you can buy a deck of [Sabacc playing cards](https://starwars.fandom.com/wiki/Sabacc). Over Christmas break, [Jesse Millar](https://jessemillar.com) became obsessed with playing Sabacc with his brothers and was quite disappointed when he could no longer play the game in person at the end of the holiday. This repo represents an attempt at creating a digital version of Sabacc so that people can play with each other regardless of distance or time commitments.
+In Disney's newly-opened [Star Wars: Galaxy's Edge](https://disneyparks.disney.go.com/star-wars-galaxys-edge/) lands, you can buy a deck of [Sabacc playing cards](https://starwars.fandom.com/wiki/Corellian_Spike) that comes with rules for the Corellian Spike version of play. Over Christmas break, [Jesse Millar](https://jessemillar.com) became obsessed with playing Sabacc with his brothers and was quite disappointed when he could no longer play the game in person at the end of the holiday. This repo represents an attempt at creating a digital version of Sabacc so that people can play with each other regardless of distance or time commitments.
 
 There were a few goals for this project:
 - Asynchronous play to allow for a lack of time constraint (e.g. play casually throughout the day)
@@ -69,11 +69,11 @@ export SABACC_DEBUG=true
 
 #### `master` branch
 
-The `master` branch contains the Golang microservice that runs on Heroku and orchestrates the game logic and the sending of notification emails.
+The [`master` branch](https://github.com/compycore/sabacc/tree/master) contains the Golang microservice that runs on Heroku and orchestrates the game logic and the sending of notification emails.
 
 #### `gh-pages` branch
 
-The `gh-pages` branch has a simple, static-file UI hosted on GitHub Pages that allows players to take actions on their turn.
+The [`gh-pages` branch](https://github.com/compycore/sabacc/tree/gh-pages) has a simple, static-file UI hosted on GitHub Pages that allows players to take actions on their turn.
 
 ## Credits
 
