@@ -1168,24 +1168,3 @@ func TestDiceRolling(t *testing.T) {
 		t.Errorf("No dice values found in result database; want: %d, got: %d", 2, len(resultDatabase.Dice))
 	}
 }
-
-// Note: Disable SABACC_DEBUG to test this function
-func TestEmailStartNotice(t *testing.T) {
-	// An empty struct with only emails starts the game
-	startingDatabase := models.Database{
-		AllPlayers: []models.Player{
-			{
-				Email: "hellojessemillar@gmail.com",
-			},
-			{
-				Email: "penguinshatestuff@gmail.com",
-			},
-		},
-	}
-
-	// Pass the bare database to the game loop to start the game and send an email notice
-	_, err := gameLoop(databaseToURI(startingDatabase))
-	if err != nil {
-		t.Error(err)
-	}
-}

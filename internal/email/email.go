@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strconv"
 	"strings"
 	"text/template"
@@ -21,7 +22,7 @@ func SendLink(emailAddress string, allEmailAddreses string, codename string, lin
 }
 
 func SendGameStartNotice(database models.Database) error {
-	message, err := executeTemplate(database, "./internal/email/templates/game-start.html")
+	message, err := executeTemplate(database, "game-start.html")
 	if err != nil {
 		return err
 	}
@@ -84,8 +85,10 @@ func getFromEmailAddress(codename string) string {
 
 // ExecuteTemplate takes data passed and uses it to execute the specified Go template and returns the result as a string
 func executeTemplate(database models.Database, templateFile string) (string, error) {
-	cwd, _ := os.Getwd()
-	parsedTemplate, err := template.ParseFiles(filepath.Join(cwd, templateFile))
+	_, b, _, _ := runtime.Caller(0)
+	basepath := filepath.Dir(b)
+
+	parsedTemplate, err := template.ParseFiles(filepath.Join(basepath, "./templates/"+templateFile))
 	if err != nil {
 		return "", err
 	}
