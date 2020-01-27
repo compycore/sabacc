@@ -36,10 +36,6 @@ func gameLoop(queryString string) (models.Database, error) {
 	// We use codenames to prevent all Sabacc emails from being threaded into the same thread in Gmail
 	database.Codename = getCodename(database)
 
-	// Set the player names when they're not provided (for transitioning to names)
-	// TODO Remove this
-	database = tempSetPlayerNames(database)
-
 	// Build a new deck of cards and make it match the contents of the database (remove cards from the players' hands, populate the discard pile, etc.)
 	gameDeck := prepDeck(database)
 
@@ -61,11 +57,8 @@ func gameLoop(queryString string) (models.Database, error) {
 	// Calculate player scores
 	database = calculatePlayerScores(database)
 
-	// Send an email confirmation to the player that just took their turn and notify players of new games starting
-	err = sendNotices(database)
-	if err != nil {
-		return models.Database{}, err
-	}
+	// Send an email confirmation to the player that just took their turn (as long as the game has started)
+	sendTurnConfirmationEmail(database)
 
 	// We use round 0 as an indicator that a game is just starting; we need to increase that to round 1 now that everything is set up
 	database = endRoundZero(database)
@@ -185,22 +178,6 @@ func getCodename(database models.Database) string {
 	return strings.ReplaceAll(database.Codename, "+", " ")
 }
 
-func tempSetPlayerNames(database models.Database) models.Database {
-	for i, player := range database.AllPlayers {
-		if player.Email == "hellojessemillar@gmail.com" {
-			database.AllPlayers[i].Name = "Jesse"
-		} else if player.Email == "rileyjmillar@gmail.com" {
-			database.AllPlayers[i].Name = "Riley"
-		} else if player.Email == "jameston2001@gmail.com" {
-			database.AllPlayers[i].Name = "James"
-		} else {
-			database.AllPlayers[i].Name = player.Email
-		}
-	}
-
-	return database
-}
-
 func populateDraw(database models.Database, gameDeck deck.Deck) (deck.Deck, deck.Card) {
 	if database.Draw == (deck.Card{}) {
 		gameDeck, database.Draw = deck.DealSingle(gameDeck)
@@ -288,14 +265,10 @@ func endRoundZero(database models.Database) models.Database {
 	return database
 }
 
-func sendNotices(database models.Database) error {
+func sendTurnConfirmationEmail(database models.Database) {
 	if hasGameStarted(database) && !isGameOver(database) {
-		return email.SendConfirmation(database.AllPlayers[database.Turn].Email, database.Codename, getHandString(database.AllPlayers[database.Turn].Hand), strconv.Itoa(database.AllPlayers[database.Turn].Score))
-	} else if !hasGameStarted(database) {
-		return email.SendGameStartNotice(database)
+		email.SendConfirmation(database.AllPlayers[database.Turn].Email, database.Codename, getHandString(database.AllPlayers[database.Turn].Hand), strconv.Itoa(database.AllPlayers[database.Turn].Score))
 	}
-
-	return nil
 }
 
 func sendNextTurnEmail(database models.Database) error {

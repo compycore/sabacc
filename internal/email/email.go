@@ -1,12 +1,17 @@
 package email
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
 	"os"
+	"path/filepath"
+	"runtime"
 	"strconv"
 	"strings"
+	"text/template"
 
+	"github.com/compycore/sabacc/internal/models"
 	mailjet "github.com/mailjet/mailjet-apiv3-go"
 )
 
@@ -14,6 +19,22 @@ func SendLink(emailAddress string, allEmailAddreses string, codename string, lin
 	plainTextContent := "It's round " + strconv.Itoa(round) + " in your Sabacc game against " + allEmailAddreses + "! Click here to take your turn, " + emailAddress + "!" + linkString
 	htmlContent := `It's round ` + strconv.Itoa(round) + ` in your game against ` + allEmailAddreses + `!<br><br><a href="` + linkString + `">Click here to take your turn, ` + emailAddress + `!</a>`
 	return SendMessage(emailAddress, codename, plainTextContent, htmlContent)
+}
+
+func SendGameStartNotice(database models.Database) error {
+	message, err := executeTemplate(database, "game-start.html")
+	if err != nil {
+		return err
+	}
+
+	for _, player := range database.AllPlayers {
+		err = SendMessage(player.Email, database.Codename, message, message)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
 
 func SendConfirmation(emailAddress string, codename string, hand string, score string) error {
@@ -60,4 +81,20 @@ func SendMessage(toEmailAddress string, codename string, messagePlain string, me
 
 func getFromEmailAddress(codename string) string {
 	return strings.ToLower(strings.ReplaceAll(codename, " ", "-")) + "@compycore.com"
+}
+
+// ExecuteTemplate takes data passed and uses it to execute the specified Go template and returns the result as a string
+func executeTemplate(database models.Database, templateFile string) (string, error) {
+	_, b, _, _ := runtime.Caller(0)
+	basepath := filepath.Dir(b)
+
+	parsedTemplate, err := template.ParseFiles(filepath.Join(basepath, "./templates/"+templateFile))
+	if err != nil {
+		return "", err
+	}
+
+	var content bytes.Buffer
+	parsedTemplate.Execute(&content, database)
+
+	return content.String(), nil
 }
