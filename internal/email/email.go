@@ -94,7 +94,7 @@ func executeTemplate(database models.Database, templateName string) (string, err
 
 	// Actually execute a template (by template name, not filename)
 	var content bytes.Buffer
-	err := templates.ExecuteTemplate(&content, templateName, nil)
+	err := templates.ExecuteTemplate(&content, templateName, database)
 	if err != nil {
 		return "", err
 	}
