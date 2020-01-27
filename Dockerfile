@@ -8,9 +8,9 @@ RUN apk add --no-cache git
 # Install the Certificate-Authority certificates to enable HTTPS
 RUN apk add --no-cache ca-certificates
 
-WORKDIR /
-COPY ./ .
-RUN go mod tidy
+ADD . /app
+WORKDIR /app
+RUN go mod download
 RUN go build -a .
 
-CMD ["sabacc"]
+CMD ["/app/sabacc"]
