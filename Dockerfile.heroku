@@ -8,6 +8,7 @@ RUN apk add --no-cache git
 # Install the Certificate-Authority certificates to enable HTTPS
 RUN apk add --no-cache ca-certificates
 
+WORKDIR /
 COPY ./ .
 RUN go mod tidy
 RUN go build -a .
