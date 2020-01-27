@@ -36,6 +36,10 @@ func gameLoop(queryString string) (models.Database, error) {
 	// We use codenames to prevent all Sabacc emails from being threaded into the same thread in Gmail
 	database.Codename = getCodename(database)
 
+	// Set the player names when they're not provided (for transitioning to names)
+	// TODO Remove this
+	database = tempSetPlayerNames(database)
+
 	// Build a new deck of cards and make it match the contents of the database (remove cards from the players' hands, populate the discard pile, etc.)
 	gameDeck := prepDeck(database)
 
@@ -179,6 +183,20 @@ func getCodename(database models.Database) string {
 
 	// Remove "+" characters that get put there by the Golang marshal process (Go encodes spaces as "+" instead of "%20")
 	return strings.ReplaceAll(database.Codename, "+", " ")
+}
+
+func tempSetPlayerNames(database models.Database) models.Database {
+	for i, player := range database.AllPlayers {
+		if player.Email == "hellojessemillar@gmail.com" {
+			database.AllPlayers[i].Name = "Jesse"
+		} else if player.Email == "rileyjmillar@gmail.com" {
+			database.AllPlayers[i].Name = "Riley"
+		} else if player.Email == "jameston2001@gmail.com" {
+			database.AllPlayers[i].Name = "James"
+		}
+	}
+
+	return database
 }
 
 func populateDraw(database models.Database, gameDeck deck.Deck) (deck.Deck, deck.Card) {
