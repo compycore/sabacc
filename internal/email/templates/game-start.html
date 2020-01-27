@@ -1,50 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
+{{template "top"}}
+<p>A new game has started with the following players:</p>
+{{range .AllPlayers}}
+<center>{{.Name}} ({{.Email}})</center></br>
+{{end}}
 
-    <link
-      href="https://fonts.googleapis.com/css?family=Montserrat:900|Source+Sans+Pro:700&display=swap"
-      rel="stylesheet"
-    />
-
-    <link rel="stylesheet" href="https://compycore.github.io/sabacc/css/normalize.css" />
-    <link rel="stylesheet" href="https://compycore.github.io/sabacc/css/skeleton.css" />
-    <link rel="stylesheet" href="https://compycore.github.io/sabacc/css/main.css" />
-  </head>
-  <body>
-      <div id="logo" class="row">
-        <div class="u-full-width">
-          <center>Sabacc</center>
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="u-full-width">
-					<p>A new game has started with the following players:</p>
-					{{range .AllPlayers}}
-					<center>{{.Name}} ({{.Email}})</center></br>
-					{{end}}
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="u-full-width">
-					<p>Please wait patiently for an email informing you that it's your turn!</p>
-        </div>
-      </div>
-
-      <div id="copyright" class="row">
-        <div class="u-full-width">
-          <center>
-            &copy; 2019
-            <script>
-              new Date().getFullYear() > 2019 &&
-                document.write("-" + new Date().getFullYear());
-            </script>
-            CompyCore Games
-          </center>
-        </div>
-      </div>
-  </body>
-</html>
+<p>Please wait patiently for an email informing you that it's your turn!</p>
+{{template "bottom"}}
