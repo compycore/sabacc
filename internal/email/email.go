@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 	"text/template"
@@ -17,6 +18,22 @@ func SendLink(emailAddress string, allEmailAddreses string, codename string, lin
 	plainTextContent := "It's round " + strconv.Itoa(round) + " in your Sabacc game against " + allEmailAddreses + "! Click here to take your turn, " + emailAddress + "!" + linkString
 	htmlContent := `It's round ` + strconv.Itoa(round) + ` in your game against ` + allEmailAddreses + `!<br><br><a href="` + linkString + `">Click here to take your turn, ` + emailAddress + `!</a>`
 	return SendMessage(emailAddress, codename, plainTextContent, htmlContent)
+}
+
+func SendGameStartNotice(database models.Database) error {
+	message, err := executeTemplate(database, "./internal/email/templates/game-start.html")
+	if err != nil {
+		return err
+	}
+
+	for _, player := range database.AllPlayers {
+		err = SendMessage(player.Email, database.Codename, message, message)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
 
 func SendConfirmation(emailAddress string, codename string, hand string, score string) error {
@@ -66,8 +83,9 @@ func getFromEmailAddress(codename string) string {
 }
 
 // ExecuteTemplate takes data passed and uses it to execute the specified Go template and returns the result as a string
-func ExecuteTemplate(database models.Database, templateFile string) (string, error) {
-	parsedTemplate, err := template.ParseFiles(templateFile)
+func executeTemplate(database models.Database, templateFile string) (string, error) {
+	cwd, _ := os.Getwd()
+	parsedTemplate, err := template.ParseFiles(filepath.Join(cwd, templateFile))
 	if err != nil {
 		return "", err
 	}

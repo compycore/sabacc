@@ -21,12 +21,16 @@
 
       <div class="row">
         <div class="u-full-width">
-          <h4>Discard Pile</h4>
+					<p>A new game has started with the following players:</p>
+					{{range .AllPlayers}}
+					<center>{{.Name}} ({{.Email}})</center></br>
+					{{end}}
         </div>
       </div>
+
       <div class="row">
         <div class="u-full-width">
-          <ul id="discard-pile" class="baraja-container"></ul>
+					<p>Please wait patiently for an email informing you that it's your turn!</p>
         </div>
       </div>
 

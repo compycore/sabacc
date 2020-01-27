@@ -57,11 +57,8 @@ func gameLoop(queryString string) (models.Database, error) {
 	// Calculate player scores
 	database = calculatePlayerScores(database)
 
-	// Send an email confirmation to the player that just took their turn and notify players of new games starting
-	err = sendNotices(database)
-	if err != nil {
-		return models.Database{}, err
-	}
+	// Send an email confirmation to the player that just took their turn (as long as the game has started)
+	sendTurnConfirmationEmail(database)
 
 	// We use round 0 as an indicator that a game is just starting; we need to increase that to round 1 now that everything is set up
 	database = endRoundZero(database)
@@ -268,14 +265,10 @@ func endRoundZero(database models.Database) models.Database {
 	return database
 }
 
-func sendNotices(database models.Database) error {
+func sendTurnConfirmationEmail(database models.Database) {
 	if hasGameStarted(database) && !isGameOver(database) {
-		return email.SendConfirmation(database.AllPlayers[database.Turn].Email, database.Codename, getHandString(database.AllPlayers[database.Turn].Hand), strconv.Itoa(database.AllPlayers[database.Turn].Score))
-	} else if !hasGameStarted(database) {
-		return email.SendGameStartNotice(database)
+		email.SendConfirmation(database.AllPlayers[database.Turn].Email, database.Codename, getHandString(database.AllPlayers[database.Turn].Hand), strconv.Itoa(database.AllPlayers[database.Turn].Score))
 	}
-
-	return nil
 }
 
 func sendNextTurnEmail(database models.Database) error {
