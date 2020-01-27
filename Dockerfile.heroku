@@ -8,9 +8,8 @@ RUN apk add --no-cache git
 # Install the Certificate-Authority certificates to enable HTTPS
 RUN apk add --no-cache ca-certificates
 
-WORKDIR $GOPATH/src/github.com/compycore/sabacc
 COPY ./ .
 RUN go mod tidy
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix nocgo -o $WORKDIR/app .
+RUN go build -a .
 
-CMD [$WORKDIR"/app"]
+CMD ["sabacc"]
