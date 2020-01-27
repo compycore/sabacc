@@ -3,6 +3,7 @@
   "description": "A microservice for playing Sabacc in an async way with email notifications",
   "repository": "https://github.com/compycore/sabacc",
   "logo": "https://compycore.github.io/sabacc/images/logo.png",
+  "stack": "container",
   "env": {
     "MAILJET_API_KEY_PUBLIC": {
       "description": "The public API key you got from Mailjet."
