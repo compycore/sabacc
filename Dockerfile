@@ -1,4 +1,3 @@
-# Heroku doesn't seem to fully support multi-stage builds yet
 FROM golang:1.13.5
 
 # Enable Go modules
@@ -9,4 +8,4 @@ WORKDIR /app
 RUN go mod download
 RUN go build -o main .
 
-CMD ["/app/main"]
+CMD ["cd /app && ./main"]
