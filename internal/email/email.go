@@ -22,22 +22,17 @@ func SendLink(emailAddress string, allEmailAddreses string, codename string, lin
 }
 
 func SendGameStartNotice(database models.Database) error {
-	// TODO Uncomment this and make sure email templates are being generated properly
-	/*
-		message, err := executeTemplate(database, "game-start.html")
+	message, err := executeTemplate(database, "game-start")
+	if err != nil {
+		return err
+	}
+
+	for _, player := range database.AllPlayers {
+		err = SendMessage(player.Email, database.Codename, "Please use an HTML-enabled message viewer.", message)
 		if err != nil {
 			return err
 		}
-
-		log.Println(message)
-
-		for _, player := range database.AllPlayers {
-			err = SendMessage(player.Email, database.Codename, "Please use an HTML-enabled message viewer.", message)
-			if err != nil {
-				return err
-			}
-		}
-	*/
+	}
 
 	return nil
 }
@@ -89,17 +84,21 @@ func getFromEmailAddress(codename string) string {
 }
 
 // ExecuteTemplate takes data passed and uses it to execute the specified Go template and returns the result as a string
-func executeTemplate(database models.Database, templateFile string) (string, error) {
+func executeTemplate(database models.Database, templateName string) (string, error) {
+	// Do some magic to find the path we're running from
 	_, b, _, _ := runtime.Caller(0)
 	basepath := filepath.Dir(b)
 
-	parsedTemplate, err := template.ParseFiles(filepath.Join(basepath, "./templates/"+templateFile))
+	// Compile all templates
+	templates := template.Must(template.ParseGlob(filepath.Join(basepath, "./templates/*")))
+
+	// Actually execute a template (by template name, not filename)
+	var content bytes.Buffer
+	err := templates.ExecuteTemplate(&content, templateName, nil)
 	if err != nil {
 		return "", err
 	}
 
-	var content bytes.Buffer
-	parsedTemplate.Execute(&content, database)
-
+	// Return the compiled template as a string
 	return content.String(), nil
 }
