@@ -88,7 +88,7 @@ func executeTemplate(database models.Database, templateFile string) (string, err
 	_, b, _, _ := runtime.Caller(0)
 	basepath := filepath.Dir(b)
 
-	parsedTemplate, err := template.ParseFiles(filepath.Join(basepath, "./templates/"+templateFile))
+	parsedTemplate, err := template.ParseFiles(filepath.Join(basepath, "./internal/email/templates/"+templateFile))
 	if err != nil {
 		return "", err
 	}
