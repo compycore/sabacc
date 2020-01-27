@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"log"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -23,19 +22,22 @@ func SendLink(emailAddress string, allEmailAddreses string, codename string, lin
 }
 
 func SendGameStartNotice(database models.Database) error {
-	message, err := executeTemplate(database, "game-start.html")
-	if err != nil {
-		return err
-	}
-
-	log.Println(message)
-
-	for _, player := range database.AllPlayers {
-		err = SendMessage(player.Email, database.Codename, "Please use an HTML-enabled message viewer.", message)
+	// TODO Uncomment this and make sure email templates are being generated properly
+	/*
+		message, err := executeTemplate(database, "game-start.html")
 		if err != nil {
 			return err
 		}
-	}
+
+		log.Println(message)
+
+		for _, player := range database.AllPlayers {
+			err = SendMessage(player.Email, database.Codename, "Please use an HTML-enabled message viewer.", message)
+			if err != nil {
+				return err
+			}
+		}
+	*/
 
 	return nil
 }
