@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/compycore/sabacc/internal/deck"
+	"github.com/compycore/sabacc/internal/email"
 	"github.com/compycore/sabacc/internal/models"
 )
 
@@ -59,7 +60,7 @@ var databaseStruct = models.Database{
 }
 
 func TestParseDatabase(t *testing.T) {
-	encodedDatabase, err := encodeDatabase(databaseStruct)
+	encodedDatabase, err := email.EncodeDatabase(databaseStruct)
 	if err != nil {
 		t.Error(err)
 	}
@@ -114,7 +115,7 @@ func TestPrepDeckNewGame(t *testing.T) {
 }
 
 func databaseToURI(database models.Database) string {
-	encodedDatabase, err := encodeDatabase(database)
+	encodedDatabase, err := email.EncodeDatabase(database)
 	if err != nil {
 		log.Fatal(err)
 	}

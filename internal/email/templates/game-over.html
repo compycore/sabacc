@@ -1,0 +1,13 @@
+{{define "game-over"}}
+{{template "top"}}
+
+{{range .AllPlayers}}
+{{.Name}} got a final score of {{.Score}} with a hand of getHandString(player.Hand)
+{{range .Hand}}
+{{.Stave}} {{.Value}}
+{{end}}
+{{end}}
+
+Click here for a rematch!
+{{template "bottom"}}
+{{end}}

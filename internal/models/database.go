@@ -15,7 +15,7 @@ type Database struct {
 	AllDiscards deck.Deck `json:"discards"`
 	Rematch     []Player  `json:"rematch"`
 	Result      string    `json:"result"`
-	Link        string    `json:"link"`
+	Template    Template  `json:",omitempty"`
 }
 
 type Player struct {
@@ -24,4 +24,10 @@ type Player struct {
 	Hand     deck.Deck `json:"hand"`
 	HandSize int       `json:"handSize"`
 	Score    int       `json:"score"`
+}
+
+// These values are only for use in templates, not for returning to the user
+type Template struct {
+	Link            string `json:",omitempty"`
+	AllPlayersNames string `json:",omitempty"`
 }

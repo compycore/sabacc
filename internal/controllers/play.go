@@ -4,8 +4,6 @@ import (
 	"encoding/json"
 	"math/rand"
 	"net/url"
-	"os"
-	"strconv"
 	"strings"
 
 	"github.com/compycore/sabacc/internal/deck"
@@ -73,29 +71,21 @@ func gameLoop(queryString string) (models.Database, error) {
 	// Change whose turn it is (also increase the round and change the dealer if necessary)
 	database = endTurn(database)
 
-	// Create the HTTP link representing the next player's turn (or a rematch)
-	database, err = createGameLink(database)
-	if err != nil {
-		return models.Database{}, err
-	}
-
 	// Send emails
 	if !isGameOver(database) {
 		// Since the game is not over, notify the next player that it's their turn
-		err = sendNextTurnEmail(database)
+		err := email.SendLink(database)
 		if err != nil {
 			return models.Database{}, err
 		}
 	} else {
 		// TODO Determine who won
 		// Set a value to database.Result so the tests can know that a match finished
-		database.Result, err = generateResultString(database)
-		if err != nil {
-			return models.Database{}, err
-		}
+		// TODO Set this to a real value
+		database.Result = "poots"
 
 		// Send a game over email to every player
-		err = sendGameOverEmails(database)
+		err := email.SendGameOver(database)
 		if err != nil {
 			return models.Database{}, err
 		}
@@ -114,15 +104,6 @@ func parseDatabase(databaseString string) (models.Database, error) {
 	json.Unmarshal([]byte(stringifiedJson), &database)
 
 	return database, nil
-}
-
-func encodeDatabase(database models.Database) (string, error) {
-	encodedDatabase, err := json.Marshal(database)
-	if err != nil {
-		return "", err
-	}
-
-	return url.QueryEscape(string(encodedDatabase)), nil
 }
 
 func calculatePlayerScores(database models.Database) models.Database {
@@ -158,16 +139,6 @@ func prepDeck(database models.Database) deck.Deck {
 	preppedDeck = deck.Shuffle(preppedDeck)
 
 	return preppedDeck
-}
-
-func getHandString(hand deck.Deck) string {
-	handString := ""
-
-	for _, card := range hand {
-		handString = handString + card.Stave + " " + strconv.Itoa(card.Value) + "<br>"
-	}
-
-	return handString
 }
 
 func hasGameStarted(database models.Database) bool {
@@ -262,7 +233,7 @@ func dealHands(database models.Database, gameDeck deck.Deck) (models.Database, d
 			// Put an extra card on top of the discard pile
 			database, gameDeck = dealIntoDiscard(database, gameDeck)
 
-			err := sendHandDiscardEmails(database)
+			err := email.SendHandDiscardNotice(database)
 			if err != nil {
 				return models.Database{}, deck.Deck{}, err
 			}
@@ -298,94 +269,12 @@ func endRoundZero(database models.Database) models.Database {
 
 func sendNotices(database models.Database) error {
 	if hasGameStarted(database) && !isGameOver(database) {
-		return email.SendConfirmation(database.AllPlayers[database.Turn].Email, database.Codename, getHandString(database.AllPlayers[database.Turn].Hand), strconv.Itoa(database.AllPlayers[database.Turn].Score))
+		return email.SendConfirmation(database)
 	} else if !hasGameStarted(database) {
 		return email.SendGameStartNotice(database)
 	}
 
 	return nil
-}
-
-func createGameLink(database models.Database) (models.Database, error) {
-	stringified, err := encodeDatabase(database)
-	if err != nil {
-		return models.Database{}, err
-	}
-
-	database.Link = os.Getenv("SABACC_UI_HREF") + "?" + stringified
-	return database, nil
-}
-
-func sendNextTurnEmail(database models.Database) error {
-	allEmailAddresses := ""
-	for _, player := range database.AllPlayers {
-		allEmailAddresses = allEmailAddresses + player.Email + ", "
-	}
-
-	err := email.SendLink(database.AllPlayers[database.Turn].Email, allEmailAddresses, database.Codename, database.Link, database.Round)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func sendHandDiscardEmails(database models.Database) error {
-	// Send an email to every player
-	for _, player := range database.AllPlayers {
-		// TODO Make the function smart enough to not need both HTML and plain if only plain is passed
-		// TODO Decide if I'm gonna handle text-only emails or if HTML is required
-		err := email.SendHandDiscardNotice(player.Email, database.Codename, getHandString(player.Hand), strconv.Itoa(player.Score))
-		if err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
-
-func sendGameOverEmails(database models.Database) error {
-	// Send an email to every player
-	for _, player := range database.AllPlayers {
-		// TODO Make the function smart enough to not need both HTML and plain if only plain is passed
-		// TODO Decide if I'm gonna handle text-only emails or if HTML is required
-		err := email.SendMessage(player.Email, database.Codename, database.Result)
-		if err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
-
-func generateResultString(database models.Database) (string, error) {
-	rematchLink, err := generateRematchLink(database)
-	if err != nil {
-		return "", err
-	}
-
-	return generateHandSummaries(database) + "<br><br>" + rematchLink, nil
-}
-
-func generateHandSummaries(database models.Database) string {
-	finalResultsMessage := ""
-	for _, player := range database.AllPlayers {
-		finalResultsMessage = finalResultsMessage + player.Email + " got a final score of " + strconv.Itoa(player.Score) + " with a hand of " + getHandString(player.Hand)
-	}
-
-	return finalResultsMessage
-}
-
-func generateRematchLink(database models.Database) (string, error) {
-	rematchDatabase := models.Database{}
-	rematchDatabase.Rematch = database.AllPlayers
-
-	rematchDatabaseString, err := encodeDatabase(rematchDatabase)
-	if err != nil {
-		return "", err
-	}
-
-	return `<a href="` + os.Getenv("SABACC_UI_HREF") + "?" + rematchDatabaseString + `">Click here for a rematch!</a>`, nil
 }
 
 func rollDice() []int {
