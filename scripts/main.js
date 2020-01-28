@@ -223,7 +223,7 @@ function populateEnemyHands() {
       document.getElementById("enemy-hands").innerHTML +=
         '<div class="u-full-width">';
       document.getElementById("enemy-hands").innerHTML +=
-        "<h4>" + database.players[i].email + "'s Hand</h4>";
+        "<h4>" + database.players[i].name + "'s Hand</h4>";
       document.getElementById("enemy-hands").innerHTML += "</div>";
       document.getElementById("enemy-hands").innerHTML += "</div>";
       document.getElementById("enemy-hands").innerHTML += '<div class="row">';
