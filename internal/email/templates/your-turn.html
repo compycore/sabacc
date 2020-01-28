@@ -1,6 +1,6 @@
 {{define "your-turn"}}
 {{template "top"}}
-It's round {{.Round}} in your game against allEmailAddreses!
+It's round {{.Round}} in your game against {{.Template.AllPlayerNames}}!
 <br>
 <br>
 <a href="{{.Template.Link}}">Click here to take your turn, {{(index .AllPlayers .Turn).Name}}!</a>

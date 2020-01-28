@@ -28,6 +28,6 @@ type Player struct {
 
 // These values are only for use in templates, not for returning to the user
 type Template struct {
-	Link            string `json:",omitempty"`
-	AllPlayersNames string `json:",omitempty"`
+	Link           string `json:",omitempty"`
+	AllPlayerNames string `json:",omitempty"`
 }

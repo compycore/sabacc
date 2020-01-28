@@ -188,7 +188,7 @@ func prepDatabaseForTemplate(database models.Database) (models.Database, error) 
 	}
 
 	// Populate the nice sentence of all the player names
-	database.Template.AllPlayersNames = getAllPlayerNamesAsSentence(database)
+	database.Template.AllPlayerNames = getAllPlayerNamesAsSentence(database)
 
 	return database, nil
 }

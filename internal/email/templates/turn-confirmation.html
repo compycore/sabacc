@@ -1,11 +1,16 @@
 {{define "turn-confirmation"}}
 {{template "top"}}
-Your turn has been recorded. Your hand score is currently {{(index .AllPlayers .Turn).Score}} and consists of:
+<p>Your turn has been recorded.</p>
+<p>Your hand score is currently {{(index .AllPlayers .Turn).Score}}.</p>
 
+<h2>Hand</h2>
+
+<ul>
 {{range (index .AllPlayers .Turn).Hand}}
-{{.Stave}} {{.Value}}
+<li>{{.Stave}} {{.Value}}</li>
 {{end}}
+</ul>
 
-Please wait patiently for the next email alerting you that it's your turn.
+<p>Please wait patiently for the next email alerting you that it's your turn.</p>
 {{template "bottom"}}
 {{end}}
