@@ -12,6 +12,7 @@ import (
 	"strings"
 	"text/template"
 
+	"github.com/compycore/sabacc/internal/helpers"
 	"github.com/compycore/sabacc/internal/models"
 	mailjet "github.com/mailjet/mailjet-apiv3-go"
 )
@@ -149,43 +150,31 @@ func EncodeDatabase(database models.Database) (string, error) {
 	return url.QueryEscape(string(encodedDatabase)), nil
 }
 
-func createGameLink(database models.Database) (models.Database, error) {
+func createGameLink(database models.Database) (string, error) {
 	// Generate a rematch link if the game is over
-	// if controllers.IsGameOver(database) {
-	// stringified, err = createRematchLink(database)
-	// if err != nil {
-	// return models.Database{}, err
-	// }
-	// } else {
-	stringified, err := EncodeDatabase(database)
-	if err != nil {
-		return models.Database{}, err
+	if helpers.IsGameOver(database) {
+		rematchDatabase := models.Database{}
+		rematchDatabase.Rematch = database.AllPlayers
+		database = rematchDatabase
 	}
-	// }
 
-	database.Template.Link = os.Getenv("SABACC_UI_HREF") + "?" + stringified
-	return database, nil
-}
-
-func createRematchLink(database models.Database) (string, error) {
-	rematchDatabase := models.Database{}
-	rematchDatabase.Rematch = database.AllPlayers
-
-	rematchDatabaseString, err := EncodeDatabase(rematchDatabase)
+	stringified, err := EncodeDatabase(database)
 	if err != nil {
 		return "", err
 	}
 
-	return `<a href="` + os.Getenv("SABACC_UI_HREF") + "?" + rematchDatabaseString + `">Click here for a rematch!</a>`, nil
+	return os.Getenv("SABACC_UI_HREF") + "?" + stringified, nil
 }
 
 // prepDatabaseForTemplate runs some functions to populate the database struct with values useful for populating templates
 func prepDatabaseForTemplate(database models.Database) (models.Database, error) {
 	// Create the HTTP link representing the next player's turn (or a rematch)
-	database, err := createGameLink(database)
+	link, err := createGameLink(database)
 	if err != nil {
 		return models.Database{}, err
 	}
+
+	database.Template.Link = link
 
 	// Populate the nice sentence of all the player names
 	database.Template.AllPlayerNames = getAllPlayerNamesAsSentence(database)

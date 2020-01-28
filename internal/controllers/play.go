@@ -72,7 +72,7 @@ func gameLoop(queryString string) (models.Database, error) {
 	database = endTurn(database)
 
 	// Send emails
-	if !isGameOver(database) {
+	if !helpers.IsGameOver(database) {
 		// Since the game is not over, notify the next player that it's their turn
 		err := email.SendYourturn(database)
 		if err != nil {
@@ -143,14 +143,6 @@ func prepDeck(database models.Database) deck.Deck {
 
 func hasGameStarted(database models.Database) bool {
 	return database.Round > 0
-}
-
-func isGameOver(database models.Database) bool {
-	if database.Round <= 3 && database.Turn < len(database.AllPlayers) && len(database.AllPlayers) > 1 {
-		return false
-	}
-
-	return true
 }
 
 func getCodename(database models.Database) string {
@@ -268,7 +260,7 @@ func endRoundZero(database models.Database) models.Database {
 }
 
 func sendNotices(database models.Database) error {
-	if hasGameStarted(database) && !isGameOver(database) {
+	if hasGameStarted(database) && !helpers.IsGameOver(database) {
 		return email.SendTurnConfirmation(database)
 	} else if !hasGameStarted(database) {
 		return email.SendGameStartNotice(database)
