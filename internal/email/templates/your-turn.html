@@ -3,6 +3,6 @@
 It's round {{.Round}} in your game against allEmailAddreses!
 <br>
 <br>
-<a href="{{.Template.Link}}">Click here to take your turn!</a>`
+<a href="{{.Template.Link}}">Click here to take your turn, {{(index .AllPlayers .Turn).Name}}!</a>
 {{template "bottom"}}
 {{end}}

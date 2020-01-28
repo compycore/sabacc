@@ -16,7 +16,7 @@ import (
 	mailjet "github.com/mailjet/mailjet-apiv3-go"
 )
 
-func SendLink(database models.Database) error {
+func SendYourturn(database models.Database) error {
 	message, err := executeTemplate(database, "your-turn")
 	if err != nil {
 		return err
@@ -53,7 +53,7 @@ func SendGameOver(database models.Database) error {
 	return nil
 }
 
-func SendConfirmation(database models.Database) error {
+func SendTurnConfirmation(database models.Database) error {
 	message, err := executeTemplate(database, "turn-confirmation")
 	if err != nil {
 		return err
@@ -62,7 +62,7 @@ func SendConfirmation(database models.Database) error {
 	return SendMessageToOnePlayer(database, message)
 }
 
-func SendHandDiscardNotice(database models.Database) error {
+func SendDiscardNotice(database models.Database) error {
 	message, err := executeTemplate(database, "discard-notice")
 	if err != nil {
 		return err

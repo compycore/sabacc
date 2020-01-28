@@ -74,7 +74,7 @@ func gameLoop(queryString string) (models.Database, error) {
 	// Send emails
 	if !isGameOver(database) {
 		// Since the game is not over, notify the next player that it's their turn
-		err := email.SendLink(database)
+		err := email.SendYourturn(database)
 		if err != nil {
 			return models.Database{}, err
 		}
@@ -233,7 +233,7 @@ func dealHands(database models.Database, gameDeck deck.Deck) (models.Database, d
 			// Put an extra card on top of the discard pile
 			database, gameDeck = dealIntoDiscard(database, gameDeck)
 
-			err := email.SendHandDiscardNotice(database)
+			err := email.SendDiscardNotice(database)
 			if err != nil {
 				return models.Database{}, deck.Deck{}, err
 			}
@@ -269,7 +269,7 @@ func endRoundZero(database models.Database) models.Database {
 
 func sendNotices(database models.Database) error {
 	if hasGameStarted(database) && !isGameOver(database) {
-		return email.SendConfirmation(database)
+		return email.SendTurnConfirmation(database)
 	} else if !hasGameStarted(database) {
 		return email.SendGameStartNotice(database)
 	}
