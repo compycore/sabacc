@@ -1,6 +1,6 @@
 {{define "turn-confirmation"}}
 {{template "top"}}
-<p>Your turn has been recorded.</p>
+<p>Your round {{.Round}} turn has been recorded.</p>
 <p>Your hand score is currently {{(index .AllPlayers .Turn).Score}}.</p>
 
 <h2>Hand</h2>

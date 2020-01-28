@@ -1,8 +1,6 @@
 {{define "your-turn"}}
 {{template "top"}}
-It's round {{.Round}} in your game against {{.Template.AllPlayerNames}}!
-<br>
-<br>
-<a href="{{.Template.Link}}">Click here to take your turn, {{(index .AllPlayers .Turn).Name}}!</a>
+<p>It's round {{.Round}}! {{.Template.AllPlayerNames}} are in heated competition!</p>
+<p><a href="{{.Template.Link}}">Click here to take your turn, {{(index .AllPlayers .Turn).Name}}!</a></p>
 {{template "bottom"}}
 {{end}}

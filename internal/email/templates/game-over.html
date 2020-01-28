@@ -2,12 +2,16 @@
 {{template "top"}}
 
 {{range .AllPlayers}}
-{{.Name}} got a final score of {{.Score}} with a hand of getHandString(player.Hand)
+<p>
+{{.Name}} got a final score of {{.Score}} with a hand of:
+<ul>
 {{range .Hand}}
-{{.Stave}} {{.Value}}
+<li>{{.Stave}} {{.Value}}</li>
 {{end}}
+</ul>
+</p>
 {{end}}
 
-Click here for a rematch!
+<p><a href="{{.Template.Link}}">Click here for a rematch!</a></p>
 {{template "bottom"}}
 {{end}}
