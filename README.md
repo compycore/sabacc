@@ -4,7 +4,7 @@
 
 # Sabacc
 
-[![Build Status](https://travis-ci.org/compycore/sabacc.svg?branch=master)](https://travis-ci.org/compycore/sabacc) [![Go Report Card](https://goreportcard.com/badge/github.com/compycore/sabacc)](https://goreportcard.com/report/github.com/compycore/sabacc) [![Man Hours](https://img.shields.io/endpoint?url=https%3A%2F%2Fjessemillar-man-hours.herokuapp.com%2Fhours%3Frepo%3Dhttps%3A%2F%2Fgithub.com%2Fcompycore%2Fsabacc.git)](https://github.com/jessemillar/man-hours)
+[![Build Status](https://travis-ci.org/compycore/sabacc.svg?branch=master)](https://travis-ci.org/compycore/sabacc) [![Go Report Card](https://goreportcard.com/badge/github.com/compycore/sabacc)](https://goreportcard.com/report/github.com/compycore/sabacc) [![Man Hours](https://img.shields.io/endpoint?url=https%3A%2F%2Fmh.%3Eessemillar.com%2Fhours%3Frepo%3Dhttps%3A%2F%2Fgithub.com%2Fcompycore%2Fsabacc.git)](https://jessemillar.com/r/man-hours)
 
 In Disney's newly-opened [Star Wars: Galaxy's Edge](https://disneyparks.disney.go.com/star-wars-galaxys-edge/) lands, you can buy a deck of [Sabacc playing cards](https://starwars.fandom.com/wiki/Corellian_Spike) that comes with rules for the Corellian Spike version of play. Over Christmas break, [Jesse Millar](https://jessemillar.com) became obsessed with playing Sabacc with his brothers and was quite disappointed when he could no longer play the game in person at the end of the holiday. This repo represents an attempt at creating a digital version of Sabacc so that people can play with each other regardless of distance or time commitments.
 
